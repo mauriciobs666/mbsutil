@@ -9,9 +9,10 @@ template<class C>class ListaL
 public:
 	ListaL();
 	ListaL(const ListaL& l);
+	~ListaL();
 	int add(C *novo);
 	int rm(C *item);
-	int elementos();
+	int elementos() { return nElementos; }
 protected:
 	struct Noh
 	{
@@ -29,6 +30,17 @@ template<class C> ListaL<C>::ListaL()
 	nElementos=0;
 }
 
+template<class C> ListaL<C>::~ListaL()
+{
+	Noh *tmp;
+	while(head)
+	{
+		tmp=head->prox;
+		delete head;
+		head=tmp;
+	}
+}
+
 template<class C> int ListaL<C>::add(C *novo)
 {
 	Noh *n=new Noh(novo);
@@ -39,30 +51,31 @@ template<class C> int ListaL<C>::add(C *novo)
 
 template<class C> int ListaL<C>::rm(C *item)
 {
-	Noh *tmp,*tmp2;
-	if(head)
+	Noh *tmp=head;
+	if(tmp)		//lista vazia?
 	{
-		if(head->obj==item)
+		Noh *tmp2=tmp->prox;
+		if(tmp->obj==item)
 		{
-			tmp=head;
-			head=head->prox;
+			head=tmp2;
 			delete tmp;
 			nElementos--;
-			
 			return 0;
 		}
 		else
 		{
-			Noh *tmp2=head->prox;
 			while(tmp2)
+			{
 				if(tmp2->obj==item)
 				{
-					tmp=tmp2;
-					tmp2=tmp2->prox;
-					delete tmp;
+					tmp->prox=tmp2->prox;
+					delete tmp2;
 					nElementos--;
 					return 0;
 				}
+				tmp=tmp2;
+				tmp2=tmp2->prox;
+			}
 		}
 	}
 	return -1;
