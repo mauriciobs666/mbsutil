@@ -2,12 +2,6 @@
 
 #include <windows.h>
 
-Tempo::Tempo()
-{
-	reset();
-	logarEventos=EVE_TEMPO_100MS | EVE_TEMPO_1S;
-}
-
 Tempo::Tempo(unsigned long quaisEventos)
 {
 	reset();

@@ -7,8 +7,7 @@
 class Tempo
 {
 	public:
-     	Tempo();
-     	Tempo(unsigned long quaisEventos);
+     	Tempo(unsigned long quaisEventos=(EVE_TEMPO_100MS|EVE_TEMPO_1S));
     	void loop();
     	void reset();
     	unsigned long trataEvento();

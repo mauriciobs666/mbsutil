@@ -3,6 +3,7 @@
 
 #include "Parser.h"
 #include "Tempo.h"
+#include "Thread.h"
 
 template<class C>class ListaL
 {
