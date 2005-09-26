@@ -1,7 +1,7 @@
 [Project]
 FileName=MBSUtil.dev
 Name=MBSUtil
-UnitCount=12
+UnitCount=15
 Type=2
 Ver=1
 ObjFiles=
@@ -47,27 +47,7 @@ ProductName=
 ProductVersion=
 AutoIncBuildNr=0
 
-[Unit1]
-FileName=mbsutil.cpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit2]
-FileName=mbsutil.h
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit3]
 FileName=Tempo.cpp
 CompileCpp=1
 Folder=
@@ -77,7 +57,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit4]
+[Unit3]
 FileName=Tempo.h
 CompileCpp=1
 Folder=
@@ -87,7 +67,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit5]
+[Unit4]
 FileName=Parser.cpp
 CompileCpp=1
 Folder=
@@ -97,7 +77,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit6]
+[Unit5]
 FileName=Parser.h
 CompileCpp=1
 Folder=
@@ -107,7 +87,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit7]
+[Unit6]
 FileName=Thread.cpp
 CompileCpp=1
 Folder=MBSUtil
@@ -117,7 +97,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit8]
+[Unit7]
 FileName=Thread.h
 CompileCpp=1
 Folder=MBSUtil
@@ -127,7 +107,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit9]
+[Unit8]
 FileName=Hash.cpp
 CompileCpp=1
 Folder=MBSUtil
@@ -137,7 +117,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit10]
+[Unit9]
 FileName=Hash.h
 CompileCpp=1
 Folder=MBSUtil
@@ -147,7 +127,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit11]
+[Unit10]
 FileName=Rede.cpp
 CompileCpp=1
 Folder=MBSUtil
@@ -157,8 +137,58 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit12]
+[Unit11]
 FileName=Rede.h
+CompileCpp=1
+Folder=MBSUtil
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit12]
+FileName=Fila.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit13]
+FileName=Lista.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit14]
+FileName=Bufer.cpp
+CompileCpp=1
+Folder=MBSUtil
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit1]
+FileName=mbsutil.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit15]
+FileName=Bufer.h
 CompileCpp=1
 Folder=MBSUtil
 Compile=1

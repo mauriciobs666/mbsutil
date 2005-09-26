@@ -1,29 +1,40 @@
-#ifndef RedeH
-#define RedeH
+#ifndef MBSUTIL_REDE_H
+#define MBSUTIL_REDE_H
 
+#include <cstdlib>
+#include <sstream>
 #include <winsock2.h>
 
-class Buffer
+using namespace std;
+
+class Soquete
 {
-    public:
-        unsigned char *dados,*pntE,*pntL;
-        int ocupados;
+public:
+    Soquete();
+    ~Soquete();
 
-        Buffer();
-        Buffer(int tam);
-        unsigned long pegaTamanho();
-        int mudaTamanho(int tam);
-        ~Buffer();
+    int conectar(char *ip, unsigned short porta);
+    bool conectado();
+    void desconectar();
 
-        void resetPnt();        //pntL=dados,pntE=(dados+ocupados)
-        int faltaTratar();      //pntE-pntL
-        int livres();
-        int append(Buffer *b);  //anexa faltaTratar() bytes de b->pntL em pntE
-        int append(Buffer *b, int qtd); //anexa qtd bytes de b->pntL em pntE
-    protected:
-        int tamanho;
-        void mata(unsigned char *&end);
-        int aloca(unsigned char *&end, int qtd);
+    int enviar(char *dados, int len);
+    int receber(char *dest, int max);
+   
+	string IPRemoto();
+	string IPLocal();
+    unsigned short PortaRemoto();
+	unsigned short PortaLocal();
+	    
+    sockaddr_in* pegaInfo();
+    unsigned long dns(char *end);
+	string toString(unsigned long ip);
+protected:
+    //win32 socket
+    sockaddr_in dest;
+    int fd;
+    int criaSocket();
+    int abreSocket();
+    int fechaSocket();
 };
 
 /*

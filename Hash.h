@@ -3,9 +3,17 @@
 
 #include <stdio.h>
 
-class Hash128
+class Hash
 {
 	public:
+		virtual bool operator==(const Hash& hash);
+};
+
+class Hash128 //: public Hash
+{
+	public:
+		bool operator==(const Hash& hash);
+		
 		union hash
 		{
 			unsigned char b[16];
@@ -18,7 +26,6 @@ class Hash128
         int montarPacote(unsigned char *&pkt);
         int abrir(FILE *arq);
         int salvar(FILE *arq);
-	protected:
 };
 
 class MD4

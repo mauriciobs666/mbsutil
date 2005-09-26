@@ -4,11 +4,21 @@
 
 Parser::Parser()
 {
-    setaLinha();
+	setaLinha();
 }
 
 Parser::~Parser()
 {
+}
+
+void Parser::setaLinha(char *ln)
+{
+	l=ln;
+}
+
+void Parser::setaLinha()
+{
+	l=linha;
 }
 
 bool Parser::isdelim(char c)
@@ -16,16 +26,6 @@ bool Parser::isdelim(char c)
     if(isalpha(c)|isdigit(c))
 	    return false;
     return true;
-}
-
-void Parser::setaLinha(char *ln)
-{
-    l=ln;
-}
-
-void Parser::setaLinha()
-{
-    l=linha;
 }
 
 int Parser::pegaToken()

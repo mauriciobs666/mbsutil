@@ -5,7 +5,7 @@
     <VERSION value="BCB.06.00"/>
     <PROJECT value="..\MBSUtil.lib"/>
     <OBJFILES value="c:\temp\Parser.obj c:\temp\Tempo.obj c:\temp\Thread.obj c:\temp\Hash.obj 
-      c:\temp\Rede.obj"/>
+      c:\temp\Rede.obj c:\temp\Bufer.obj"/>
     <RESFILES value=""/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -49,6 +49,7 @@
       <FILE FILENAME="Thread.cpp" FORMNAME="" UNITNAME="Thread" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="Hash.cpp" FORMNAME="" UNITNAME="Hash" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="Rede.cpp" FORMNAME="" UNITNAME="Rede" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="Bufer.cpp" FORMNAME="" UNITNAME="Bufer" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>

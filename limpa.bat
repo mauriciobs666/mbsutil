@@ -2,8 +2,9 @@
 del MBSUtil_private.h
 del MBSUtil_private.rc
 del Makefile.win
-del *.o
-del *.obj
+del MBSUtil.layout
+del c:\temp\*.o
+del c:\temp\*.obj
 del *.tds
 del *.~df
 del *.~h

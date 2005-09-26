@@ -15,6 +15,7 @@
 class Parser
 {
 	public:
+		enum Tipo { ERRO=-1, NULO=0, NUMERO, STRING, DELIM };
 	    char chars[256];//tabela 
         char linha[256];//scratch (gratis huahuahuahuahu)
 
@@ -24,8 +25,8 @@ class Parser
 
 		Parser();
 		~Parser();
-        void setaLinha(char *ln);   //seta ponteiro pra linha a ser analizada
-        void setaLinha();           //analisa linha[];
+        void setaLinha(char *ln);
+        void setaLinha();
         int pegaToken();            //devolve tokenTipo
         int parseFloat(float *pnt, int qtd);	//le floats[qtd]
 	private:
@@ -33,4 +34,5 @@ class Parser
         char *tok;      //ponteiro temp pro token sendo gerado
 		bool isdelim(char c);
 };
+
 #endif
