@@ -11,11 +11,12 @@ class Soquete
 {
 public:
     Soquete();
+    Soquete(int winfd);
     ~Soquete();
-
-    int conectar(char *ip, unsigned short porta);
+	
+    virtual int conectar(string ip, unsigned short porta);
+    virtual void desconectar();
     bool conectado();
-    void desconectar();
 
     int enviar(char *dados, int len);
     int receber(char *dest, int max);
@@ -26,15 +27,23 @@ public:
 	unsigned short PortaLocal();
 	    
     sockaddr_in* pegaInfo();
-    unsigned long dns(char *end);
+    unsigned long dns(string end);
 	string toString(unsigned long ip);
 protected:
     //win32 socket
-    sockaddr_in dest;
     int fd;
+	sockaddr_in dest;
     int criaSocket();
     int abreSocket();
     int fechaSocket();
+};
+
+class SoqueteServer : protected Soquete
+{
+public:
+    int ouvir(unsigned short porta, int backlog=10);
+    Soquete* aceitar();
+    void recusar();
 };
 
 /*
@@ -56,7 +65,7 @@ protected:
     };
 */
 
-class Conexao
+class Conexao 
 {
     public:
         //inicio global do winsock2 (obrigatorio chamar no inicio/fim da aplicacao)

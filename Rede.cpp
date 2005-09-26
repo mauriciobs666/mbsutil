@@ -1,16 +1,186 @@
 #include <stdio.h>
 #include "Rede.h"
-#include "Thread.h"
+//#include "Thread.h"
+
+static int sin_size=sizeof(sockaddr);
+
+//------------------------------------------------------------------------------
+//      Soquete
+//------------------------------------------------------------------------------
+
+Soquete::Soquete()
+{
+	fd=INVALID_SOCKET;
+}
+
+Soquete::Soquete(int winfd)
+{
+	fd=winfd;
+}
+
+Soquete::~Soquete()
+{
+    desconectar();
+}
+
+int Soquete::conectar(string ip, unsigned short porta)
+//  0: tudo ok, conectado
+// -1: erro generico de conexao
+// -2: erro de dns, host naum encontrado
+{
+	if(conectado())
+		return -1;
+	
+	if(0==(dest.sin_addr.s_addr=dns(ip)))
+		return -2;
+
+    dest.sin_port=htons(porta);
+    dest.sin_family=AF_INET;
+    memset(&(dest.sin_zero),0,8);
+
+    if(INVALID_SOCKET==criaSocket())
+    	return -1;
+
+	if(connect(fd,(sockaddr*)&dest,sizeof(sockaddr))==-1)
+        if(WSAGetLastError()!=WSAEWOULDBLOCK)
+            return -1;
+
+    return 0;
+}
+
+bool Soquete::conectado()
+{
+    return (fd==INVALID_SOCKET) ? false : true;
+}
+
+void Soquete::desconectar()
+{
+    if(conectado())
+		fechaSocket();
+}
+
+int Soquete::enviar(char *dados, int len)
+{
+    return send(fd,dados,len,0);
+}
+
+int Soquete::receber(char *dest, int max)
+{
+	return recv(fd,dest,max,0);
+}
+
+string Soquete::IPRemoto()
+{
+	return toString(dest.sin_addr.s_addr);
+}
+
+string Soquete::IPLocal()
+{
+	//TODO: IPLocal()
+}
+
+unsigned short Soquete::PortaRemoto()
+{
+	return ntohs(dest.sin_port);
+}
+
+unsigned short Soquete::PortaLocal()
+{
+	//TODO: PortaLocal()
+}
+
+sockaddr_in* Soquete::pegaInfo()
+{
+	return &dest;
+}
+
+unsigned long Soquete::dns(string end)
+{
+	//  0 - host invalido
+    struct hostent *he;
+    if((he=gethostbyname(end.c_str()))==NULL)
+        return 0;
+    return *(he->h_addr);
+}
+
+string Soquete::toString(unsigned long ip)
+{
+	return string(inet_ntoa(*((in_addr*)&ip)));
+}
+
+int Soquete::criaSocket()
+{
+	return fd=socket(AF_INET,SOCK_STREAM,0);
+}
+
+int Soquete::abreSocket()
+{
+}
+
+int Soquete::fechaSocket()
+{
+	closesocket(fd);
+    fd=INVALID_SOCKET;
+}
+
+//------------------------------------------------------------------------------
+//      SoqueteServer
+//------------------------------------------------------------------------------
+
+int SoqueteServer::ouvir(unsigned short porta, int backlog)
+//	-1 : erro generico de conexao
+//	-2 : erro de bind, porta em uso
+{
+	if(conectado())
+		return -1;
+
+    if(INVALID_SOCKET==criaSocket())
+    	return -1;
+
+	dest.sin_family=AF_INET;
+	dest.sin_port=htons(porta);
+	dest.sin_addr.s_addr=INADDR_ANY;
+	memset(&(dest.sin_zero),0,8);
+	
+	if(bind(fd,(sockaddr*)&dest,sizeof(sockaddr))==-1)
+	{
+		fechaSocket();
+		return -2;
+	}
+	if(listen(fd,backlog)==-1)
+	{
+		fechaSocket();
+		return -2;
+	}
+    return 0;
+}
+
+Soquete* SoqueteServer::aceitar()
+{
+	Soquete *novo;
+    sockaddr_in adn;
+    int fdn=accept(fd,(sockaddr*)&adn,&sin_size);
+    if(fdn==INVALID_SOCKET)
+        return NULL;
+    novo=new Soquete(fdn);
+    return novo;
+}
+
+void SoqueteServer::recusar()
+{
+    sockaddr_in adn;
+    closesocket(accept(fd,(sockaddr*)&adn,&sin_size));
+}
+
 
 //------------------------------------------------------------------------------
 //      Conexao
 //------------------------------------------------------------------------------
 
-static int sin_size=sizeof(sockaddr);
-
 int Conexao::iniciaRede()
 // 0 = OK
 {
+// TODO: passar ramdomize() pra Hash
 //    randomize();
     WSADATA wsad;
     return WSAStartup(MAKEWORD(1,1),&wsad);
@@ -47,8 +217,7 @@ Conexao::Conexao(int soquete)
 
 Conexao::~Conexao()
 {
-    if(ativa())
-        desconectar();
+	desconectar();
 }
 
 bool Conexao::ativa()
@@ -98,12 +267,12 @@ void Conexao::desconectar()
     	fd=INVALID_SOCKET;
     }
 }
-
+/*
 int Conexao::ouvir(unsigned short porta)
 {
     return ouvir(porta,10);
 }
-
+*/
 int Conexao::ouvir(unsigned short porta, int backlog)
 //	-1 : erro generico de conexao
 //	-2 : erro de bind, porta em uso
@@ -176,8 +345,6 @@ unsigned short Conexao::pegaPortaRemoto()
 
 char* Conexao::pegaIPLocal()
 {
-//	char *tmp=new char[50];
-//	delete tmp;
     return inet_ntoa(dest.sin_addr);
 }
 
@@ -189,7 +356,6 @@ unsigned short Conexao::pegaPortaLocal()
 unsigned long Conexao::dns(char *end)
 {
 //  0 - host invalido
-
     struct hostent *he;
     if((he=gethostbyname(end))==NULL)
         return 0;
