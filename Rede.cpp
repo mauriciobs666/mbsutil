@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <cstdlib>
+#include <iostream>
 #include "Rede.h"
 //#include "Thread.h"
 
@@ -30,9 +32,11 @@ int Soquete::conectar(string ip, unsigned short porta)
 {
 	if(conectado())
 		return -1;
-	
-	if(0==(dest.sin_addr.s_addr=dns(ip)))
-		return -2;
+
+	struct hostent *he;
+    if((he=gethostbyname(ip.c_str()))==NULL)
+        return -2;
+    dest.sin_addr=*((in_addr*)he->h_addr);
 
     dest.sin_port=htons(porta);
     dest.sin_family=AF_INET;
@@ -77,6 +81,7 @@ string Soquete::IPRemoto()
 string Soquete::IPLocal()
 {
 	//TODO: IPLocal()
+    return "";
 }
 
 unsigned short Soquete::PortaRemoto()
@@ -87,6 +92,7 @@ unsigned short Soquete::PortaRemoto()
 unsigned short Soquete::PortaLocal()
 {
 	//TODO: PortaLocal()
+    return 0;
 }
 
 sockaddr_in* Soquete::pegaInfo()
@@ -96,10 +102,15 @@ sockaddr_in* Soquete::pegaInfo()
 
 unsigned long Soquete::dns(string end)
 {
+	//TODO: arrumar dns()
 	//  0 - host invalido
     struct hostent *he;
     if((he=gethostbyname(end.c_str()))==NULL)
         return 0;
+
+//	cout << endl << "endereco:"<<end << endl;
+//    cout << (int)*(he->h_addr);
+
     return *(he->h_addr);
 }
 
@@ -115,12 +126,14 @@ int Soquete::criaSocket()
 
 int Soquete::abreSocket()
 {
+    return -1;
 }
 
 int Soquete::fechaSocket()
 {
 	closesocket(fd);
     fd=INVALID_SOCKET;
+    return fd;
 }
 
 //------------------------------------------------------------------------------
@@ -267,12 +280,7 @@ void Conexao::desconectar()
     	fd=INVALID_SOCKET;
     }
 }
-/*
-int Conexao::ouvir(unsigned short porta)
-{
-    return ouvir(porta,10);
-}
-*/
+
 int Conexao::ouvir(unsigned short porta, int backlog)
 //	-1 : erro generico de conexao
 //	-2 : erro de bind, porta em uso

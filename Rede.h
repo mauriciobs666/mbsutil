@@ -14,8 +14,8 @@ public:
     Soquete(int winfd);
     ~Soquete();
 	
-    virtual int conectar(string ip, unsigned short porta);
-    virtual void desconectar();
+    int conectar(string ip, unsigned short porta);
+    void desconectar();
     bool conectado();
 
     int enviar(char *dados, int len);
@@ -99,8 +99,7 @@ class Conexao
         //exclusivo p/ conexoes servidor
         Conexao(int soquete);
         int registraCallbackFilho(int(*fn)(Conexao*,long,long[]));
-        int ouvir(unsigned short porta); //backlog=10
-        int ouvir(unsigned short porta, int backlog);
+        int ouvir(unsigned short porta, int backlog=10);
         Conexao* aceitar();
         void recusar();
 

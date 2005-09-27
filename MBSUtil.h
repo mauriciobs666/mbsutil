@@ -8,6 +8,6 @@
 #include "Rede.h"
 #include "Fila.h"
 #include "Lista.h"
-#include "Buffer.h"
+#include "Bufer.h"
 
 #endif
