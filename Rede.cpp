@@ -119,17 +119,17 @@ string Soquete::toString(unsigned long ip)
 	return string(inet_ntoa(*((in_addr*)&ip)));
 }
 
-int Soquete::criaSocket()
+unsigned Soquete::criaSocket()
 {
 	return fd=socket(AF_INET,SOCK_STREAM,0);
 }
 
-int Soquete::abreSocket()
+unsigned Soquete::abreSocket()
 {
-    return -1;
+    return fd;
 }
 
-int Soquete::fechaSocket()
+unsigned Soquete::fechaSocket()
 {
 	closesocket(fd);
     fd=INVALID_SOCKET;
@@ -172,7 +172,7 @@ Soquete* SoqueteServer::aceitar()
 {
 	Soquete *novo;
     sockaddr_in adn;
-    int fdn=accept(fd,(sockaddr*)&adn,&sin_size);
+    unsigned fdn=accept(fd,(sockaddr*)&adn,&sin_size);
     if(fdn==INVALID_SOCKET)
         return NULL;
     novo=new Soquete(fdn);
@@ -317,7 +317,7 @@ Conexao* Conexao::aceitar()
 {
 	Conexao *nova;
     sockaddr_in adn;
-    int fdn=accept(fd,(sockaddr*)&adn,&sin_size);
+    unsigned fdn=accept(fd,(sockaddr*)&adn,&sin_size);
     if(fdn==INVALID_SOCKET)
         return NULL;
     nova=new Conexao(fdn);

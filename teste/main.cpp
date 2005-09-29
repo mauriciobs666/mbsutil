@@ -116,7 +116,7 @@ int testeLista()
 	return 0;
 }
 
-int testeRede()
+int testeSoquete()
 {
 	char dados[20];
 	Conexao::iniciaRede();
@@ -125,7 +125,7 @@ int testeRede()
 	if(retorno==0)
 	{
 		cout << "conectado" << endl;
-		cli.enviar("oi mundo",strlen("oi mundo"));
+		cli.enviar("oi mundo",strlen("oi mundo")+1);
 		cli.receber(dados,20);
 		cout << dados;
 	}
@@ -134,12 +134,21 @@ int testeRede()
 	Conexao::finalizaRede();
 }
 
+int testeSoqueteServer()
+{
+	SoqueteServer ss;
+	Conexao::iniciaRede();
+	cout << ss.ouvir(80);
+	Soquete *s=ss.aceitar();
+	Conexao::finalizaRede();
+}
+
 int main(int argc, char *argv[])
 {
 //	testeFila();
 //	testeLista();
 //	testeThread();
-	testeRede();
+	testeSoqueteServer();
 	printf("\n");	
     system("PAUSE");
     return EXIT_SUCCESS;
