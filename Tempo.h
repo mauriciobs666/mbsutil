@@ -6,22 +6,24 @@
 
 class Tempo
 {
-	public:
-		Tempo();
-     	Tempo(unsigned long quaisEventos);
-    	void loop();
-    	void reset();
-    	unsigned long trataEvento();
-    	unsigned long getFrames();
-    	unsigned long getFPS();
-    	unsigned long getFPSMedio();
-    	unsigned long getTempoTotal();
-    protected:
-		unsigned long logarEventos;
-		unsigned long ttotal;
-	    unsigned long ultimo,agora;
-     	unsigned long T1ds;
-		unsigned long frames;
-		unsigned long fpstemp,fps;
+public:
+	Tempo();
+    Tempo(unsigned long quaisEventos);
+    void loop();
+    void reset();
+    unsigned long trataEvento();
+    unsigned long getFrames();
+    unsigned long getFPS();
+    unsigned long getFPSMedio();
+    unsigned long getTempoTotal();
+protected:
+	unsigned long logarEventos;
+	unsigned long ttotal;
+	unsigned long ultimo,agora;
+    unsigned long T1ds;
+	unsigned long frames;
+	unsigned long fpstemp,fps;
+private:
+	unsigned long getMilissegundos();
 };
 #endif

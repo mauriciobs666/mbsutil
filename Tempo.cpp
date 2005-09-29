@@ -1,5 +1,6 @@
 #include "Tempo.h"
 
+#include <time.h>
 #include <windows.h>
 
 Tempo::Tempo()
@@ -16,7 +17,7 @@ Tempo::Tempo(unsigned long quaisEventos)
 
 void Tempo::reset()
 {
-	ultimo=agora=GetTickCount();
+	ultimo=agora=getMilissegundos();
 	ttotal=T1ds=0;				//segundo atual e decimos do segundo atual
 	frames=fps=fpstemp=0;
 }
@@ -25,7 +26,7 @@ void Tempo::loop()
 {
 	frames++;
 	fpstemp++;
-	agora=GetTickCount();
+	agora=getMilissegundos();
 }
 
 unsigned long Tempo::getFrames()
@@ -69,4 +70,9 @@ unsigned long Tempo::trataEvento()
 unsigned long Tempo::getTempoTotal()
 {
 	return ttotal;
+}
+
+inline unsigned long Tempo::getMilissegundos() 
+{
+	return (clock()/(CLOCKS_PER_SEC/1000));
 }

@@ -41,6 +41,7 @@ protected:
 class SoqueteServer : protected Soquete
 {
 public:
+	//enum Eventos={};
     int ouvir(unsigned short porta, int backlog=10);
     Soquete* aceitar();
     void recusar();
