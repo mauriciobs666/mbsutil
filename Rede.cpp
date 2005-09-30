@@ -4,7 +4,24 @@
 #include "Rede.h"
 //#include "Thread.h"
 
-static int sin_size=sizeof(sockaddr);
+namespace {
+	static int sin_size=sizeof(sockaddr);
+	static bool inicializado;
+	void fimRede()
+	{
+		WSACleanup();
+	}
+	void iniciaRede()
+	{
+		WSADATA wsad;
+		if(WSAStartup(MAKEWORD(1,1),&wsad)==0)
+		{
+			inicializado=true;
+			atexit(&fimRede);
+		}
+	}
+};
+
 
 //------------------------------------------------------------------------------
 //      Soquete
@@ -12,6 +29,8 @@ static int sin_size=sizeof(sockaddr);
 
 Soquete::Soquete()
 {
+	if(!inicializado)
+		iniciaRede();
 	fd=INVALID_SOCKET;
 }
 
@@ -65,12 +84,18 @@ void Soquete::desconectar()
 
 int Soquete::enviar(char *dados, int len)
 {
-    return send(fd,dados,len,0);
+	int rc=send(fd,dados,len,0);
+	if(rc<=0)
+		fechaSocket();
+    return rc; 
 }
 
 int Soquete::receber(char *dest, int max)
 {
-	return recv(fd,dest,max,0);
+	int rc=recv(fd,dest,max,0);
+	if(rc<=0)
+		fechaSocket();
+    return rc; 
 }
 
 string Soquete::IPRemoto()
@@ -184,7 +209,6 @@ void SoqueteServer::recusar()
     sockaddr_in adn;
     closesocket(accept(fd,(sockaddr*)&adn,&sin_size));
 }
-
 
 //------------------------------------------------------------------------------
 //      Conexao

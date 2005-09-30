@@ -2,8 +2,8 @@
 del MBSUtil_private.h
 del MBSUtil_private.rc
 del Makefile.win
-del MBSUtil.layout
-del MBSUtil.depend
+del teste.layout
+del teste.depend
 del c:\temp\*.o
 del c:\temp\*.obj
 del *.tds

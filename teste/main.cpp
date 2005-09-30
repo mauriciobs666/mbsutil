@@ -40,7 +40,6 @@ thread::~thread()
 	sair=true;
 	int retorno=WaitForSingleObject(hnd,1000);
 	if(retorno==WAIT_OBJECT_0)
-//		printf("\nThread(%d) sinalizada normalmente (WAIT_OBJECT_0)\n",hnd);
 		printf("\nThread(%d) sinalizada normalmente (WAIT_OBJECT_0)\n",id);
 	else if(retorno==WAIT_TIMEOUT)
 	{
@@ -119,37 +118,64 @@ int testeLista()
 int testeSoquete()
 {
 	char dados[20];
-	Conexao::iniciaRede();
 	Soquete cli;
 	int retorno=cli.conectar("127.0.0.1",80);
 	if(retorno==0)
 	{
-		cout << "conectado" << endl;
+		cout << "Conectado" << endl;
 		cli.enviar("oi mundo",strlen("oi mundo")+1);
 		cli.receber(dados,20);
-		cout << dados;
+		cout << "Recebido: " << dados << endl;
 	}
 	else
-		cout << "nao conectou" << endl;
-	Conexao::finalizaRede();
+		cout << "Nao conectou" << endl;
 }
 
 int testeSoqueteServer()
 {
 	SoqueteServer ss;
-	Conexao::iniciaRede();
-	cout << ss.ouvir(80);
+	char temp[50];
+	cout << "Soquete::ouvir(80)=" << ss.ouvir(80) << endl;
 	Soquete *s=ss.aceitar();
-	Conexao::finalizaRede();
+	if(s==NULL)
+		cout << "Erro" << endl;
+	else
+	{
+		int rec;
+		cout << "Conectado" << endl;
+		while(s->conectado())
+		{
+			rec=s->receber(temp,50);
+			if (rec>0)
+			{
+				cout << "Recebido: " << temp << endl;
+				s->enviar(temp,rec);
+			}			
+		}
+	}
 }
 
 int main(int argc, char *argv[])
 {
-//	testeFila();
-//	testeLista();
-//	testeThread();
-	testeSoqueteServer();
-	printf("\n");	
+	char op;
+	cout << "Teste da MBSUtil" << endl;
+	cout << "1 - testeThread()" << endl;
+	cout << "2 - testeSoquete()" << endl;
+	cout << "3 - testeSoqueteServer()" << endl << endl;
+	cout << "Escolha uma opcao: ";
+	cin >> op;
+	switch(op)
+	{
+		case '1':
+			testeThread();
+		break;
+		case '2':
+			testeSoquete();
+		break;
+		case '3':
+			testeSoqueteServer();
+		break;
+	}
     system("PAUSE");
     return EXIT_SUCCESS;
 }
