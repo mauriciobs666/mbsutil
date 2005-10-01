@@ -3,8 +3,6 @@
 #include <iostream>
 #include "../mbsutil.h"
 
-//#define WIN32_LEAN_AND_MEAN
-
 using namespace std;
 
 class abc
@@ -40,10 +38,10 @@ thread::~thread()
 	sair=true;
 	int retorno=WaitForSingleObject(hnd,1000);
 	if(retorno==WAIT_OBJECT_0)
-		printf("\nThread(%d) sinalizada normalmente (WAIT_OBJECT_0)\n",id);
+		printf("\nThread(%lu) sinalizada normalmente (WAIT_OBJECT_0)\n",id);
 	else if(retorno==WAIT_TIMEOUT)
 	{
-		printf("\nThread(%d) nao sinalizada (WAIT_TIMEOUT)\n",id);
+		printf("\nThread(%lu) nao sinalizada (WAIT_TIMEOUT)\n",id);
 	}
 	CloseHandle(hnd);
 }
@@ -62,6 +60,19 @@ DWORD WINAPI thread::t(LPVOID tThis)
 	return (DWORD)0;
 }
 
+int testeExpressao()
+{
+	Expressao exp;
+	cout << "CTRL-Z p/ finalizar" << endl;
+	string s="s=2*2+2";
+	cout <<"s="<< exp.eval(s)<<endl;
+	while(cin)
+	{
+		cout << "Expressao: ";
+		cout << ": " << exp.eval(&cin) << endl;
+	}
+    return EXIT_SUCCESS;
+}
 
 int testeThread()
 {
@@ -71,47 +82,6 @@ int testeThread()
 	system("PAUSE");
 	delete teste;
 	printf("Objeto deletado\n");
-	return 0;
-}
-
-int testeFila()
-{
-	Fila<abc> f;
-	abc *m;
-	printf("jogando na fila de 0 a 9...\n");
-	for(int x=10;x>0;x--)
-	{
-		printf("%d ",x);
-		m=new abc(x);
-		f.insere(m);
-	}
-	printf("\ntirando da fila...\n");
-	while((m=f.remove())!=NULL)
-	{
-		printf("%d ",m->dado);
-		delete m;
-	}
-	return 0;
-}
-
-int testeLista()
-{
-	ListaL<int> lst;
-	int *novo=new int[10];
-
-	for(int x=0;x<10;x++)
-	{
-		novo[x]=x;
-		cout << novo[x] << endl;
-		lst.add(&novo[x]);
-	}
-
-	for(int x=0;x<10;x++)
-	{
-		lst.rm(&novo[9-x]);
-		cout << "Elementos=" << lst.elementos() << endl;
-	}
-	delete[] novo;
 	return 0;
 }
 
@@ -161,8 +131,9 @@ int main(int argc, char *argv[])
 	cout << "Teste da MBSUtil" << endl;
 	cout << "1 - testeThread()" << endl;
 	cout << "2 - testeSoquete()" << endl;
-	cout << "3 - testeSoqueteServer()" << endl << endl;
-	cout << "Escolha uma opcao: ";
+	cout << "3 - testeSoqueteServer()" << endl;
+	cout << "4 - testeExpressao()" << endl;
+	cout << endl << "Escolha uma opcao: ";
 	cin >> op;
 	switch(op)
 	{
@@ -175,7 +146,9 @@ int main(int argc, char *argv[])
 		case '3':
 			testeSoqueteServer();
 		break;
+		case '4':
+			testeExpressao();
+		break;
 	}
-    system("PAUSE");
     return EXIT_SUCCESS;
 }

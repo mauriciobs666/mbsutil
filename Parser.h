@@ -1,5 +1,46 @@
-#ifndef parserH
-#define parserH
+#ifndef MBSUTIL_PARSER_H
+#define MBSUTIL_PARSER_H
+
+#include <iostream>
+#include <map>
+
+enum Tipo
+{
+	NOME, NUMERO, FIM, MAIS='+', MENOS='-',
+	MUL='*', DIV='/', IMPR=';', ATRIB='=',
+	PE='(', PD=')'
+};
+
+class Parser
+{
+	std::istream *input;
+public:
+	struct Token
+	{
+		double num;
+		std::string str;
+		Tipo tipo;
+	} atual;
+	
+	Parser() {}
+	~Parser() {}
+	void setaEntrada(std::istream *ent) { input=ent; }
+	Tipo pegaToken();
+};
+
+class Expressao
+{
+public:
+	Parser parser;
+	Expressao() {}
+	double eval(std::istream *ent);
+	double eval(const std::string& s);
+private:
+	std::map<std::string,double> tabela;
+	double term(bool get);
+	double expr(bool get);
+	double prim(bool get);
+};
 
 //public:
 #define PRS_ERRO    -1  //erro interno do parser
@@ -12,7 +53,7 @@
 #define PRS_INICIO  11  //estado inicial
 #define PRS_FIM     12  //aceitaçao 
 
-class Parser
+class Parser_tosco
 {
 	public:
 		enum Tipo { ERRO=-1, NULO=0, NUMERO, STRING, DELIM };
@@ -23,12 +64,11 @@ class Parser
         char token[256];
         double tokenNum;//
 
-		Parser();
-		~Parser();
+		Parser_tosco();
+		~Parser_tosco();
         void setaLinha(char *ln);
         void setaLinha();
         int pegaToken();            //devolve tokenTipo
-        int parseFloat(float *pnt, int qtd);	//le floats[qtd]
 	private:
         char *l;        //ponteiro temp pra linha sendo analizada
         char *tok;      //ponteiro temp pro token sendo gerado

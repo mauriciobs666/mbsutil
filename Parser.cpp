@@ -1,34 +1,159 @@
 #include "Parser.h"
-#include <ctype.h>
-#include <stdlib.h>
+#include <cstdlib>
+#include <map>
+#include <cctype>
+#include <sstream>
 
-Parser::Parser()
+using namespace std;
+
+Tipo Parser::pegaToken()
+{
+	char ch;
+	do
+	{
+		if(!input->get(ch))
+			return atual.tipo=FIM;
+	} while(ch!='\n' && isspace(ch));
+
+	switch(ch)
+	{
+		case 0:
+			return atual.tipo=FIM;
+		case ';':	case '\n':
+			return atual.tipo=IMPR;
+		case '*':	case '/':	case '+':	case '-':	case '(':	case ')':
+		case '=':
+			return atual.tipo=Tipo(ch);
+		case '0':	case '1':	case '2':	case '3':	case '4':	case '5':
+		case '6':	case '7':	case '8':	case '9':	case '.':
+			input->putback(ch);
+			*input >> atual.num;
+			return atual.tipo=NUMERO;
+		default:
+			if(isalpha(ch))
+			{
+				atual.str=ch;
+				while(input->get(ch)&&isalnum(ch))
+					atual.str.push_back(ch);
+				input->putback(ch);
+				return atual.tipo=NOME;
+			}
+//			erro("bad token");
+			return atual.tipo=IMPR;
+	}
+}
+
+double Expressao::eval(const string& s)
+{
+	return eval(new istringstream(s));
+}
+
+double Expressao::eval(istream *ent)
+{
+	parser.setaEntrada(ent);
+	return expr(true);
+}
+
+double Expressao::term(bool get)
+{
+	double esq=prim(get);
+	for(;;)
+		switch(parser.atual.tipo)
+		{
+			case MUL:
+				esq*=prim(true);
+			break;
+			case DIV:
+				if(double d=prim(true))
+				{
+					esq/=d;
+					break;
+				}
+				return 1;//erro("divisao por zero");
+			default:
+				return esq;
+		}
+}
+
+double Expressao::expr(bool get)
+{
+	double esq=term(get);
+	for(;;)
+		switch(parser.atual.tipo)
+		{
+			case MAIS:
+				esq+=term(true);
+			break;
+			case MENOS:
+				esq-=term(true);
+			break;
+			default:
+				return esq;
+		}
+}
+
+double Expressao::prim(bool get)
+{
+	double n;
+	double e;
+	
+	if(get)
+		parser.pegaToken();
+	switch(parser.atual.tipo)
+	{
+		case NUMERO:
+			n=parser.atual.num;
+			parser.pegaToken();
+			return n;
+		break;
+		case NOME:
+		{	
+			double& v=tabela[parser.atual.str];
+			if(parser.pegaToken()==ATRIB)
+				v=expr(true);
+			return v;
+		}
+		break;
+		case MENOS:
+			return -prim(true);
+		case PE:
+			e=expr(true);
+			if(parser.atual.tipo!=PD)
+				return 1;//erro(") esperado");
+			parser.pegaToken();
+			return e;
+		default:
+			return 1;//erro("primario esperado");
+	}
+}
+
+Parser_tosco::Parser_tosco()
 {
 	setaLinha();
 }
 
-Parser::~Parser()
+Parser_tosco::~Parser_tosco()
 {
 }
 
-void Parser::setaLinha(char *ln)
+void Parser_tosco::setaLinha(char *ln)
 {
 	l=ln;
 }
 
-void Parser::setaLinha()
+void Parser_tosco::setaLinha()
 {
 	l=linha;
 }
 
-bool Parser::isdelim(char c)
+bool Parser_tosco::isdelim(char c)
 {
     if(isalpha(c)|isdigit(c))
 	    return false;
     return true;
 }
 
-int Parser::pegaToken()
+int Parser_tosco::pegaToken()
 {
     tokenTipo=PRS_NULL;
     tok=token;
@@ -87,27 +212,7 @@ int Parser::pegaToken()
     *tok=0;
 
     if(tokenTipo==PRS_NUM)
-        tokenNum=(float)strtod(token,NULL);
+        tokenNum=strtod(token,NULL);
 
     return tokenTipo;
-}
-
-int Parser::parseFloat(float *pnt, int qtd)
-{
-    float sinal;
-	for(int x=0;x<qtd;x++)
-	{
-	    sinal=1.0f;
-	    pegaToken();
-	    if(tokenTipo==PRS_DELIM)
-	    {
-	        if(token[0]=='-')
-	        	sinal=-1.0f;	        
-	        pegaToken();
-	    }
-		if(tokenTipo!=PRS_NUM)
-			return PRS_NULL;
-		*pnt++=tokenNum*sinal;
-	}    
-	return PRS_NUM;
 }

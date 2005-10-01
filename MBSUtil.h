@@ -6,8 +6,8 @@
 #include "Thread.h"
 #include "Hash.h"
 #include "Rede.h"
-#include "Fila.h"
-#include "Lista.h"
+//#include "Fila.h"
+//#include "Lista.h"
 #include "Bufer.h"
 
 #endif

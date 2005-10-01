@@ -2,10 +2,10 @@
 #define MBSUTIL_REDE_H
 
 #include <cstdlib>
-//#include <sstream>
+#include <string>
 #include <winsock2.h>
 
-using namespace std;
+//using namespace std;
 
 class Soquete
 {
@@ -14,21 +14,21 @@ public:
     Soquete(int winfd);
     ~Soquete();
 	
-    int conectar(string ip, unsigned short porta);
+    int conectar(std::string ip, unsigned short porta);
     void desconectar();
     bool conectado();
 
     int enviar(char *dados, int len);
     int receber(char *dest, int max);
    
-	string IPRemoto();
-	string IPLocal();
+	std::string IPRemoto();
+	std::string IPLocal();
     unsigned short PortaRemoto();
 	unsigned short PortaLocal();
 
     sockaddr_in* pegaInfo();
-    unsigned long dns(string end);
-	string toString(unsigned long ip);
+    unsigned long dns(std::string end);
+	std::string toString(unsigned long ip);
 protected:
     //win32 socket
     unsigned fd;

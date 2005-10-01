@@ -26,6 +26,7 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-Wall"/>
 			<Add option="-g"/>
 		</Compiler>
 		<Unit filename="Bufer.cpp">
@@ -38,23 +39,11 @@
 			<Option link="0"/>
 			<Option target="default"/>
 		</Unit>
-		<Unit filename="Fila.h">
-			<Option compilerVar="CPP"/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="default"/>
-		</Unit>
 		<Unit filename="Hash.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="default"/>
 		</Unit>
 		<Unit filename="Hash.h">
-			<Option compilerVar="CPP"/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="default"/>
-		</Unit>
-		<Unit filename="Lista.h">
 			<Option compilerVar="CPP"/>
 			<Option compile="0"/>
 			<Option link="0"/>
