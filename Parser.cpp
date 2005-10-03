@@ -12,34 +12,28 @@ Tipo Parser::pegaToken()
 	do
 	{
 		if(!input->get(ch))
-			return atual.tipo=FIM;
+			return atual.tipo=NULO;
 	} while(ch!='\n' && isspace(ch));
 
 	switch(ch)
 	{
 		case 0:
-			return atual.tipo=FIM;
-		case ';':	case '\n':
-			return atual.tipo=IMPR;
-		case '*':	case '/':	case '+':	case '-':	case '(':	case ')':
-		case '=':
-			return atual.tipo=Tipo(ch);
+			return atual.tipo=NULO;
 		case '0':	case '1':	case '2':	case '3':	case '4':	case '5':
 		case '6':	case '7':	case '8':	case '9':	case '.':
 			input->putback(ch);
 			*input >> atual.num;
-			return atual.tipo=NUMERO;
+			return atual.tipo=NUM;
 		default:
+			atual.str=ch;
 			if(isalpha(ch))
 			{
-				atual.str=ch;
 				while(input->get(ch)&&isalnum(ch))
 					atual.str.push_back(ch);
 				input->putback(ch);
 				return atual.tipo=NOME;
 			}
-//			erro("bad token");
-			return atual.tipo=IMPR;
+		return atual.tipo=DELIM;
 	}
 }
 
@@ -58,38 +52,42 @@ double Expressao::term(bool get)
 {
 	double esq=prim(get);
 	for(;;)
-		switch(parser.atual.tipo)
+	{
+		if(DELIM==parser.atual.tipo)
 		{
-			case MUL:
+			if("*"==parser.atual.str)
 				esq*=prim(true);
-			break;
-			case DIV:
+			else if("/"==parser.atual.str)
+			{
 				if(double d=prim(true))
-				{
 					esq/=d;
-					break;
-				}
-				return 1;//erro("divisao por zero");
-			default:
+				else
+					return 1;//erro("divisao por zero");
+			}
+			else
 				return esq;
 		}
+		else
+			return esq;
+	}
 }
 
 double Expressao::expr(bool get)
 {
 	double esq=term(get);
 	for(;;)
-		switch(parser.atual.tipo)
+		if(DELIM==parser.atual.tipo)
 		{
-			case MAIS:
+			
+			if("+"==parser.atual.str)
 				esq+=term(true);
-			break;
-			case MENOS:
+			else if("-"==parser.atual.str)
 				esq-=term(true);
-			break;
-			default:
+			else
 				return esq;
 		}
+		else
+			return esq;
 }
 
 double Expressao::prim(bool get)
@@ -101,7 +99,7 @@ double Expressao::prim(bool get)
 		parser.pegaToken();
 	switch(parser.atual.tipo)
 	{
-		case NUMERO:
+		case NUM:
 			n=parser.atual.num;
 			parser.pegaToken();
 			return n;
@@ -109,19 +107,26 @@ double Expressao::prim(bool get)
 		case NOME:
 		{	
 			double& v=tabela[parser.atual.str];
-			if(parser.pegaToken()==ATRIB)
-				v=expr(true);
+			if(DELIM==parser.pegaToken())
+				if("="==parser.atual.str)
+					v=expr(true);
 			return v;
 		}
 		break;
-		case MENOS:
-			return -prim(true);
-		case PE:
-			e=expr(true);
-			if(parser.atual.tipo!=PD)
-				return 1;//erro(") esperado");
-			parser.pegaToken();
-			return e;
+		case DELIM:
+			if("-"==parser.atual.str)
+				return -prim(true);
+			else if("("==parser.atual.str)
+			{
+				e=expr(true);
+				if((parser.atual.tipo!=DELIM)||(")"!=parser.atual.str))
+					return 1;//erro(") esperado");
+				parser.pegaToken();
+				return e;
+			}
+			else
+				return 1;	//erro("primario esperado");
+		break;
 		default:
 			return 1;//erro("primario esperado");
 	}

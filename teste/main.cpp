@@ -63,9 +63,10 @@ DWORD WINAPI thread::t(LPVOID tThis)
 int testeExpressao()
 {
 	Expressao exp;
-	cout << "CTRL-Z p/ finalizar" << endl;
 	string s="s=2*2+2";
-	cout <<"s="<< exp.eval(s)<<endl;
+	cout << "eval(" << s << ")" << endl;
+	cout <<"s="<< exp.eval(s) << endl;
+	cout << "CTRL-Z p/ finalizar" << endl;
 	while(cin)
 	{
 		cout << "Expressao: ";

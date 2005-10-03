@@ -4,38 +4,42 @@
 #include <iostream>
 #include <map>
 
-enum Tipo
+enum Tipo 
 {
-	NOME, NUMERO, FIM, MAIS='+', MENOS='-',
-	MUL='*', DIV='/', IMPR=';', ATRIB='=',
-	PE='(', PD=')'
+			//	Tipos de tokens:
+			//	----------------
+	ERRO=-1,//	Erro interno.
+	NULO=0,	//	Fim da stream.
+	NUM,	//	Numero no formato definido pelo padrao ISO C++.
+	NOME,	//	
+	DELIM	//	Qualquer caracter que nao se enquadre nas categorias acima.
 };
 
 class Parser
 {
-	std::istream *input;
 public:
 	struct Token
 	{
+		Tipo tipo;
 		double num;
 		std::string str;
-		Tipo tipo;
 	} atual;
-	
-	Parser() {}
+	Parser(std::istream *ent=NULL) : input(ent) {}
 	~Parser() {}
 	void setaEntrada(std::istream *ent) { input=ent; }
 	Tipo pegaToken();
+protected:
+	std::istream *input;
 };
 
 class Expressao
 {
 public:
-	Parser parser;
 	Expressao() {}
 	double eval(std::istream *ent);
 	double eval(const std::string& s);
 private:
+	Parser parser;
 	std::map<std::string,double> tabela;
 	double term(bool get);
 	double expr(bool get);
@@ -46,7 +50,7 @@ private:
 #define PRS_ERRO    -1  //erro interno do parser
 #define PRS_NULL    0   //token(s) indisponivei(s) (fim da string)
 #define PRS_NUM     1   //numero (float ['-']('0'-'9')*'.'['0'-'9']*)
-#define PRS_STR     2   //string (char[] 
+#define PRS_STR     2   //string (char[]) 
 #define PRS_DELIM   3   //delimitador, um char em token[0] -> (!isalpha()) && (!isdigit())
 
 //private:
@@ -56,8 +60,6 @@ private:
 class Parser_tosco
 {
 	public:
-		enum Tipo { ERRO=-1, NULO=0, NUMERO, STRING, DELIM };
-	    char chars[256];//tabela 
         char linha[256];//scratch (gratis huahuahuahuahu)
 
         int tokenTipo;
