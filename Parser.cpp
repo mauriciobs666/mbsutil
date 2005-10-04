@@ -102,17 +102,16 @@ double Expressao::prim(bool get)
 		case NUM:
 			n=parser.atual.num;
 			parser.pegaToken();
-			return n;
-		break;
+		return n;
 		case NOME:
-		{	
+        {
 			double& v=tabela[parser.atual.str];
 			if(DELIM==parser.pegaToken())
 				if("="==parser.atual.str)
 					v=expr(true);
-			return v;
-		}
-		break;
+		    return v;
+        }
+        break;
 		case DELIM:
 			if("-"==parser.atual.str)
 				return -prim(true);
@@ -124,12 +123,9 @@ double Expressao::prim(bool get)
 				parser.pegaToken();
 				return e;
 			}
-			else
-				return 1;	//erro("primario esperado");
-		break;
-		default:
-			return 1;//erro("primario esperado");
+		return 1;	//erro("primario esperado");
 	}
+    return 1;//erro("primario esperado");
 }
 
 Parser_tosco::Parser_tosco()
