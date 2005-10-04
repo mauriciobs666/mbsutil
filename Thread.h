@@ -3,6 +3,8 @@
 
 #include "windows.h"
 
+typedef void*(*Callback)(void*);	//ponteiro pra funcao com assinatura:
+									//void* funcao(void*)
 /*
 	Return Values - WaitForSingleObject()
 
@@ -36,9 +38,12 @@ class Thread
 {
 	HANDLE hnd;
 	DWORD id;
+	void* retorno;
 public:
+	Thread(Callback funcao, void *parametro, bool iniciar);
 	Thread(DWORD WINAPI (*t)(LPVOID), LPVOID parametro, bool iniciar=true);
 	~Thread();
+	void* pegaRetorno();
 	int resume();
 	int pause();
 	int stop();
