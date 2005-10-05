@@ -126,10 +126,10 @@ int MD4::arquivo(char *arq)
 
 void MD4::reset()
 {
-    h.h.l[0]=I0;
-    h.h.l[1]=I1;
-    h.h.l[2]=I2;
-    h.h.l[3]=I3;
+    h.l[0]=I0;
+    h.l[1]=I1;
+    h.l[2]=I2;
+    h.l[3]=I3;
     for(int i=0;i<8;i++)
         count[i]=0;
     done=0;
@@ -192,10 +192,10 @@ void MD4::bloco(unsigned int *X)
 {
     register unsigned int tmp, A, B, C, D;
 
-    A = h.h.l[0];
-    B = h.h.l[1];
-    C = h.h.l[2];
-    D = h.h.l[3];
+    A = h.l[0];
+    B = h.l[1];
+    C = h.l[2];
+    D = h.l[3];
 
     ff(A , B , C , D ,  0 , fs1); /* Round 1 */
     ff(D , A , B , C ,  1 , fs2);
@@ -248,8 +248,8 @@ void MD4::bloco(unsigned int *X)
     hh(C , D , A , B ,  7 , hs3);
     hh(B , C , D , A , 15 , hs4);
 
-    h.h.l[0] += A;
-    h.h.l[1] += B;
-    h.h.l[2] += C;
-    h.h.l[3] += D;
+    h.l[0] += A;
+    h.l[1] += B;
+    h.l[2] += C;
+    h.l[3] += D;
 }

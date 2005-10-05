@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <string>
 #include <winsock2.h>
+#include "Thread.h"
 
 //using namespace std;
 
@@ -112,11 +113,16 @@ protected:
 
 	//Loop de eventos e callback
 	WSAEVENT evento;
+	int (*callback)(Conexao*,long,long[]);
+	int (*callbackfilho)(Conexao*,long,long[]);
+	
+	Thread *eventos;
+	bool eventosSair;
+	static void* eventosFunc(void* esta);
+	
 	static DWORD WINAPI threadEventos(LPVOID este);
 	HANDLE threadEventosHnd;
 	DWORD idTE;
-	int (*callback)(Conexao*,long,long[]);
-	int (*callbackfilho)(Conexao*,long,long[]);
 	int iniTE();    //inicia thread de eventos
 	int fimTE();    //finaliza thread de eventos
 	bool sairTE;

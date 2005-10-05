@@ -29,11 +29,10 @@ class Hash128 //: public Hash
         int salvar(FILE *arq);
 };
 
-class MD4
+class MD4 : public Hash128
 {
     public:
-        Hash128 h;
-
+//        Hash128 h;
         MD4();
         int arquivo(char *arq);
     private:

@@ -2,7 +2,6 @@
 #include <cstdlib>
 #include <iostream>
 #include "Rede.h"
-//#include "Thread.h"
 
 namespace {
 	static int sin_size=sizeof(sockaddr);

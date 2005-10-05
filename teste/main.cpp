@@ -5,84 +5,22 @@
 
 using namespace std;
 
-class abc
+void* thread(void*)
 {
-public:
-	int dado;
-	abc(int d): dado(d) {}
-};
-
-class thread
-{
-	private:
-		bool sair;
-		static DWORD WINAPI t(LPVOID tThis);
-		int dado;
-		HANDLE hnd;
-	public:
-		DWORD id;
-		thread();
-		~thread();
-};
-
-thread::thread()
-{
-	sair=false;
-	dado=0;
-	hnd=CreateThread(NULL,0,thread::t,(LPVOID)this,0,&id);
-}
-
-thread::~thread()
-{
-
-	sair=true;
-	int retorno=WaitForSingleObject(hnd,1000);
-	if(retorno==WAIT_OBJECT_0)
-		printf("\nThread(%lu) sinalizada normalmente (WAIT_OBJECT_0)\n",id);
-	else if(retorno==WAIT_TIMEOUT)
+	for(int x=0;x<20;x++)
 	{
-		printf("\nThread(%lu) nao sinalizada (WAIT_TIMEOUT)\n",id);
+		Sleep(500);
+		cout << ".";
 	}
-	CloseHandle(hnd);
-}
-
-DWORD WINAPI thread::t(LPVOID tThis)
-{
-	thread *este=(thread*)tThis;
-	for(int x=0;x<25;x++)
-	{
-		este->dado++;
-		printf("%d ", este->dado);
-		if(este->sair)
-			break;
-		Sleep(200);
-	}
-	return (DWORD)0;
-}
-
-int testeExpressao()
-{
-	Expressao exp;
-	string s="s=2*2+2";
-	cout << "eval(" << s << ")" << endl;
-	cout <<"s="<< exp.eval(s) << endl;
-	cout << "CTRL-Z p/ finalizar" << endl;
-	while(cin)
-	{
-		cout << "Expressao: ";
-		cout << ": " << exp.eval(&cin) << endl;
-	}
-    return EXIT_SUCCESS;
+	return NULL;
 }
 
 int testeThread()
 {
-	thread *teste;
-	teste=new thread();
-//	printf("Objeto criado (ID=%d), pressione qualquer tecla pra finalizar...\n",teste->id);
-	system("PAUSE");
-	delete teste;
-	printf("Objeto deletado\n");
+	Thread teste(thread,NULL);
+	cout << "Esperando finalizacao da thread";
+	while(teste.executando());
+	cout << "ok." << endl;
 	return 0;
 }
 
@@ -124,6 +62,21 @@ int testeSoqueteServer()
 			}			
 		}
 	}
+}
+
+int testeExpressao()
+{
+	Expressao exp;
+	string s="s=2*2+2";
+	cout << "eval(" << s << ")" << endl;
+	cout <<"s="<< exp.eval(s) << endl;
+	cout << "CTRL-Z p/ finalizar" << endl;
+	while(cin)
+	{
+		cout << "Expressao: ";
+		cout << ": " << exp.eval(&cin) << endl;
+	}
+    return EXIT_SUCCESS;
 }
 
 int main(int argc, char *argv[])

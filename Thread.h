@@ -38,12 +38,16 @@ class Thread
 {
 	HANDLE hnd;
 	DWORD id;
+	Callback f;
+	void *fparm;
 	void* retorno;
+	static DWORD WINAPI t(LPVOID p);
+	bool ativa;
 public:
-	Thread(Callback funcao, void *parametro, bool iniciar);
-	Thread(DWORD WINAPI (*t)(LPVOID), LPVOID parametro, bool iniciar=true);
+	Thread(Callback funcao, void *parametro=NULL, bool iniciar=true);
 	~Thread();
-	void* pegaRetorno();
+	void* pegaRetorno() { return ativa ? NULL : retorno; }
+	bool executando() { return ativa; }
 	int resume();
 	int pause();
 	int stop();

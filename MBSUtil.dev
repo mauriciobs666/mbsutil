@@ -1,7 +1,7 @@
 [Project]
 FileName=MBSUtil.dev
 Name=MBSUtil
-UnitCount=15
+UnitCount=13
 Type=2
 Ver=1
 ObjFiles=
@@ -148,9 +148,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit12]
-FileName=Fila.h
+FileName=Bufer.cpp
 CompileCpp=1
-Folder=
+Folder=MBSUtil
 Compile=1
 Link=1
 Priority=1000
@@ -158,9 +158,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit13]
-FileName=Lista.h
+FileName=Bufer.h
 CompileCpp=1
-Folder=
+Folder=MBSUtil
 Compile=1
 Link=1
 Priority=1000
