@@ -1,10 +1,23 @@
 #include "Hash.h"
 #include <string.h>
-#include <stdlib.h>
+#include <cstdlib>
+#include <ctime>
+
+namespace {
+	static bool inicializado;
+	void iniciaRandom()
+	{
+		if(!inicializado)
+		{
+			srand(time(NULL));
+			inicializado=true;
+		}
+	}
+};
 
 void Hash128::random()
 {
-//	randomize();
+	iniciaRandom();
     for(int x=0;x<16;x++)
 		h.b[x]=rand();
 }

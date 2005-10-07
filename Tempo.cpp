@@ -1,6 +1,6 @@
 #include "Tempo.h"
 
-#include <time.h>
+#include <ctime>
 #include <windows.h>
 
 Tempo::Tempo()

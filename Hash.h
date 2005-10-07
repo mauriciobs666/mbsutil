@@ -19,7 +19,6 @@ class Hash128 //: public Hash
 			unsigned char b[16];
 			unsigned long l[4];
 		}h;
-// TODO: colocar ramdomize()
 		void random();
         int compara(Hash128 *base);
         char* dump(char *dest);

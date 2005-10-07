@@ -149,11 +149,6 @@ unsigned Soquete::criaSocket()
 	return fd=socket(AF_INET,SOCK_STREAM,0);
 }
 
-unsigned Soquete::abreSocket()
-{
-    return fd;
-}
-
 unsigned Soquete::fechaSocket()
 {
 	closesocket(fd);
@@ -214,23 +209,11 @@ void SoqueteServer::recusar()
 //      Conexao
 //------------------------------------------------------------------------------
 
-int Conexao::iniciaRede()
-// 0 = OK
-{
-// TODO: passar ramdomize() pra Hash
-//    randomize();
-    WSADATA wsad;
-    return WSAStartup(MAKEWORD(1,1),&wsad);
-}
-
-int Conexao::finalizaRede()
-// 0 = OK
-{
-    return WSACleanup();
-}
-
 Conexao::Conexao()
 {
+	if(!inicializado)
+		iniciaRede();
+
 	fd=INVALID_SOCKET;
     pai=NULL;
     id=0;

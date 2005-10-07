@@ -13,20 +13,18 @@ class Soquete
 public:
     Soquete();
     Soquete(int winfd);
-    ~Soquete();
+    virtual ~Soquete();
 	
-    int conectar(std::string ip, unsigned short porta);
-    void desconectar();
-    bool conectado();
-
-    int enviar(char *dados, int len);
-    int receber(char *dest, int max);
+	virtual bool conectado();
+    virtual int conectar(std::string ip, unsigned short porta);
+    virtual void desconectar();
+    virtual int enviar(char *dados, int len);
+    virtual int receber(char *dest, int max);
    
 	std::string IPRemoto();
 	std::string IPLocal();
     unsigned short PortaRemoto();
 	unsigned short PortaLocal();
-
     sockaddr_in* pegaInfo();
     unsigned long dns(std::string end);
 	std::string toString(unsigned long ip);
@@ -35,17 +33,15 @@ protected:
     unsigned fd;
 	sockaddr_in dest;
     unsigned criaSocket();
-    unsigned abreSocket();
     unsigned fechaSocket();
 };
 
 class SoqueteServer : protected Soquete
 {
 public:
-	//enum Eventos={};
-    int ouvir(unsigned short porta, int backlog=10);
-    Soquete* aceitar();
-    void recusar();
+    virtual int ouvir(unsigned short porta, int backlog=10);
+    virtual Soquete* aceitar();
+    virtual void recusar();
 };
 
 /*
@@ -70,10 +66,6 @@ public:
 class Conexao 
 {
 public:
-	//inicio global do winsock2 (obrigatorio chamar no inicio/fim da aplicacao)
-	static int iniciaRede();
-	static int finalizaRede();
-
 	//comuns a cliente e servidor
 	Conexao();
 	~Conexao();
