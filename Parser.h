@@ -28,6 +28,7 @@ public:
 	~Lexer() {}
 	void setaEntrada(std::istream *ent) { input=ent; }
 	Tipo pegaToken();
+	Tipo pegaString();	//strings separadas por isspace()
 protected:
 	std::istream *input;
 };

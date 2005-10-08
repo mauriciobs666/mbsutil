@@ -37,6 +37,21 @@ Tipo Lexer::pegaToken()
 	}
 }
 
+Tipo Lexer::pegaString()
+{
+	char ch;
+	do
+	{
+		if(!input->get(ch))
+			return atual.tipo=NULO;
+	} while(ch!='\n' && isspace(ch));
+	atual.str=ch;
+	while(input->get(ch)&&!isspace(ch))
+		atual.str.push_back(ch);
+	input->putback(ch);
+	return atual.tipo=NOME;
+}
+
 double Expressao::eval(const string& s)
 {
 	return eval(new istringstream(s));

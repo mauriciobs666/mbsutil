@@ -86,7 +86,7 @@ public:
 	void *pai;              //default=NULL
 
 	//exclusivo p/ conexoes cliente
-	int conectar(char *ip,unsigned short porta);
+	int conectar(const char *ip, const unsigned short porta);
 	int enviar(char *dados, int len);
 	int receber(char *dest, int max);
 

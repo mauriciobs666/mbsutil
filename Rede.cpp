@@ -250,7 +250,7 @@ bool Conexao::ativa()
     return true;
 }
 
-int Conexao::conectar(char *end,unsigned short porta)
+int Conexao::conectar(const char *end, const unsigned short porta)
 //  0: tudo ok, conectado
 // -1: erro generico de conexao
 // -2: erro de dns, host naum encontrado
@@ -274,7 +274,6 @@ int Conexao::conectar(char *end,unsigned short porta)
 	if(connect(fd,(sockaddr*)&dest,sizeof(sockaddr))==-1)
         if(WSAGetLastError()!=WSAEWOULDBLOCK)
             return -1;
-//    iniTE();
     return 0;
 }
 
