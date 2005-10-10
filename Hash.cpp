@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include <ctime>
 
+using namespace std;
+
 namespace {
 	static bool inicializado;
 	void iniciaRandom()

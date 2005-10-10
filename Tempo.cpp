@@ -3,6 +3,8 @@
 #include <ctime>
 #include <windows.h>
 
+using namespace std;
+
 Tempo::Tempo()
 {
 	reset();
