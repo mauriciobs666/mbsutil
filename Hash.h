@@ -1,45 +1,53 @@
-#ifndef hashH
-#define hashH
+#ifndef MBSUTIL_HASH_H
+#define MBSUTIL_HASH_H
 
 #include <stdio.h>
+#include <string>
 
-class Hash
+class Hash128
 {
-	public:
-		virtual bool operator==(const Hash& hash);
-};
+public:
+	union hash
+	{
+		unsigned char b[16];
+		unsigned long l[4];
+	} h;
 
-class Hash128 //: public Hash
-{
-	public:
-		bool operator==(const Hash& hash);
-		
-		union hash
-		{
-			unsigned char b[16];
-			unsigned long l[4];
-		}h;
-		void random();
-        int compara(Hash128 *base);
-        char* dump(char *dest);
-        int abrirPacote(unsigned char *&pkt);
-        int montarPacote(unsigned char *&pkt);
-        int abrir(FILE *arq);
-        int salvar(FILE *arq);
+	int cmp(const Hash128& base) const
+	/*
+		 1 : local > base
+		-1 : local < base
+		 0 : local == base
+	*/
+	{
+		return memcmp(h.b,base.h.b,16); 
+	}
+
+	bool operator==(const Hash128& base) const { return (cmp(base)==0); }
+	bool operator<(const Hash128& base) const { return (cmp(base)<0); }
+
+	void random();
+	std::string toString() const;
+	char* dump(char *dest) const;
+	// dest -> DEVE apontar espaco com no MINIMO 33 bytes
+
+	int read(unsigned char *&pkt);
+	int write(unsigned char *&pkt) const;
+	int read(FILE *arq);
+	int write(FILE *arq) const;
 };
 
 class MD4 : public Hash128
 {
-    public:
-//        Hash128 h;
-        MD4();
-        int arquivo(char *arq);
-    private:
-        unsigned char count[8];
-        unsigned int done;
-        void bloco(unsigned int *X);
-        void reset();
-        int update(unsigned char *X,unsigned int qtd);
+public:
+	MD4();
+	int arquivo(char *arq);
+private:
+	unsigned char count[8];
+	unsigned int done;
+	void bloco(unsigned int *X);
+	void reset();
+	int update(unsigned char *X,unsigned int qtd);
 };
 
 #endif

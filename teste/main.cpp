@@ -76,7 +76,20 @@ int testeExpressao()
 		cout << "Expressao: ";
 		cout << ": " << exp.eval(&cin) << endl;
 	}
-    return EXIT_SUCCESS;
+    return 0;
+}
+
+int testeHash()
+{
+	Hash128 a,b,c;
+	cout << "a: " << a.toString() << endl;
+	b=a;
+	a.random();
+	cout << "a: " << a.toString() << endl;
+	cout << "b: " << b.toString() << endl;
+	cout << "a==b " << (a==b) << endl;
+	cout << "a<b " << (a<b) << endl;
+	return 0;
 }
 
 int main(int argc, char *argv[])
@@ -87,6 +100,7 @@ int main(int argc, char *argv[])
 	cout << "2 - testeSoquete()" << endl;
 	cout << "3 - testeSoqueteServer()" << endl;
 	cout << "4 - testeExpressao()" << endl;
+	cout << "5 - testeHash()" << endl;
 	cout << endl << "Escolha uma opcao: ";
 	cin >> op;
 	switch(op)
@@ -102,6 +116,9 @@ int main(int argc, char *argv[])
 		break;
 		case '4':
 			testeExpressao();
+		break;
+		case '5':
+			testeHash();
 		break;
 	}
     return EXIT_SUCCESS;

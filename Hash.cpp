@@ -1,5 +1,5 @@
 #include "Hash.h"
-#include <string.h>
+#include <string>
 #include <cstdlib>
 #include <ctime>
 
@@ -24,26 +24,15 @@ void Hash128::random()
 		h.b[x]=rand();
 }
 
-int Hash128::compara(Hash128 *base)
+string Hash128::toString() const
 {
-//  1 : local > base
-// -1 : local < base
-//  0 : local == base
-    unsigned char *bas=base->h.b;
-    unsigned char ba;
-    for(int x=0;x<16;x++)
-    {
-        ba=*bas++;
-        if(h.b[x]<ba)
-            return -1;
-        else if(h.b[x]>ba)
-            return 1;
-    }
-    return 0;
+	//TODO: tirar essa conversao porca pra char em toString()
+	char tmp[33];
+	dump(tmp);
+	return string(tmp);
 }
 
-char* Hash128::dump(char *dest)
-// dest -> DEVE apontar espaco com no MINIMO 33 bytes
+char* Hash128::dump(char *dest) const
 {
     char *tmp=dest;
     for(int x=0;x<16;x++)
@@ -55,28 +44,28 @@ char* Hash128::dump(char *dest)
     return dest;
 }
 
-int Hash128::abrirPacote(unsigned char *&pkt)
+int Hash128::read(unsigned char *&pkt)
 {
     memcpy(h.b,pkt,16);
     pkt+=16;
     return 0;
 }
 
-int Hash128::montarPacote(unsigned char *&pkt)
+int Hash128::write(unsigned char *&pkt) const
 {
     memcpy(pkt,h.b,16);
     pkt+=16;
     return 0;
 }
 
-int Hash128::abrir(FILE *arq)
+int Hash128::read(FILE *arq)
 {
     if(fread(h.b,sizeof(char),16,arq)!=16)
         return -1;
     return 0;
 }
 
-int Hash128::salvar(FILE *arq)
+int Hash128::write(FILE *arq) const
 {
     if(fwrite(h.b,sizeof(char),16,arq)!=16)
         return -1;
