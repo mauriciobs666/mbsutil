@@ -3,24 +3,30 @@
 
 class Buffer
 {
-    public:
-        unsigned char *dados,*pntE,*pntL;
-        int ocupados;
+public:
+	unsigned char *dados;
+	unsigned char *pntE,*pntL;
+	unsigned long ocupados;
 
-        Buffer();
-        Buffer(int tam);
-        unsigned long pegaTamanho();
-        int mudaTamanho(int tam);
-        ~Buffer();
+	Buffer(unsigned long tam=0);
+	unsigned long pegaTamanho() const 
+		{ return tamanho; }
+	int mudaTamanho(unsigned long tam);
+	~Buffer() 
+		{ if(dados) delete[] dados; }
 
-        void resetPnt();        //pntL=dados,pntE=(dados+ocupados)
-        int faltaTratar();      //pntE-pntL
-        int livres();
-        int append(Buffer *b);  //anexa faltaTratar() bytes de b->pntL em pntE
-        int append(Buffer *b, int qtd); //anexa qtd bytes de b->pntL em pntE
-    protected:
-        int tamanho;
-        void mata(unsigned char *&end);
-        int aloca(unsigned char *&end, int qtd);
+	void resetPnt();							
+		//pntL=dados,pntE=(dados+ocupados)
+	unsigned long faltaTratar() const;			
+		//pntE-pntL
+	unsigned long disponiveis() 
+		{ return (pntE>pntL)?(pntE-pntL):0; }
+	unsigned long livres() const 
+		{ return tamanho-ocupados; }
+	unsigned long append(Buffer *b, unsigned long qtd=0);
+		//anexa qtd bytes de b->pntL em pntE
+		//se qtd==0, anexa faltaTratar() bytes de b->pntL em pntE
+protected:
+	unsigned long tamanho;
 };
 #endif

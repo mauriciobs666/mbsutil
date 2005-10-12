@@ -144,3 +144,10 @@ double Expressao::prim(bool get)
 	}
     return 1;//erro("primario esperado");
 }
+
+string int2str(int i)
+{
+	char temp[32];
+	sprintf(temp,"%i",i);
+	return string(temp);
+}

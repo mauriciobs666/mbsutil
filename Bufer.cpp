@@ -6,22 +6,16 @@
 //      Buffer
 //------------------------------------------------------------------------------
 
-Buffer::Buffer()
+Buffer::Buffer(unsigned long tam)
 {
-    tamanho=ocupados=0;
-    pntE=pntL=dados=NULL;
-}
-
-Buffer::Buffer(int tam)
-{
-    ocupados=0;
-    tamanho=aloca(dados,tam);
-    pntL=pntE=dados;
-}
-
-Buffer::~Buffer()
-{
-    mata(dados);
+	ocupados=tamanho=0;
+	if(tam>0)
+	{
+		dados=new unsigned char[tam];
+		if(dados!=NULL)
+			tamanho=tam;
+	}
+	resetPnt();
 }
 
 void Buffer::resetPnt()
@@ -29,11 +23,11 @@ void Buffer::resetPnt()
     if((tamanho==0)|(dados==NULL))
     {
         tamanho=ocupados=0;
+        if(dados!=NULL)
+			delete[] dados;
         pntE=pntL=dados=NULL;
         return;
     }
-    if(ocupados<0)
-        ocupados=0;
     if(ocupados>tamanho)
         ocupados=tamanho;
     pntL=dados;
@@ -41,34 +35,23 @@ void Buffer::resetPnt()
     pntE+=ocupados;
 }
 
-int Buffer::faltaTratar()
+unsigned long Buffer::faltaTratar() const
 {
-    if(ocupados<=0)
+    if(ocupados==0)
         return 0;
     if(pntL<pntE)
         return (pntE-pntL);
     return 0;
 }
 
-int Buffer::livres()
+unsigned long Buffer::append(Buffer *b, unsigned long qtd)
 {
-    return tamanho-ocupados;
-}
-
-int Buffer::append(Buffer *b)
-{
-    return append(b,b->faltaTratar());
-}
-
-int Buffer::append(Buffer *b, int qtd)
-{
-    if(qtd>b->faltaTratar())
+    if((qtd==0)|(qtd>b->faltaTratar()))
         qtd=b->faltaTratar();
-    if(qtd<=0)
-        return 0;
-    int novotam=ocupados+qtd;
+    unsigned long novotam=ocupados+qtd;
     if(novotam>tamanho)
-        mudaTamanho(novotam);
+        if(mudaTamanho(novotam))
+			return 0;
     ocupados=novotam;
     memcpy(pntE,b->pntL,qtd);
     b->pntL+=qtd;
@@ -76,43 +59,18 @@ int Buffer::append(Buffer *b, int qtd)
     return qtd;
 }
 
-unsigned long Buffer::pegaTamanho()
-{
-    return tamanho;
-}
-
-int Buffer::aloca(unsigned char *&end, int qtd)
-{
-    end=new unsigned char[qtd];
-    if(end!=NULL)
-        return qtd;
-    return 0;
-}
-
-void Buffer::mata(unsigned char *&end)
-{
-    if(end)
-    {
-        delete[] end;
-        end=NULL;
-    }
-}
-
-int Buffer::mudaTamanho(int tam)
+int Buffer::mudaTamanho(unsigned long tam)
 {
     unsigned char *novo,*tmp;
     int leitura=pntL-dados;
-
-    if(aloca(novo,tam)!=tam)
-    {
-        mata(novo);
+	
+    if((novo=new unsigned char[tam])==NULL)
         return -1;
-    }
     if(tamanho>0)
         memcpy(novo,dados,tamanho);
     tmp=dados;
     dados=novo;
-    mata(tmp);
+    delete[] tmp;
     tamanho=tam;
     pntE=dados;
     pntE+=ocupados;

@@ -46,4 +46,6 @@ private:
 	double expr(bool get);
 	double prim(bool get);
 };
+
+std::string int2str(int i);
 #endif
