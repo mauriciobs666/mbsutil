@@ -7,74 +7,71 @@
 //------------------------------------------------------------------------------
 
 Buffer::Buffer(unsigned long tam)
-{
-	ocupados=tamanho=0;
+{	
 	if(tam>0)
 	{
 		dados=new unsigned char[tam];
 		if(dados!=NULL)
 			tamanho=tam;
 	}
-	resetPnt();
+	else
+	{
+		dados=NULL;
+		tamanho=0;
+	}
+	reset();
 }
 
-void Buffer::resetPnt()
+void Buffer::reset()
 {
     if((tamanho==0)|(dados==NULL))
     {
-        tamanho=ocupados=0;
+        tamanho=0;
         if(dados!=NULL)
+        {
 			delete[] dados;
-        pntE=pntL=dados=NULL;
-        return;
+			dados=NULL;
+        }
     }
-    if(ocupados>tamanho)
-        ocupados=tamanho;
-    pntL=dados;
-    pntE=dados;
-    pntE+=ocupados;
-}
-
-unsigned long Buffer::faltaTratar() const
-{
-    if(ocupados==0)
-        return 0;
-    if(pntL<pntE)
-        return (pntE-pntL);
-    return 0;
-}
-
-unsigned long Buffer::append(Buffer *b, unsigned long qtd)
-{
-    if((qtd==0)|(qtd>b->faltaTratar()))
-        qtd=b->faltaTratar();
-    unsigned long novotam=ocupados+qtd;
-    if(novotam>tamanho)
-        if(mudaTamanho(novotam))
-			return 0;
-    ocupados=novotam;
-    memcpy(pntE,b->pntL,qtd);
-    b->pntL+=qtd;
-    pntE+=qtd;
-    return qtd;
+    pntL=pntE=dados;
 }
 
 int Buffer::mudaTamanho(unsigned long tam)
 {
     unsigned char *novo,*tmp;
-    int leitura=pntL-dados;
+    unsigned long leitura=pntL-dados;
+    unsigned long escrita=pntE-dados;
 	
     if((novo=new unsigned char[tam])==NULL)
         return -1;
-    if(tamanho>0)
-        memcpy(novo,dados,tamanho);
+    
+    int copiar=(tamanho>tam)?(tam):(tamanho);
+    
+    if(copiar>0)
+        memcpy(novo,dados,copiar);
+    
     tmp=dados;
     dados=novo;
     delete[] tmp;
+    
     tamanho=tam;
-    pntE=dados;
-    pntE+=ocupados;
-    pntL=dados;
-    pntL+=leitura;
+    if(escrita>tamanho) escrita=tamanho;
+    if(leitura>tamanho) leitura=tamanho;
+    pntE=dados+escrita;
+    pntL=dados+leitura;
     return 0;
+}
+
+unsigned long Buffer::append(Buffer& b, unsigned long qtd)
+{
+    if((qtd==0)|(qtd>b.disponiveis()))
+        qtd=b.disponiveis();
+    unsigned long novotam=ocupados()+qtd;
+    if(novotam>tamanho)
+        if(mudaTamanho(novotam))
+			return 0;
+    memcpy(pntE,b.pntL,qtd);
+    b.pntL+=qtd;
+    pntE+=qtd;
+    return qtd;
 }
