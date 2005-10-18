@@ -72,6 +72,11 @@ int Hash128::write(FILE *arq) const
     return 0;
 }
 
+std::ostream& operator<<(std::ostream& os, const Hash128& h)
+{
+	return os << h.toString();
+}
+
 //------------------------------------------------------------------------------
 //      MD4 - implementado a partir da RFC 1320
 //------------------------------------------------------------------------------

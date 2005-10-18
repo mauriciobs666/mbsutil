@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <string>
+#include <ostream>
 
 class Hash128
 {
@@ -36,6 +37,8 @@ public:
 	int read(FILE *arq);
 	int write(FILE *arq) const;
 };
+
+std::ostream& operator<<(std::ostream& os, const Hash128& h);
 
 class MD4 : public Hash128
 {
