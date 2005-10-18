@@ -81,8 +81,6 @@ public:
 
 	//uso livre por objetos gerenciadores, callbacks etc
 	unsigned long id;       //default=0
-	unsigned char estadoRX; //default=0
-	unsigned char estadoTX; //default=0
 	void *pai;              //default=NULL
 
 	//exclusivo p/ conexoes cliente

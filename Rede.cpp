@@ -217,8 +217,6 @@ Conexao::Conexao()
 	fd=INVALID_SOCKET;
     pai=NULL;
     id=0;
-    estadoTX=0;
-    estadoRX=0;
 	callback=NULL;
     threadEventosHnd=NULL;
 }
@@ -227,8 +225,6 @@ Conexao::Conexao(int soquete)
 {
     pai=NULL;
     id=0;
-    estadoTX=0;
-    estadoRX=0;
 	callback=NULL;
     threadEventosHnd=NULL;
 	fd=soquete;
@@ -268,8 +264,6 @@ int Conexao::conectar(const char *end, const unsigned short porta)
     fd=socket(AF_INET,SOCK_STREAM,0);
     if(fd==INVALID_SOCKET)
     	return -1;
-    estadoTX=0;
-    estadoRX=0;
     iniTE();
 	if(connect(fd,(sockaddr*)&dest,sizeof(sockaddr))==-1)
         if(WSAGetLastError()!=WSAEWOULDBLOCK)
