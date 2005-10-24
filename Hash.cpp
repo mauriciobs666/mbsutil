@@ -26,7 +26,6 @@ void Hash128::random()
 
 string Hash128::toString() const
 {
-	//TODO: tirar essa conversao porca pra char em toString()
 	char tmp[33];
 	dump(tmp);
 	return string(tmp);

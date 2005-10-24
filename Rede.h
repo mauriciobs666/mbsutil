@@ -14,13 +14,13 @@ public:
     Soquete();
     Soquete(int winfd);
     virtual ~Soquete();
-	
+
 	virtual bool conectado();
     virtual int conectar(std::string ip, unsigned short porta);
     virtual void desconectar();
     virtual int enviar(char *dados, int len);
     virtual int receber(char *dest, int max);
-   
+
 	std::string IPRemoto();
 	std::string IPLocal();
     unsigned short PortaRemoto();
@@ -63,7 +63,7 @@ public:
     };
 */
 
-class Conexao 
+class Conexao
 {
 public:
 	//comuns a cliente e servidor
@@ -105,11 +105,11 @@ protected:
 	WSAEVENT evento;
 	int (*callback)(Conexao*,long,long[]);
 	int (*callbackfilho)(Conexao*,long,long[]);
-	
+
 	Thread *eventos;
 	bool eventosSair;
 	static void* eventosFunc(void* esta);
-	
+
 	static DWORD WINAPI threadEventos(LPVOID este);
 	HANDLE threadEventosHnd;
 	DWORD idTE;

@@ -87,7 +87,7 @@ int Soquete::enviar(char *dados, int len)
 	int rc=send(fd,dados,len,0);
 	if(rc<=0)
 		fechaSocket();
-    return rc; 
+    return rc;
 }
 
 int Soquete::receber(char *dest, int max)
@@ -95,7 +95,7 @@ int Soquete::receber(char *dest, int max)
 	int rc=recv(fd,dest,max,0);
 	if(rc<=0)
 		fechaSocket();
-    return rc; 
+    return rc;
 }
 
 string Soquete::IPRemoto()
@@ -174,7 +174,7 @@ int SoqueteServer::ouvir(unsigned short porta, int backlog)
 	dest.sin_port=htons(porta);
 	dest.sin_addr.s_addr=INADDR_ANY;
 	memset(&(dest.sin_zero),0,8);
-	
+
 	if(bind(fd,(sockaddr*)&dest,sizeof(sockaddr))==-1)
 	{
 		fechaSocket();
@@ -291,12 +291,12 @@ int Conexao::ouvir(unsigned short porta, int backlog)
     fd=socket(AF_INET,SOCK_STREAM,0);
     if(fd==INVALID_SOCKET)
     	return -1;
-    	
+
 	dest.sin_family=AF_INET;
 	dest.sin_port=htons(porta);
 	dest.sin_addr.s_addr=INADDR_ANY;
 	memset(&(dest.sin_zero),0,8);
-	
+
 	if(bind(fd,(sockaddr*)&dest,sizeof(sockaddr))==-1)
 	{
 		closesocket(fd);
@@ -338,7 +338,10 @@ int Conexao::enviar(char *dados, int len)
 
 int Conexao::receber(char *dest, int max)
 {
-	return recv(fd,dest,max,0);
+    int rec=recv(fd,dest,max,0);
+    if((rec<0)&(WSAGetLastError()==WSAEWOULDBLOCK))
+        rec=0;
+	return rec;
 }
 
 char* Conexao::pegaIPRemoto()
