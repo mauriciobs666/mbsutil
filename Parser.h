@@ -4,14 +4,14 @@
 #include <iostream>
 #include <map>
 
-enum Tipo 
+enum Tipo
 {
 			//	Tipos de tokens:
 			//	----------------
 	ERRO=-1,//	Erro interno.
 	NULO=0,	//	Fim da stream.
 	NUM,	//	Numero no formato definido pelo padrao ISO C++.
-	NOME,	//	
+	NOME,	//
 	DELIM	//	Qualquer caracter que nao se enquadre nas categorias acima.
 };
 
@@ -48,4 +48,5 @@ private:
 };
 
 std::string int2str(int i);
+char asc2hex(char msb, char lsb);
 #endif

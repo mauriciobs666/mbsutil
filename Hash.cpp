@@ -1,4 +1,5 @@
 #include "Hash.h"
+#include "Parser.h"
 #include <string>
 #include <cstdlib>
 #include <ctime>
@@ -29,6 +30,15 @@ string Hash128::toString() const
 	char tmp[33];
 	dump(tmp);
 	return string(tmp);
+}
+
+int Hash128::fromString(const std::string& s)
+{
+	if(32!=s.size())
+		return -1;
+	for(int x=0;x<16;x++)
+		h.b[x]=asc2hex(s[x*2],s[x*2+1]);
+	return 0;
 }
 
 char* Hash128::dump(char *dest) const
@@ -71,9 +81,14 @@ int Hash128::write(FILE *arq) const
     return 0;
 }
 
-std::ostream& operator<<(std::ostream& os, const Hash128& h)
+ostream& operator<<(ostream& os, const Hash128& h)
 {
 	return os << h.toString();
+}
+
+istream& operator>>(istream& is, Hash128& h)
+{
+	return is;
 }
 
 //------------------------------------------------------------------------------

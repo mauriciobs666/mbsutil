@@ -15,6 +15,11 @@ void* thread(void*)
 	return NULL;
 }
 
+int testeConversao()
+{
+	cout << hex << (int)asc2hex('2','A');
+}
+
 int testeThread()
 {
 	Thread teste(thread,NULL);
@@ -59,7 +64,7 @@ int testeSoqueteServer()
 			{
 				cout << "Recebido: " << temp << endl;
 				s->enviar(temp,rec);
-			}			
+			}
 		}
 	}
 }
@@ -101,6 +106,7 @@ int main(int argc, char *argv[])
 	cout << "3 - testeSoqueteServer()" << endl;
 	cout << "4 - testeExpressao()" << endl;
 	cout << "5 - testeHash()" << endl;
+	cout << "6 - testeConversao()" << endl;
 	cout << endl << "Escolha uma opcao: ";
 	cin >> op;
 	switch(op)
@@ -119,6 +125,9 @@ int main(int argc, char *argv[])
 		break;
 		case '5':
 			testeHash();
+		break;
+		case '6':
+			testeConversao();
 		break;
 	}
     return EXIT_SUCCESS;

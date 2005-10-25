@@ -93,7 +93,7 @@ double Expressao::expr(bool get)
 	for(;;)
 		if(DELIM==lexer.atual.tipo)
 		{
-			
+
 			if("+"==lexer.atual.str)
 				esq+=term(true);
 			else if("-"==lexer.atual.str)
@@ -109,7 +109,7 @@ double Expressao::prim(bool get)
 {
 	double n;
 	double e;
-	
+
 	if(get)
 		lexer.pegaToken();
 	switch(lexer.atual.tipo)
@@ -150,4 +150,14 @@ string int2str(int i)
 	char temp[32];
 	sprintf(temp,"%i",i);
 	return string(temp);
+}
+
+char asc2hex(char msb, char lsb)
+{
+	msb=toupper(msb);
+	lsb=toupper(lsb);
+	char tmp=(msb<='9')?(msb-'0'):((msb-'A')+10);
+	tmp<<=4;
+	tmp+=(lsb<='9')?(lsb-'0'):((lsb-'A')+10);
+	return tmp;
 }

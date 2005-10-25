@@ -21,7 +21,7 @@ public:
 		 0 : local == base
 	*/
 	{
-		return memcmp(h.b,base.h.b,16); 
+		return memcmp(h.b,base.h.b,16);
 	}
 
 	bool operator==(const Hash128& base) const { return (cmp(base)==0); }
@@ -29,6 +29,7 @@ public:
 
 	void random();
 	std::string toString() const;
+	int fromString(const std::string& s);
 	char* dump(char *dest) const;
 	// dest -> DEVE apontar espaco com no MINIMO 33 bytes
 
@@ -37,8 +38,9 @@ public:
 	int read(FILE *arq);
 	int write(FILE *arq) const;
 };
-
+//	Streams texto
 std::ostream& operator<<(std::ostream& os, const Hash128& h);
+std::istream& operator>>(std::istream& is, Hash128& h);
 
 class MD4 : public Hash128
 {
