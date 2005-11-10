@@ -1,8 +1,5 @@
 #ifndef MBSUTIL_BUFFER_H
 #define MBSUTIL_BUFFER_H
-
-#include <cstdlib>
-
 class Buffer
 {
 public:
@@ -10,8 +7,8 @@ public:
 	unsigned char *pntE,*pntL;
 
 	Buffer(unsigned long tam=0);
-	~Buffer() { if(dados!=NULL) delete[] dados; }
-	
+	~Buffer() { if(dados!=0) delete[] dados; }
+
 	void reset();	//pntL=pntE=dados
 	unsigned long pegaTamanho() const { return tamanho; }
 	int mudaTamanho(unsigned long tam);

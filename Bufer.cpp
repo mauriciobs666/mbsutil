@@ -1,13 +1,14 @@
 #include "Bufer.h"
-#include <stdio.h>
-#include <string.h>
+#include <string>
+
+using namespace std;
 
 //------------------------------------------------------------------------------
 //      Buffer
 //------------------------------------------------------------------------------
 
 Buffer::Buffer(unsigned long tam)
-{	
+{
 	if(tam>0)
 	{
 		dados=new unsigned char[tam];
@@ -41,19 +42,19 @@ int Buffer::mudaTamanho(unsigned long tam)
     unsigned char *novo,*tmp;
     unsigned long leitura=pntL-dados;
     unsigned long escrita=pntE-dados;
-	
+
     if((novo=new unsigned char[tam])==NULL)
         return -1;
-    
+
     int copiar=(tamanho>tam)?(tam):(tamanho);
-    
+
     if(copiar>0)
         memcpy(novo,dados,copiar);
-    
+
     tmp=dados;
     dados=novo;
     delete[] tmp;
-    
+
     tamanho=tam;
     if(escrita>tamanho) escrita=tamanho;
     if(leitura>tamanho) leitura=tamanho;
