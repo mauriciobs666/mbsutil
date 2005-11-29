@@ -83,7 +83,7 @@ std::istream& Noh::read(std::istream& is)
 	return is;
 }
 
-std::ostream& Noh::write(std::ostream& os)
+std::ostream& Noh::write(std::ostream& os) const
 {
 	os.write((char*)&ip,sizeof(ip));
 	os.write((char*)&porta,sizeof(porta));
@@ -602,6 +602,80 @@ ostream& ListaUsuarios::write(ostream& os)
 }
 
 //------------------------------------------------------------------------------
+//      ListaNohs
+//------------------------------------------------------------------------------
+
+void ListaNohs::push(const Noh& no)
+{
+	m.trava();
+	lista.push_back(no);
+	lista.unique();
+	m.destrava();
+}
+
+Noh* ListaNohs::pop(const Noh& no)
+{
+	Noh *tmp;
+	m.trava();
+	if(lista.size()>0)
+	{
+		tmp=new Noh(lista.front());
+		lista.pop_front();
+	}
+	else
+		tmp=NULL;
+	m.destrava();
+	return tmp;
+}
+
+int ListaNohs::tamanho()
+{
+	m.trava();
+	return lista.size();
+	m.destrava();
+}
+
+void ListaNohs::limpa()
+{
+	m.trava();
+	lista.clear();
+	m.destrava();
+}
+
+istream& ListaNohs::read(istream& is)
+{
+	m.trava();
+	int tam;
+	Noh tmp;
+	if(is.read((char*)&tam,sizeof(tam)))
+		if(tam>0)
+		{
+			for(int n=0;n<tam;n++)
+				if(tmp.read(is))
+					lista.push_back(tmp);
+				else
+					break;
+		}
+	m.destrava();
+	return is;
+}
+
+ostream& ListaNohs::write(ostream& os)
+{
+	m.trava();
+	int tam=lista.size();
+	os.write((char*)&tam,sizeof(tam));
+	if(tam>0)
+	{
+		for(list<Noh>::iterator i=lista.begin();i!=lista.end();i++)
+			if(!((*i).write(os)))
+				break;
+	}
+	m.destrava();
+	return os;
+}
+
+//------------------------------------------------------------------------------
 //      Cliente
 //------------------------------------------------------------------------------
 
@@ -646,6 +720,15 @@ int ClienteP2P::abrir(std::string dir)
     arq.close();
     arq.clear();
 
+	arquivo="clientes.dat";
+	arq.open(arquivo.c_str(),ios::binary|ios::in);
+	if(arq.good())
+		nohs.read(arq);
+	else
+		logar("Erro ao ler o arquivo "+arquivo+"\n");
+    arq.close();
+    arq.clear();
+
 	return 0;
 }
 
@@ -666,6 +749,15 @@ int ClienteP2P::salvar(std::string dir)
 	arq.open(arquivo.c_str(),ios::binary|ios::out|ios::trunc);
 	if(arq.good())
 		usuarios.write(arq);
+	else
+		logar("Erro ao gravar o arquivo "+arquivo+"\n");
+    arq.close();
+    arq.clear();
+
+    arquivo="clientes.dat";
+	arq.open(arquivo.c_str(),ios::binary|ios::out|ios::trunc);
+	if(arq.good())
+		nohs.write(arq);
 	else
 		logar("Erro ao gravar o arquivo "+arquivo+"\n");
     arq.close();
@@ -877,6 +969,7 @@ int ClienteP2P::tratar(Conexao *con, long codeve, long coderro[])
 		#ifdef LOGAR_SOCKET
 			logar("FD_CONNECT");
 		#endif
+		pai->nohs.push(s->iC);
 		if(coderro[FD_CONNECT_BIT]!=0)
 			return 1;
 	}

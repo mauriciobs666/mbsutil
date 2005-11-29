@@ -7,6 +7,7 @@
 #include <map>
 #include <list>
 #include <queue>
+#include <set>
 #include <iostream>
 
 /*	Descricao do protocolo P2P
@@ -104,11 +105,20 @@ public:
 	unsigned long id;
 
 	Noh();
-	bool idAlta() { return ((ip!=0)?(ip==id):false); }
+	bool idAlta() const
+		{ return ((ip!=0)?(ip==id):false); }
+	bool operator==(const Noh& n) const
+		{ return ((ip==n.ip)&(porta==n.porta)&(id==n.id)); }
+	bool operator<(const Noh& n) const
+		{
+			return (ip<n.ip) ? true : (ip>n.ip ? false :
+				(porta<n.porta) ? true : (porta>n.porta ? false :
+				(id<n.id) ? true : false) );
+		}
 	int read(unsigned char *&pkt);
 	int write(unsigned char *&pkt) const;
     istream& read(istream& is);
-    ostream& write(ostream& os);
+    ostream& write(ostream& os) const;
 };
 
 /*	Classe Cliente
@@ -206,7 +216,7 @@ public:
 	int mudaNumSlots(int num);
 	Slot* at(int num) const;
 	Slot* operator[](int i) const { return &slots[i]; }
-	Slot* operator[](const Hash128& user) const;
+	Slot* operator[](const Hash128& user) const;	//busca
 	int aloca();
 	//TODO:	int libera();	//mata slot com a classificacao mais baixa e aloca
 	int conectar(const char *ip, const unsigned short porta);
@@ -264,20 +274,15 @@ public:
 class ListaNohs
 {
 public:
-	Mutex m;
-	std::list<Noh*> lista;
-
-	void insere(const Noh& no)
-		{}
-	void remove(const Noh& no)
-		{}
-	Noh* busca(const Noh& no);
-	int tamanho()
-		{ return lista.size(); }
-	void limpa()
-		{ lista.clear(); }
+	void push(const Noh& no);
+	Noh* pop(const Noh& no);
+	int tamanho();
+	void limpa();
     istream& read(istream& is);
     ostream& write(ostream& os);
+private:
+	Mutex m;
+	std::list<Noh> lista;
 };
 
 class EventoP2PUI
@@ -322,6 +327,7 @@ public:
 	ListaUsuarios usuarios;		//arvore com todos usuarios conhecidos
 	ListaHash128 amigos;		//lista de amigos
 	ListaHash128 blacklist;		//lista negra
+	ListaNohs nohs;
 
 	ClienteP2P();
 	~ClienteP2P();
