@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-    <FileVersion major="1" minor="1" />
+    <FileVersion major="1" minor="2" />
     <Project>
         <Option title="MBSUtil" />
-        <Option makefile="Makefile" />
-        <Option makefile_is_custom="0" />
         <Option default_target="-1" />
         <Option compiler="0" />
         <Build>
@@ -12,31 +10,27 @@
                 <Option output="..\MBSUtil.a" />
                 <Option working_dir="" />
                 <Option object_output="c:\temp" />
-                <Option deps_output=".deps" />
                 <Option type="2" />
                 <Option compiler="0" />
+                <Option includeInTargetAll="1" />
                 <Option createDefFile="1" />
                 <Option projectResourceIncludeDirsRelation="2" />
                 <Compiler>
                     <Add option="-O3" />
                     <Add option="-Wall" />
                 </Compiler>
-                <ResourceCompiler />
                 <Linker>
                     <Add option="-s" />
                 </Linker>
-                <ExtraCommands />
             </Target>
         </Build>
         <Compiler>
             <Add option="-O3" />
             <Add option="-Wall" />
         </Compiler>
-        <ResourceCompiler />
         <Linker>
             <Add option="-s" />
         </Linker>
-        <ExtraCommands />
         <Unit filename="Bufer.cpp">
             <Option compilerVar="CPP" />
             <Option target="default" />

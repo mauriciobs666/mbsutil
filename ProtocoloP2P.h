@@ -1,7 +1,6 @@
 #ifndef MBSUTIL_PROTOCOLO_H
 #define MBSUTIL_PROTOCOLO_H
 
-#include "MBSUtil.h"
 #include <cstdio>
 #include <string>
 #include <map>
@@ -9,6 +8,12 @@
 #include <queue>
 #include <set>
 #include <iostream>
+
+#include "Hash.h"
+#include "Bufer.h"
+#include "Thread.h"
+#include "Rede.h"
+#include "Parser.h"
 
 /*	Descricao do protocolo P2P
 
@@ -55,12 +60,22 @@ namespace Protocolo
 			[remetente][destinatario][dados]
 			[Noh][Hash128]
 		*/
+		ROTEAR_ERRO,
+		/*	Nao foi possivel rotear pacote (Usuario desconectado)
+		*/
+		ROTEAR_BLOQUEADO,
+		/*	Cliente nao aceita rotear este comando
+		*/
 		RETORNO,
 		/*	Pedido de conexao de callback
 		*/
 		BUSCAR,
 		/*	Broadcast de busca
 			[unsigned char TTL][criterio]
+		*/
+		HIT,
+		/*
+			Encontrado
 		*/
 		ACK,
 		/*	Acknowledge (pra chat p.e)
@@ -69,7 +84,6 @@ namespace Protocolo
 		/*	protocolo definido pelo usuario
 			[unsigned char codigo do protocolo][dados]
 		*/
-
 	};
 	//	Constantes diversas
 	const int PORTA_PADRAO=6661;
@@ -236,7 +250,7 @@ class ListaHash128
 {
 public:
 	Mutex m;
-	std::list<Hash128> lista;
+	std::set<Hash128> lista;
 
 	ListaHash128() {}
 	~ListaHash128() { limpa(); }

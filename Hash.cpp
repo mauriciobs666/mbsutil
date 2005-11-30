@@ -67,20 +67,6 @@ int Hash128::write(unsigned char *&pkt) const
     return 0;
 }
 
-int Hash128::read(FILE *arq)
-{
-    if(fread(h.b,sizeof(char),16,arq)!=16)
-        return -1;
-    return 0;
-}
-
-int Hash128::write(FILE *arq) const
-{
-    if(fwrite(h.b,sizeof(char),16,arq)!=16)
-        return -1;
-    return 0;
-}
-
 ostream& operator<<(ostream& os, const Hash128& h)
 {
 	return os << h.toString();

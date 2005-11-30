@@ -466,7 +466,7 @@ int ListaHash128::insere(const Hash128& h)
 		m.destrava();
 		return -1;	//jah existe
 	}
-	list<Hash128>::iterator i=upper_bound(lista.begin(),lista.end(),h);
+	set<Hash128>::iterator i=upper_bound(lista.begin(),lista.end(),h);
 	lista.insert(i,h);
 	m.destrava();
 	return 0;
@@ -475,7 +475,7 @@ int ListaHash128::insere(const Hash128& h)
 void ListaHash128::remove(const Hash128& h)
 {
 	m.trava();
-	lista.remove(h);
+	lista.erase(h);
 	m.destrava();
 }
 
@@ -522,7 +522,7 @@ ostream& ListaHash128::write(ostream& os)
 	unsigned short numero=lista.size();
 	if(os.write((char*)&numero,sizeof(numero)))
 	{
-		list<Hash128>::iterator i=lista.begin();
+		set<Hash128>::iterator i=lista.begin();
 		while(i!=lista.end())
 		{
 			os.write((char*)(*i).h.b,sizeof((*i).h));

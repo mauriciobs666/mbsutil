@@ -7,5 +7,6 @@
 #include "Hash.h"
 #include "Rede.h"
 #include "Bufer.h"
+#include "ProtocoloP2P.h"
 
 #endif

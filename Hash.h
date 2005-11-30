@@ -1,9 +1,8 @@
 #ifndef MBSUTIL_HASH_H
 #define MBSUTIL_HASH_H
 
-#include <stdio.h>
 #include <string>
-#include <ostream>
+#include <iostream>
 
 class Hash128
 {
@@ -15,30 +14,30 @@ public:
 	} h;
 
 	int cmp(const Hash128& base) const
-	/*
-		 1 : local > base
-		-1 : local < base
-		 0 : local == base
-	*/
-	{
-		return memcmp(h.b,base.h.b,16);
-	}
+		/*
+			 1 : local > base
+			-1 : local < base
+			 0 : local == base
+		*/
+		{ return memcmp(h.b,base.h.b,16); }
 
-	bool operator==(const Hash128& base) const { return (cmp(base)==0); }
-	bool operator<(const Hash128& base) const { return (cmp(base)<0); }
+	bool operator==(const Hash128& base) const
+		{ return (cmp(base)==0); }
+	bool operator<(const Hash128& base) const
+		{ return (cmp(base)<0); }
 
 	void random();
 	std::string toString() const;
 	int fromString(const std::string& s);
-	char* dump(char *dest) const;
-	// dest -> DEVE apontar espaco com no MINIMO 33 bytes
+	char* dump(char *dest) const;	// dest DEVE apontar MINIMO 32+1 bytes
 
 	int read(unsigned char *&pkt);
 	int write(unsigned char *&pkt) const;
-	int read(FILE *arq);
-	int write(FILE *arq) const;
+    std::istream& read(std::istream& is)
+		{ return is.read((char*)h.b,sizeof(h)); }
+    std::ostream& write(std::ostream& os) const
+		{ return os.write((char*)h.b,sizeof(h)); }
 };
-//	Streams texto
 std::ostream& operator<<(std::ostream& os, const Hash128& h);
 std::istream& operator>>(std::istream& is, Hash128& h);
 
