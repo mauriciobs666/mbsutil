@@ -17,27 +17,29 @@
 
 /*	Descricao do protocolo P2P
 
-	Formato geral dos pacotes:
-    [cabecalho][dados]
+	Camada 0 (enlace):
+		[tamanho][dados]
+			tamanho = unsigned short = tamanho total da area de dados
+			dados  = tamanho * bytes = pacote camada 1
 
-    Cabecalho (info geral do pacote):
-    [tamanho][comando]
-    tamanho = unsigned short = tamanho total do pacote
-    comando = unsigned short = enum Protocolo::Comandos
+	Camada 1 (rede):
+		[comando][dados]
+			comando = unsigned short = enum Protocolo::Comandos
+			dados = depende do comando
 
-    Dados (depende do comando):
-    sizeof(dados)=tamanho-sizeof(cabecalho)
+	Camada 2 (aplicacao):
+
 */
 namespace Protocolo
 {
-	enum Comandos
+	typedef enum Comandos
 	{
 		LOGIN,
 		/*	pacote com informacoes sobre o cliente e usuario
 			[infoCliente][Usuario]
 				infoCliente = [versao][opcoes][Noh][mtu][mru]
 					Noh = [ip][porta][id]
-					sizeof(Noh)=10
+						sizeof(Noh)=10
 					sizeof(infoCliente)=12+sizeof(Noh)=22
 				infoUsuario = [Hash128][Nick]
 					sizeof(infoUsuario)=16+TAMNICK=32
@@ -89,6 +91,14 @@ namespace Protocolo
 	const int PORTA_PADRAO=6661;
 	const int TAMNICK=15+1;
 	const int VERSAOINFO=1;		//versao dos arquivos
+/*
+	enum EstadosSlot
+	{
+		LIVRE,			//desconectado
+		LOGIN,			//esperando login
+		CONECTADO		//...
+	};
+*/
 	typedef enum
 	{	//Maquina de estados para RX de Slot
 		NOVO,			//esperando novo pacote
@@ -185,7 +195,8 @@ public:
 };
 
 /*	Classe Slot
-	Cuida de toda parte de baixo nivel da comunicacao, envio/recepcao de pacotes
+	Responsavel pela camada 0 do protocolo e toda parte de baixo nivel da
+	comunicacao, envio/recepcao de pacotes, gerenciamento da conexao etc.
 */
 class Slot
 {
@@ -207,7 +218,7 @@ protected:
 	Mutex m;
 	Conexao *c;
 
-	//Maquina de estados e fila de RX
+	//Recepcao: maquina de estados e fila
 	Buffer temp;					//usado na recepcao de pacotes
 	Buffer *recebendo;				//pacote sendo recebido
 	Protocolo::EstadosRX estadoRX;	//estados de recepcao
