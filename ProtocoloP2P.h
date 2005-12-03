@@ -204,7 +204,7 @@ public:
 	friend class ClienteP2P;
 	friend class ArraySlots;
 
-	Cliente iC;
+	Cliente iC;	//TODO: protejer e transformar em *
 	Usuario iU;
 
 	Slot();
