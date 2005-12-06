@@ -91,21 +91,7 @@ namespace Protocolo
 	const int PORTA_PADRAO=6661;
 	const int TAMNICK=15+1;
 	const int VERSAOINFO=1;		//versao dos arquivos
-/*
-	enum EstadosSlot
-	{
-		LIVRE,			//desconectado
-		LOGIN,			//esperando login
-		CONECTADO		//...
-	};
-*/
-	typedef enum
-	{	//Maquina de estados para RX de Slot
-		NOVO,			//esperando novo pacote
-		ESPERA_TAMANHO,	//esperando segundo byte de tamanho
-		INICIO_DADOS,	//alocando espaco para dados
-		DADOS,			//recebendo dados
-	} EstadosRX;
+
 	typedef enum
 	{
 		ERRO_IO,		//erro de leitura/escrita
@@ -206,26 +192,42 @@ public:
 
 	Cliente iC;	//TODO: protejer e transformar em *
 	Usuario iU;
+	//TODO: timestamps
 
 	Slot();
 	~Slot();
 	int desconectar();
-	int pegaEstado();
-	int setaEstado(int estado);
+
+	typedef enum
+	{
+		LIVRE = 0,		//desconectado
+		LOGIN,			//esperando login
+		CONECTADO		//...
+	} EstadoSlot;
+	EstadoSlot pegaEstado();
+	int setaEstado(EstadoSlot estado);
+
 	int enviar(Buffer *pkt);
 	Buffer* receber();
 protected:
 	Mutex m;
 	Conexao *c;
+	EstadoSlot estado;
+	int reset();
 
-	//Recepcao: maquina de estados e fila
+	//Fila de recepcao
 	Buffer temp;					//usado na recepcao de pacotes
 	Buffer *recebendo;				//pacote sendo recebido
-	Protocolo::EstadosRX estadoRX;	//estados de recepcao
 	std::queue<Buffer*> recebidos;	//fila de pacotes prontos
 
-	int estado;
-	int reset();
+	//Maquina de estados para RX de Slot
+	enum EstadosRX
+	{
+		NOVO,			//esperando novo pacote
+		ESPERA_TAMANHO,	//esperando segundo byte de tamanho
+		INICIO_DADOS,	//alocando espaco para dados
+		DADOS,			//recebendo dados
+	} estadoRX;
 };
 
 /*	Classe ArraySlots

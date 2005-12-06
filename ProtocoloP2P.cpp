@@ -224,7 +224,7 @@ Slot::~Slot()
 
 int Slot::reset()
 {
-	estado=0;
+	estado=LIVRE;
 	estadoRX=NOVO;
 	if(c!=NULL)
 	{
@@ -247,7 +247,7 @@ int Slot::desconectar()
     return 0;
 }
 
-int Slot::pegaEstado()
+Slot::EstadoSlot Slot::pegaEstado()
 {
     m.trava();
     {
@@ -263,7 +263,7 @@ int Slot::pegaEstado()
     return estado;
 }
 
-int Slot::setaEstado(int novo)
+int Slot::setaEstado(EstadoSlot novo)
 {
     m.trava();
 	estado=novo;
@@ -409,7 +409,7 @@ int ArraySlots::aloca()
         {
             if(slots[x].pegaEstado()==0)
             {
-                if(slots[x].setaEstado(1)==0)
+                if(slots[x].setaEstado(Slot::LOGIN)==0)
                 {
                     m.destrava();
                     return x;
@@ -915,7 +915,7 @@ int ClienteP2P::tratar(Buffer *pacote, Slot *slot)
 		#endif
         slot->iC.read(dados);
         slot->iU.read(dados);
-        slot->setaEstado(2);
+        slot->setaEstado(Slot::CONECTADO);
         Usuario *tmp=usuarios.busca(slot->iU);
         if(tmp==NULL)
         	usuarios.insere(slot->iU,new Usuario(slot->iU));
