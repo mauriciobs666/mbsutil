@@ -214,51 +214,24 @@ Slot::Slot()
     temp.mudaTamanho(TAMBUFFER);
     c=NULL;
     recebendo=NULL;
-    reset();
+    _reset();
 }
 
 Slot::~Slot()
 {
-	reset();
-}
-
-int Slot::reset()
-{
-	estado=LIVRE;
-	estadoRX=NOVO;
-	if(c!=NULL)
-	{
-        delete c;
-		c=NULL;
-	}
-    if(recebendo!=NULL)
-    {
-        delete recebendo;
-        recebendo=NULL;
-    }
-    return 0;
+	_reset();
 }
 
 int Slot::desconectar()
 {
-    if(pegaEstado()!=0)
-        c->desconectar();
-	reset();
+	_reset();
     return 0;
 }
 
 Slot::EstadoSlot Slot::pegaEstado()
 {
     m.trava();
-    {
-        if(c!=NULL)
-        {
-            if(!c->ativa())
-                reset();
-        }
-        else
-            reset();
-    }
+   	_conectado();
     m.destrava();
     return estado;
 }
@@ -273,9 +246,10 @@ int Slot::setaEstado(EstadoSlot novo)
 
 int Slot::enviar(Buffer *pkt)
 {
+	int retorno=-1;
 	m.trava();
-    int retorno=-1;
-    if(pegaEstado()!=0)
+	_conectado();
+    if(estado!=LIVRE)
     {
         CabecalhoLVL0 *cab=(CabecalhoLVL0*)pkt->dados;
         int enviados=c->enviar((char*)pkt->dados,cab->tam);
@@ -346,6 +320,39 @@ Buffer* Slot::receber()
 	m.destrava();
 	return retorno;
 }
+
+int Slot::_reset()
+{
+	estado=LIVRE;
+	estadoRX=NOVO;
+	if(c!=NULL)
+	{
+        delete c;
+		c=NULL;
+	}
+    if(recebendo!=NULL)
+    {
+        delete recebendo;
+        recebendo=NULL;
+    }
+//TODO:    recebidos.clear();
+    return 0;
+}
+
+bool Slot::_conectado()
+{
+	if(c!=NULL)
+	{
+		if(!c->ativa())
+			_reset();
+		else
+			return true;
+	}
+	else
+		_reset();
+	return false;
+}
+
 
 //------------------------------------------------------------------------------
 //      ArraySlots
@@ -919,6 +926,7 @@ int ClienteP2P::tratar(Buffer *pacote, Slot *slot)
         Usuario *tmp=usuarios.busca(slot->iU);
         if(tmp==NULL)
         	usuarios.insere(slot->iU,new Usuario(slot->iU));
+		//TODO: mandar informacoes sobre o cliente (i.e. ID)
     }
     else if(cab->com==MENSAGEM)
     {
@@ -1029,7 +1037,7 @@ int ClienteP2P::tratarServer(Conexao *con, long codeve, long coderro[])
             return 0;
         }
         s=pai->slots[ns];
-		s->reset();
+		s->_reset();	//TODO: _reset() naum eh publico
         s->c=con->aceitar();
         if(s->c!=NULL)
         {

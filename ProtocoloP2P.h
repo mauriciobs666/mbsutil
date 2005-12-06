@@ -201,8 +201,9 @@ public:
 	typedef enum
 	{
 		LIVRE = 0,		//desconectado
-		LOGIN,			//esperando login
-		CONECTADO		//...
+		ESPERANDO,		//desconectado, mas reservado pelo gerenciador
+		LOGIN,			//conectado mas esperando login
+		CONECTADO		//conectado normal
 	} EstadoSlot;
 	EstadoSlot pegaEstado();
 	int setaEstado(EstadoSlot estado);
@@ -213,7 +214,9 @@ protected:
 	Mutex m;
 	Conexao *c;
 	EstadoSlot estado;
-	int reset();
+
+	int _reset();
+	bool _conectado();
 
 	//Fila de recepcao
 	Buffer temp;					//usado na recepcao de pacotes
