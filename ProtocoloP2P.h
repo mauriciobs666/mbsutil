@@ -221,6 +221,7 @@ protected:
 	//Fila de recepcao
 	Buffer temp;					//usado na recepcao de pacotes
 	Buffer *recebendo;				//pacote sendo recebido
+	unsigned short tamRecebendo;    //tamanho do pacote "*recebendo"
 	std::queue<Buffer*> recebidos;	//fila de pacotes prontos
 
 	//Maquina de estados para RX de Slot

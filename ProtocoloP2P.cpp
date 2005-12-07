@@ -36,11 +36,6 @@ namespace
 			cerr << "ClienteP2PUI::relatorio(" << frase << ")" << endl;
 		mutexLogar.destrava();
 	}
-	typedef struct _CabecalhoLVL0
-	{
-		unsigned short tam;
-		unsigned short com;
-	} CabecalhoLVL0;
 };
 
 //------------------------------------------------------------------------------
@@ -249,12 +244,12 @@ int Slot::enviar(Buffer *pkt)
 	int retorno=-1;
 	m.trava();
 	_conectado();
-    if(estado!=LIVRE)
+    if(estado>ESPERANDO)
     {
-        CabecalhoLVL0 *cab=(CabecalhoLVL0*)pkt->dados;
-        int enviados=c->enviar((char*)pkt->dados,cab->tam);
-        if(enviados==cab->tam)
-            retorno=0;
+        unsigned short tam=pkt->pegaTamanho();
+        if(c->enviar((char*)&tam,sizeof(tam))==sizeof(tam)) //envia tamanho
+            if(c->enviar((char*)pkt->dados,tam)==tam)       //envia pacote
+                retorno=0;                                  //tudo ok
     }
     delete pkt;
     m.destrava();
@@ -267,37 +262,33 @@ Buffer* Slot::receber()
 	m.trava();
 	do
 	{
-		temp.reset();
+        temp.reset();
 		qtd=c->receber((char*)temp.pntE, temp.livres());
 		if(qtd>0)
 			temp.pntE+=qtd;
 		while(temp.disponiveis()>0)
 		{
-			if(estadoRX==NOVO)					//esperando novo pacote
+			switch(estadoRX)
 			{
-				recebendo=new Buffer(2);
-				if(recebendo->append(temp,2)==1)
+				case NOVO:
+					//esperando primeiro byte de tam do novo pacote
+					*((char*)&tamRecebendo)=*temp.pntL;
+					temp.pntL++;
 					estadoRX=ESPERA_TAMANHO;
-				else
+				break;
+				case ESPERA_TAMANHO:
+					//esperando segundo byte de tamanho
+					*((char*)(&tamRecebendo+1))=*temp.pntL;
+					temp.pntL++;
 					estadoRX=INICIO_DADOS;
-			}
-			else
-			{
-			    if(recebendo==NULL)
-                    estadoRX=NOVO;
-				if(estadoRX==ESPERA_TAMANHO)	//esperando segundo byte de tamanho
-				{
-					if(recebendo->append(temp,1)==1)
-						estadoRX=INICIO_DADOS;
-				}
-				else if(estadoRX==INICIO_DADOS)	//tamanho recebido
-				{
-					CabecalhoLVL0 *cab=(CabecalhoLVL0*)recebendo->dados;
-					recebendo->mudaTamanho(cab->tam);
+				break;
+				case INICIO_DADOS:
+					//tamanho recebido, agora o pacote em si
+					recebendo=new Buffer(tamRecebendo);
 					estadoRX=DADOS;
-				}
-				else if(estadoRX==DADOS)		//receber comando e dados
-				{
+				break;
+				case DADOS:
+					//receber comando e dados
 					recebendo->append(temp,recebendo->livres());
 					if(recebendo->livres()==0)	//aceitacao
 					{
@@ -306,7 +297,10 @@ Buffer* Slot::receber()
 						recebendo=NULL;
 						estadoRX=NOVO;
 					}
-				}
+				break;
+				default:
+					//TODO: tratar erro
+				break;
 			}
 		}
 	} while(qtd>0);
@@ -847,19 +841,16 @@ int ClienteP2P::enviarMsg(const char *msg, const Hash128* user)
 		if(s==NULL)
 			return -1;
     }
-
     unsigned short tam=strlen(msg);
-    Buffer *p=new Buffer(tam+sizeof(CabecalhoLVL0));
+    unsigned short *comando;
+    Buffer *p=new Buffer(sizeof(unsigned short)+tam);	//comando + dados
     if(p==NULL)
         return -2;
-
-    CabecalhoLVL0 *tmp=(CabecalhoLVL0*)p->dados;
-    tmp->tam=tam+sizeof(CabecalhoLVL0);
-    tmp->com=MENSAGEM;
-    memcpy((p->dados+sizeof(CabecalhoLVL0)),msg,tam);
+    comando=(unsigned short*)p->dados;
+    *comando=MENSAGEM;
+    memcpy((p->dados+sizeof(unsigned short)),msg,tam);
     if(s->enviar(p))
         return -2;
-
     return 0;
 }
 
