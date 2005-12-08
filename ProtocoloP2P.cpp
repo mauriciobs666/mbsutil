@@ -246,10 +246,10 @@ int Slot::enviar(Buffer *pkt)
 	_conectado();
     if(estado>ESPERANDO)
     {
-        unsigned short tam=pkt->pegaTamanho();
-        if(c->enviar((char*)&tam,sizeof(tam))==sizeof(tam)) //envia tamanho
-            if(c->enviar((char*)pkt->dados,tam)==tam)       //envia pacote
-                retorno=0;                                  //tudo ok
+        TAMANHO tam=pkt->pegaTamanho();
+        if(c->enviar((char*)&tam,sizeof(TAMANHO))==sizeof(TAMANHO)) //envia tamanho
+            if(c->enviar((char*)pkt->dados,tam)==tam)       		//envia pacote
+                retorno=0;                                  		//tudo ok
     }
     delete pkt;
     m.destrava();
@@ -280,9 +280,6 @@ Buffer* Slot::receber()
 					//esperando segundo byte de tamanho
 					*((char*)(&tamRecebendo+1))=*temp.pntL;
 					temp.pntL++;
-					estadoRX=INICIO_DADOS;
-				break;
-				case INICIO_DADOS:
 					//tamanho recebido, agora o pacote em si
 					recebendo=new Buffer(tamRecebendo);
 					estadoRX=DADOS;
@@ -292,14 +289,16 @@ Buffer* Slot::receber()
 					recebendo->append(temp,recebendo->livres());
 					if(recebendo->livres()==0)	//aceitacao
 					{
-//						logar("pacote completo recebido");
+						#ifdef LOGAR_SOCKET
+							logar("pacote completo recebido");
+						#endif
 						recebidos.push(recebendo);
 						recebendo=NULL;
 						estadoRX=NOVO;
 					}
 				break;
 				default:
-					//TODO: tratar erro
+					logar("__FILE__:__LINE__:IMPOSSIVEL");
 				break;
 			}
 		}
@@ -836,19 +835,14 @@ int ClienteP2P::enviarMsg(const char *msg, const Hash128* user)
 {
     Slot *s=slots[*user];
     if(s==NULL)
-    {
-		s=slots[0];
-		if(s==NULL)
-			return -1;
-    }
+		return -1;
+
     unsigned short tam=strlen(msg);
-    unsigned short *comando;
-    Buffer *p=new Buffer(sizeof(unsigned short)+tam);	//comando + dados
+    Buffer *p=new Buffer(sizeof(COMANDO)+tam);	//comando + dados
     if(p==NULL)
         return -2;
-    comando=(unsigned short*)p->dados;
-    *comando=MENSAGEM;
-    memcpy((p->dados+sizeof(unsigned short)),msg,tam);
+    p->append((COMANDO)MENSAGEM);
+    memcpy(p->pntE,msg,tam);
     if(s->enviar(p))
         return -2;
     return 0;
@@ -862,13 +856,10 @@ void ClienteP2P::ping()
 
 int ClienteP2P::enviaLogin(Slot *slot)
 {
-	Buffer *login=new Buffer(58);
-	CabecalhoLVL0 *cab=(CabecalhoLVL0*)login->dados;
-	cab->tam=58;
-	cab->com=LOGIN;
-	unsigned char *dados=login->dados+sizeof(CabecalhoLVL0);
-	iC.write(dados);
-	iU.write(dados);
+	Buffer *login=new Buffer(56);
+	login->append((COMANDO)LOGIN);
+	iC.write(login->pntE);
+	iU.write(login->pntE);
 	if(slot->enviar(login))
 		return -1;
 	return 0;
@@ -876,13 +867,13 @@ int ClienteP2P::enviaLogin(Slot *slot)
 
 int ClienteP2P::enviaPing(Slot *slot)
 {
-	Buffer *ping=new Buffer(8);
-	CabecalhoLVL0 *cab=(CabecalhoLVL0*)ping->dados;
-	cab->tam=8;
-	cab->com=PING;
-	unsigned char *dados=ping->dados+sizeof(CabecalhoLVL0);
+	Buffer *ping=new Buffer(6);
+	ping->append((COMANDO)PING);
+//	*((COMANDO*)ping->dados)=PING;
+//	unsigned char *dados=ping->dados+sizeof(COMANDO);
 	unsigned long timestamp=(clock()/(CLOCKS_PER_SEC/1000));
-	*((unsigned long*)dados)=timestamp;
+//	*((unsigned long*)ping->pntE)=timestamp;
+	ping->append(timestamp);
 	if(slot->enviar(ping))
 		return -1;
 	return 0;
@@ -890,12 +881,12 @@ int ClienteP2P::enviaPing(Slot *slot)
 
 int ClienteP2P::enviaPong(unsigned long timestamp, Slot *slot)
 {
-	Buffer *pong=new Buffer(8);
-	CabecalhoLVL0 *cab=(CabecalhoLVL0*)pong->dados;
-	cab->tam=8;
-	cab->com=PONG;
-	unsigned char *dados=pong->dados+sizeof(CabecalhoLVL0);
-	*((unsigned long*)dados)=timestamp;
+	Buffer *pong=new Buffer(6);
+	pong->append((COMANDO)PONG);
+//	*((COMANDO*)pong->dados)=PONG;
+//	unsigned char *dados=pong->dados+sizeof(COMANDO);
+//	*((unsigned long*)pong->pntE)=timestamp;
+	pong->append(timestamp);
 	if(slot->enviar(pong))
 		return -1;
 	return 0;
@@ -903,46 +894,48 @@ int ClienteP2P::enviaPong(unsigned long timestamp, Slot *slot)
 
 int ClienteP2P::tratar(Buffer *pacote, Slot *slot)
 {
-    CabecalhoLVL0 *cab=(CabecalhoLVL0*)pacote->dados;
-    unsigned char *dados=pacote->dados+sizeof(CabecalhoLVL0);
+	COMANDO comando=*((COMANDO*)pacote->dados);
+    unsigned char *dados=pacote->dados+sizeof(COMANDO);
+    unsigned long tamDados=pacote->pegaTamanho()-sizeof(COMANDO);
 
-    if(cab->com==LOGIN)
+    switch(comando)
     {
-		#ifdef LOGAR_COMANDOS
-			logar("CMD_LOGIN");
-		#endif
-        slot->iC.read(dados);
-        slot->iU.read(dados);
-        slot->setaEstado(Slot::CONECTADO);
-        Usuario *tmp=usuarios.busca(slot->iU);
-        if(tmp==NULL)
-        	usuarios.insere(slot->iU,new Usuario(slot->iU));
-		//TODO: mandar informacoes sobre o cliente (i.e. ID)
-    }
-    else if(cab->com==MENSAGEM)
-    {
-		#ifdef LOGAR_COMANDOS
-			logar("CMD_MENSAGEMDIRETA");
-		#endif
-    	string stmp=string((char*)dados,(size_t)(cab->tam-sizeof(CabecalhoLVL0)));
-        mostrarMsg(&slot->iU,stmp);
-    }
-    else if(cab->com==PING)
-    {
-    	#ifdef LOGAR_COMANDOS
-			logar("CMD_PING");
-		#endif
-    	unsigned long timestamp=*((unsigned long*)dados);
-    	enviaPong(timestamp, slot);
-    }
-	else if(cab->com==PONG)
-    {
-    	#ifdef LOGAR_COMANDOS
-			logar("CMD_PONG");
-		#endif
-    	unsigned long base=*((unsigned long*)dados);
-    	unsigned long agora=(clock()/(CLOCKS_PER_SEC/1000));
-    	slot->iC.ping=agora-base;
+		case LOGIN:
+			#ifdef LOGAR_COMANDOS
+				logar("CMD_LOGIN");
+			#endif
+			slot->iC.read(dados);
+			slot->iU.read(dados);
+			slot->setaEstado(Slot::CONECTADO);
+			Usuario *tmp=usuarios.busca(slot->iU);
+			if(tmp==NULL)
+				usuarios.insere(slot->iU,new Usuario(slot->iU));
+			//TODO: mandar informacoes sobre o cliente (i.e. ID)
+		break;
+		case MENSAGEM:
+			#ifdef LOGAR_COMANDOS
+				logar("CMD_MENSAGEMDIRETA");
+			#endif
+			mostrarMsg(&slot->iU,string((char*)dados,(size_t)tamDados));
+		break;
+		case PING:
+			#ifdef LOGAR_COMANDOS
+				logar("CMD_PING");
+			#endif
+			unsigned long timestamp=*((unsigned long*)dados);
+			enviaPong(timestamp, slot);
+		break;
+		case PONG:
+			#ifdef LOGAR_COMANDOS
+				logar("CMD_PONG");
+			#endif
+			unsigned long base=*((unsigned long*)dados);
+			unsigned long agora=(clock()/(CLOCKS_PER_SEC/1000));
+			slot->iC.ping=agora-base;
+		break;
+		default:
+			logar("CMD_INVALIDO");
+		break;
     }
     delete pacote;
     return 0;

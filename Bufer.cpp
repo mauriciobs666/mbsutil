@@ -76,3 +76,25 @@ unsigned long Buffer::append(Buffer& b, unsigned long qtd)
     pntE+=qtd;
     return qtd;
 }
+
+unsigned long Buffer::append(unsigned short us)
+{
+	unsigned long novotam=ocupados()+sizeof(us);
+	if(novotam>tamanho)
+		if(mudaTamanho(novotam))
+			return 0;
+	*((unsigned short*)pntE)=us;
+	pntE+=sizeof(us);
+	return sizeof(us);
+}
+
+unsigned long Buffer::append(unsigned long ul)
+{
+	unsigned long novotam=ocupados()+sizeof(ul);
+	if(novotam>tamanho)
+		if(mudaTamanho(novotam))
+			return 0;
+	*((unsigned long*)pntE)=ul;
+	pntE+=sizeof(ul);
+	return sizeof(ul);
+}

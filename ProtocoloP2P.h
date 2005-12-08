@@ -18,20 +18,23 @@
 /*	Descricao do protocolo P2P
 
 	Camada 0 (enlace):
-		[tamanho][dados]
-			tamanho = unsigned short = tamanho total da area de dados
-			dados  = tamanho * bytes = pacote camada 1
+		[TAMANHO][dados]
+			TAMANHO = typedef = tamanho total da area de dados
+			dados  = TAMANHO * bytes = pacote camada 1
 
 	Camada 1 (rede):
-		[comando][dados]
-			comando = unsigned short = enum Protocolo::Comandos
-			dados = depende do comando
+		[COMANDO][dados]
+			COMANDO = typedef = enum Protocolo::Comandos
+			dados = depende do COMANDO
 
 	Camada 2 (aplicacao):
 
 */
 namespace Protocolo
 {
+	typedef unsigned short TAMANHO;
+	typedef unsigned short COMANDO;
+
 	typedef enum Comandos
 	{
 		LOGIN,
@@ -87,6 +90,7 @@ namespace Protocolo
 			[unsigned char codigo do protocolo][dados]
 		*/
 	};
+
 	//	Constantes diversas
 	const int PORTA_PADRAO=6661;
 	const int TAMNICK=15+1;
@@ -219,17 +223,16 @@ protected:
 	bool _conectado();
 
 	//Fila de recepcao
-	Buffer temp;					//usado na recepcao de pacotes
-	Buffer *recebendo;				//pacote sendo recebido
-	unsigned short tamRecebendo;    //tamanho do pacote "*recebendo"
 	std::queue<Buffer*> recebidos;	//fila de pacotes prontos
 
 	//Maquina de estados para RX de Slot
+	Buffer temp;					//usado na recepcao de Conexao
+	Protocolo::TAMANHO tamRecebendo;//tamanho do pacote "*recebendo"
+	Buffer *recebendo;				//pacote sendo recebido
 	enum EstadosRX
 	{
 		NOVO,			//esperando novo pacote
 		ESPERA_TAMANHO,	//esperando segundo byte de tamanho
-		INICIO_DADOS,	//alocando espaco para dados
 		DADOS,			//recebendo dados
 	} estadoRX;
 };

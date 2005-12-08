@@ -18,6 +18,8 @@ public:
 	unsigned long append(Buffer& b, unsigned long qtd=0);
 		//anexa qtd bytes de b->pntL em pntE
 		//se qtd==0, anexa faltaTratar() bytes de b->pntL em pntE
+	unsigned long append(unsigned short us);
+	unsigned long append(unsigned long ul);
 protected:
 	unsigned long tamanho;
 };
