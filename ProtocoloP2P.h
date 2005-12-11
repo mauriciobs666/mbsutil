@@ -18,6 +18,9 @@
 /*	Descricao do protocolo P2P
 
 	Camada 0 (enlace):
+
+	Responsavel pelo envio e recebimento de pacotes, implementada em class Slot.
+	Formato:
 		[TAMANHO][dados]
 			TAMANHO = typedef = tamanho total da area de dados
 			dados  = TAMANHO * bytes = pacote camada 1
