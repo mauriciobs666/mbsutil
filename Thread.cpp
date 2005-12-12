@@ -1,34 +1,91 @@
 #include "Thread.h"
+/*
+#include <stdio.h>
+#ifdef _WIN32
+#include "socket_include.h"
+#else
+#include <unistd.h>
+#endif
+*/
 
-DWORD WINAPI Thread::t(LPVOID p)
+Thread::Thread(bool iniciar)
 {
-	Thread *esta=(Thread*)p;
-	esta->ativa=true;	
-	esta->retorno=esta->f(esta->fparm);
-	esta->ativa=false;
-	return 0;
-}
-
-Thread::Thread(Callback funcao, void *parametro, bool iniciar)
-{
-	int flags=0;
-	if(!iniciar)
-		flags=CREATE_SUSPENDED;
-	if(funcao==NULL)
-		return;
-	f=funcao;
-	fparm=parametro;
-	hnd=CreateThread(NULL,0,t,this,flags,&id);
+	#ifdef _WIN32
+		if(!iniciar)
+			hnd=CreateThread(NULL,0,t,this,CREATE_SUSPENDED,&id);
+		else
+			hnd=CreateThread(NULL,0,t,this,0,&id);
+	#else
+		pthread_attr_t attr;
+		pthread_attr_init(&attr);
+		pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);
+		if (pthread_create(&m_thread,&attr,StartThread,this) == -1)
+		{
+			perror("Thread: create failed");
+			SetRunning(false);
+		}
+	#endif
 }
 
 Thread::~Thread()
 {
+/*
+	if (m_running)
+	{
+		SetRunning(false);
+		SetRelease(true);
+
+#ifdef _WIN32
+		struct timeval tv;
+		tv.tv_sec = 0;
+		tv.tv_usec = 100000;
+		select(0,NULL,NULL,NULL,&tv);
+		::CloseHandle(m_thread);
+#else
+		sleep(1);
+#endif
+	}
+*/
 	if(hnd!=NULL)
 	{
-//		ExitThread();
 		CloseHandle(hnd);
 	}
 }
+
+/*
+threadfunc_t STDPREFIX Thread::StartThread(threadparam_t zz)
+{
+	Thread *pclThread = (Thread *)zz;
+
+	while (pclThread -> m_running && !pclThread -> m_release)
+	{
+#ifdef _WIN32
+		struct timeval tv;
+		tv.tv_sec = 0;
+		tv.tv_usec = 100000;
+		select(0,NULL,NULL,NULL,&tv);
+#else
+		sleep(1);
+#endif
+	}
+	if (pclThread -> m_running)
+	{
+		pclThread -> Run();
+	}
+	pclThread -> SetRunning(false); // if return
+	return (threadfunc_t)NULL;
+}
+*/
+
+static THREAD_RET THREAD_PRE t(THREAD_PARM p)
+{
+	Thread *esta=(Thread*)p;
+	esta->executando(true);
+	esta->run();
+	esta->executando(false);
+	return (THREAD_RET)NULL;
+}
+
 
 int Thread::resume()
 {
@@ -45,13 +102,6 @@ int Thread::pause()
 }
 
 /*
-class abc
-{
-public:
-	int dado;
-	abc(int d): dado(d) {}
-};
-
 class thread
 {
 	private:

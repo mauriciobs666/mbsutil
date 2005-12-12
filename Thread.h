@@ -1,57 +1,118 @@
 #ifndef MBSUTIL_THREAD_H
 #define MBSUTIL_THREAD_H
 
-#include "windows.h"
-
-typedef void*(*Callback)(void*);	//ponteiro pra funcao com assinatura:
-									//void* funcao(void*)
-/*
-	Return Values - WaitForSingleObject()
-
-	If the function fails, the return value is WAIT_FAILED.
-
-	If the function succeeds, the return value indicates the event that caused
-		the function to return:
-
-	Value			Meaning
-	WAIT_ABANDONED	The specified object is a mutex object that was not released
-					by the thread that owned the mutex object before the owning
-					thread terminated. Ownership of the mutex object is granted
-					to the calling thread, and the mutex is set to nonsignaled.
-	WAIT_OBJECT_0	The state of the specified object is signaled.
-	WAIT_TIMEOUT	The time-out interval elapsed, and the object's state is
-					nonsignaled.
-*/
+#ifdef _WIN32
+	#include <windows.h>
+	typedef DWORD  THREAD_RET;
+	typedef LPVOID THREAD_PARM;
+	#define THREAD_PRE WINAPI
+#else
+	#include <pthread.h>
+	typedef void * THREAD_RET;
+	typedef void * THREAD_PARM;
+	#define THREAD_PRE
+#endif
 
 class Mutex
 {
-	HANDLE hnd;
 public:
-    Mutex() { hnd=CreateMutex(NULL,false,NULL); }
-    ~Mutex() { CloseHandle(hnd); }
-    unsigned long trava() { return WaitForSingleObject(hnd,INFINITE); }
-    unsigned long destrava() { return ReleaseMutex(hnd); }
-    unsigned long estado() { return WaitForSingleObject(hnd,0); }
+    Mutex()
+    {
+    	#ifdef _WIN32
+			hnd=CreateMutex(NULL,false,NULL);
+		#else
+			pthread_mutex_init(&hnd,NULL);
+		#endif
+	}
+    ~Mutex()
+    {
+    	#ifdef _WIN32
+			::CloseHandle(hnd);
+		#else
+			pthread_mutex_destroy(&hnd);
+		#endif
+	}
+    unsigned long trava()
+    {
+		#ifdef _WIN32
+			return WaitForSingleObject(hnd,INFINITE);
+		#else
+			pthread_mutex_lock(&hnd);
+			return 0;
+		#endif
+	}
+    unsigned long destrava()
+    {
+		#ifdef _WIN32
+			return ::ReleaseMutex(hnd);
+		#else
+			pthread_mutex_unlock(&hnd);
+		#endif
+	}
+    unsigned long estado()
+    {
+		#ifdef _WIN32
+			return WaitForSingleObject(hnd,0);	//TODO: equivalente posix
+		#else
+			return 0;
+		#endif
+	}
+private:
+	#ifdef _WIN32
+		HANDLE hnd;
+	#else
+		pthread_mutex_t hnd;
+	#endif
 };
-
+/*
 class Thread
 {
-	HANDLE hnd;
-	DWORD id;
-	Callback f;
-	void *fparm;
-	void* retorno;
-	static DWORD WINAPI t(LPVOID p);
-	bool ativa;
 public:
-	Thread(Callback funcao, void *parametro=NULL, bool iniciar=true);
-	~Thread();
-	void* pegaRetorno() { return ativa ? NULL : retorno; }
-	bool executando() { return ativa; }
+	Thread(bool release = true);
+	virtual ~Thread();
+	static threadfunc_t STDPREFIX StartThread(threadparam_t);
+	virtual void Run() = 0;
+	bool IsRunning() { return m_running; }
+	void SetRunning(bool x) { m_running = x; }
+	bool IsReleased(); { return m_release; }
+	void SetRelease(bool x); { m_release = x; }
+private:
+	Thread(const Thread& ) {}
+	Thread& operator=(const Thread& ) { return *this; }
+#ifdef _WIN32
+	HANDLE m_thread;
+	DWORD m_dwThreadId;
+#else
+	pthread_t m_thread;
+#endif
+	bool m_running;
+	bool m_release;
+};
+*/
+class Thread
+{
+public:
+	Thread(bool iniciar=true);
+	virtual ~Thread();
+
+	virtual void run() = 0;
 	int resume();
 	int pause();
 	int stop();
 	int kill();
+	bool executando()
+		{ return ativa; }
+	void executando(bool b)
+		{ ativa=b; }
+private:
+	bool ativa;
+	#ifdef _WIN32
+		HANDLE hnd;
+		DWORD id;
+	#else
+		pthread_t hnd;
+	#endif
+	static THREAD_RET THREAD_PRE t(THREAD_PARM p);
 };
 
 #endif
@@ -329,4 +390,20 @@ Semaphore 	Slow 	Yes 			Automatic 				9x/NT
 Event 		Slow 	Yes 			Yes 					9x/NT/CE
 Metered
 Section 	Fast 	Yes 			Automatic 				9x/NT/CE
+*/
+/*	Return Values - WaitForSingleObject() - Win32
+
+	If the function fails, the return value is WAIT_FAILED.
+
+	If the function succeeds, the return value indicates the event that caused
+		the function to return:
+
+	Value			Meaning
+	WAIT_ABANDONED	The specified object is a mutex object that was not released
+					by the thread that owned the mutex object before the owning
+					thread terminated. Ownership of the mutex object is granted
+					to the calling thread, and the mutex is set to nonsignaled.
+	WAIT_OBJECT_0	The state of the specified object is signaled.
+	WAIT_TIMEOUT	The time-out interval elapsed, and the object's state is
+					nonsignaled.
 */

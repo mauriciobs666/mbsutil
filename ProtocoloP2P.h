@@ -26,6 +26,10 @@
 			dados  = TAMANHO * bytes = pacote camada 1
 
 	Camada 1 (rede):
+
+	Responsavel pelo roteamento de pacotes, descobrimento de hosts, pesquisa,
+	balanceamento da rede
+	Formato:
 		[COMANDO][dados]
 			COMANDO = typedef = enum Protocolo::Comandos
 			dados = depende do COMANDO
