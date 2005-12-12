@@ -92,7 +92,7 @@ private:
 class Thread
 {
 public:
-	Thread(bool iniciar=true);
+	Thread(bool iniciar=false);
 	virtual ~Thread();
 
 	virtual void run() = 0;
@@ -104,15 +104,16 @@ public:
 		{ return ativa; }
 	void executando(bool b)
 		{ ativa=b; }
-private:
+protected:
 	bool ativa;
+	bool finalizar;
+private:
 	#ifdef _WIN32
 		HANDLE hnd;
 		DWORD id;
 	#else
 		pthread_t hnd;
 	#endif
-	static THREAD_RET THREAD_PRE t(THREAD_PARM p);
 };
 
 #endif

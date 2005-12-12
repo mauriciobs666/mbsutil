@@ -42,7 +42,7 @@ namespace Protocolo
 	typedef unsigned short TAMANHO;
 	typedef unsigned short COMANDO;
 
-	typedef enum Comandos
+	typedef enum CmdCamada1
 	{
 		LOGIN,
 		/*	pacote com informacoes sobre o cliente e usuario
@@ -55,10 +55,6 @@ namespace Protocolo
 					sizeof(infoUsuario)=16+TAMNICK=32
 			sizeof(dados)=54
 		*/
-		MENSAGEM,
-		/*	Mensagem instantanea (texto/chat)
-			[char[] (nao-ASCIIZ)]
-		*/
 		PING,
 		/*	Ping
 			[unsigned long timestamp]
@@ -66,6 +62,10 @@ namespace Protocolo
 		PONG,
 		/*	Resposta ao ping
 			[unsigned long timestamp] (copia do recebido em ping)
+		*/
+		MENSAGEM,
+		/*	Mensagem instantanea (texto/chat)
+			[char[] (nao-ASCIIZ)]
 		*/
 		ROTEAR,
 		/*	Pedido de roteamento do pacote pra cliente com id baixa
@@ -92,6 +92,10 @@ namespace Protocolo
 		ACK,
 		/*	Acknowledge (pra chat p.e)
 		*/
+	};
+
+	typedef enum CmdCamada2
+	{
 		USER,
 		/*	protocolo definido pelo usuario
 			[unsigned char codigo do protocolo][dados]
