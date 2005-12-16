@@ -24,18 +24,6 @@
 		[TAMANHO][dados]
 			TAMANHO = typedef = tamanho total da area de dados
 			dados  = TAMANHO * bytes = pacote camada 1
-
-	Camada 1 (rede):
-
-	Responsavel pelo roteamento de pacotes, descobrimento de hosts, pesquisa,
-	balanceamento da rede
-	Formato:
-		[COMANDO][dados]
-			COMANDO = typedef = enum Protocolo::Comandos
-			dados = depende do COMANDO
-
-	Camada 2 (aplicacao):
-
 */
 namespace Protocolo
 {
@@ -44,16 +32,14 @@ namespace Protocolo
 
 	typedef enum CmdCamada1
 	{
-		LOGIN,
-		/*	pacote com informacoes sobre o cliente e usuario
-			[infoCliente][Usuario]
-				infoCliente = [versao][opcoes][Noh][mtu][mru]
-					Noh = [ip][porta][id]
-						sizeof(Noh)=10
-					sizeof(infoCliente)=12+sizeof(Noh)=22
-				infoUsuario = [Hash128][Nick]
-					sizeof(infoUsuario)=16+TAMNICK=32
-			sizeof(dados)=54
+		/*
+			Camada 1 (rede):
+				Responsavel pelo roteamento de pacotes, descobrimento de hosts, pesquisa,
+				balanceamento da rede
+			Formato:
+				[COMANDO][dados]
+					COMANDO = typedef = enum Protocolo::CmdCamada1
+					dados = depende do COMANDO
 		*/
 		PING,
 		/*	Ping
@@ -62,10 +48,6 @@ namespace Protocolo
 		PONG,
 		/*	Resposta ao ping
 			[unsigned long timestamp] (copia do recebido em ping)
-		*/
-		MENSAGEM,
-		/*	Mensagem instantanea (texto/chat)
-			[char[] (nao-ASCIIZ)]
 		*/
 		ROTEAR,
 		/*	Pedido de roteamento do pacote pra cliente com id baixa
@@ -91,6 +73,21 @@ namespace Protocolo
 		*/
 		ACK,
 		/*	Acknowledge (pra chat p.e)
+		*/
+		LOGIN,
+		/*	pacote com informacoes sobre o cliente e usuario
+			[infoCliente][Usuario]
+				infoCliente = [versao][opcoes][Noh][mtu][mru]
+					Noh = [ip][porta][id]
+						sizeof(Noh)=10
+					sizeof(infoCliente)=12+sizeof(Noh)=22
+				infoUsuario = [Hash128][Nick]
+					sizeof(infoUsuario)=16+TAMNICK=32
+			sizeof(dados)=54
+		*/
+		MENSAGEM,
+		/*	Mensagem instantanea (texto/chat)
+			[char[] (nao-ASCIIZ)]
 		*/
 	};
 
@@ -205,8 +202,8 @@ public:
 	friend class ClienteP2P;
 	friend class ArraySlots;
 
-	Cliente iC;	//TODO: protejer e transformar em *
-	Usuario iU;
+	Cliente iC;
+	Usuario iU;	//TODO: protejer e transformar em * ou usar soh o hash
 	//TODO: timestamps
 
 	Slot();
@@ -275,7 +272,7 @@ protected:
 
 /*	Classe ListaHash128
 	Fornece acesso facil e sincronizado para listas de hashs
-	IMPORTANTE: todos acessos devem ser protegidos pelo mutex
+	IMPORTANTE: acessos diretos devem ser protegidos pelo mutex
 */
 class ListaHash128
 {
@@ -297,6 +294,7 @@ public:
 
 /*	Classe ListaUsuarios
 	Fornece acesso facil e sincronizado para listas de usuarios
+	IMPORTANTE: acessos diretos devem ser protegidos pelo mutex
 */
 class ListaUsuarios
 {
