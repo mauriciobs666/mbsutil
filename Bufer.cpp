@@ -77,7 +77,17 @@ unsigned long Buffer::append(Buffer& b, unsigned long qtd)
     return qtd;
 }
 
-unsigned long Buffer::append(unsigned short us)
+unsigned short Buffer::readShort()
+{
+	unsigned short us;
+	if(disponiveis()<sizeof(us))
+		return 0;
+	us=*((unsigned short*)pntL);
+	pntL+=sizeof(us);
+	return us;
+}
+
+unsigned long Buffer::writeShort(unsigned short us)
 {
 	unsigned long novotam=ocupados()+sizeof(us);
 	if(novotam>tamanho)
@@ -88,7 +98,17 @@ unsigned long Buffer::append(unsigned short us)
 	return sizeof(us);
 }
 
-unsigned long Buffer::append(unsigned long ul)
+unsigned long Buffer::readLong()
+{
+	unsigned long ul;
+	if(disponiveis()<sizeof(ul))
+		return 0;
+	ul=*((unsigned long*)pntL);
+	pntL+=sizeof(ul);
+	return ul;
+}
+
+unsigned long Buffer::writeLong(unsigned long ul)
 {
 	unsigned long novotam=ocupados()+sizeof(ul);
 	if(novotam>tamanho)

@@ -257,6 +257,52 @@ GerenciadorSlots::~GerenciadorSlots()
 
 int GerenciadorSlots::IFH_tratar(Buffer *frame, Slot *slot)
 {
+	COMANDO comando=*((COMANDO*)frame->dados);
+	unsigned char *dados=frame->dados+sizeof(COMANDO);
+	unsigned long tamDados=frame->pegaTamanho()-sizeof(COMANDO);
+	//TODO: remover comando
+	switch(comando)
+    {
+/*
+		case LOGIN:
+			#ifdef LOGAR_COMANDOS
+				logar("CMD_LOGIN");
+			#endif
+			slot->iC.read(dados);
+			slot->iU.read(dados);
+			slot->setaEstado(Slot::CONECTADO);
+			Usuario *tmp=usuarios.busca(slot->iU);
+			if(tmp==NULL)
+				usuarios.insere(slot->iU,new Usuario(slot->iU));
+			//TODO: mandar informacoes sobre o cliente (i.e. ID)
+		break;
+		case MENSAGEM:
+			#ifdef LOGAR_COMANDOS
+				logar("CMD_MENSAGEMDIRETA");
+			#endif
+			mostrarMsg(&slot->iU,string((char*)dados,(size_t)tamDados));
+		break;
+		case PING:
+			#ifdef LOGAR_COMANDOS
+				logar("CMD_PING");
+			#endif
+			unsigned long timestamp=*((unsigned long*)dados);
+			enviaPong(timestamp, slot);
+		break;
+		case PONG:
+			#ifdef LOGAR_COMANDOS
+				logar("CMD_PONG");
+			#endif
+			unsigned long base=*((unsigned long*)dados);
+			unsigned long agora=(clock()/(CLOCKS_PER_SEC/1000));
+			slot->iC.ping=agora-base;
+		break;
+    }
+*/
+		default:
+//			logar("CAMADA1_COMANDO_INVALIDO:");
+		break;
+    }
 	ph->IPH_tratar(frame,slot);
 	return 0;
 }
@@ -567,7 +613,7 @@ int ClienteP2P::enviarMsg(const char *msg, const Hash128* user)
     Buffer *p=new Buffer(sizeof(COMANDO)+tam);	//comando + dados
     if(p==NULL)
         return -2;
-    p->append((COMANDO)MENSAGEM);
+    p->writeShort((COMANDO)MENSAGEM);
     memcpy(p->pntE,msg,tam);
     if(s->enviar(p))
         return -2;
@@ -583,7 +629,7 @@ void ClienteP2P::ping()
 int ClienteP2P::enviaLogin(Slot *slot)
 {
 	Buffer *login=new Buffer(56);
-	login->append((COMANDO)LOGIN);
+	login->writeShort((COMANDO)LOGIN);
 	iC.write(login->pntE);
 	iU.write(login->pntE);
 	if(slot->enviar(login))
@@ -594,9 +640,9 @@ int ClienteP2P::enviaLogin(Slot *slot)
 int ClienteP2P::enviaPing(Slot *slot)
 {
 	Buffer *ping=new Buffer(6);
-	ping->append((COMANDO)PING);
+	ping->writeShort((COMANDO)PING);
 	unsigned long timestamp=(clock()/(CLOCKS_PER_SEC/1000));
-	ping->append(timestamp);
+	ping->writeLong(timestamp);
 	if(slot->enviar(ping))
 		return -1;
 	return 0;
@@ -605,8 +651,8 @@ int ClienteP2P::enviaPing(Slot *slot)
 int ClienteP2P::enviaPong(unsigned long timestamp, Slot *slot)
 {
 	Buffer *pong=new Buffer(6);
-	pong->append((COMANDO)PONG);
-	pong->append(timestamp);
+	pong->writeShort((COMANDO)PONG);
+	pong->writeLong(timestamp);
 	if(slot->enviar(pong))
 		return -1;
 	return 0;

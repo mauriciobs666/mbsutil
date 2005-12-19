@@ -257,7 +257,12 @@ int Conexao::conectar(const char *end, const unsigned short porta)
 		return -1;
     if((he=gethostbyname(end))==NULL)
         return -2;
-    dest.sin_addr=*((in_addr*)he->h_addr);
+    return conectar(ntohl((*((in_addr*)he->h_addr)).S_un.S_addr),porta);
+}
+
+int Conexao::conectar(unsigned long end, unsigned short porta)
+{
+	dest.sin_addr.S_un.S_addr=htonl(end);
     dest.sin_port=htons(porta);
     dest.sin_family=AF_INET;
     memset(&(dest.sin_zero),0,8);
