@@ -57,6 +57,22 @@
             <Option link="0" />
             <Option target="default" />
         </Unit>
+        <Unit filename="P2Pdefs.h">
+            <Option compilerVar="CPP" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="default" />
+        </Unit>
+        <Unit filename="P2Ped.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="default" />
+        </Unit>
+        <Unit filename="P2Ped.h">
+            <Option compilerVar="CPP" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="default" />
+        </Unit>
         <Unit filename="Parser.cpp">
             <Option compilerVar="CPP" />
             <Option target="default" />
