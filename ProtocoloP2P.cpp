@@ -257,10 +257,7 @@ GerenciadorSlots::~GerenciadorSlots()
 
 int GerenciadorSlots::IFH_tratar(Buffer *frame, Slot *slot)
 {
-	COMANDO comando=*((COMANDO*)frame->dados);
-	unsigned char *dados=frame->dados+sizeof(COMANDO);
-	unsigned long tamDados=frame->pegaTamanho()-sizeof(COMANDO);
-	//TODO: remover comando
+//	COMANDO comando=frame->readShort();
 	switch(comando)
     {
 /*
@@ -660,18 +657,15 @@ int ClienteP2P::enviaPong(unsigned long timestamp, Slot *slot)
 
 int ClienteP2P::IPH_tratar(Buffer *pacote, Slot *slot)
 {
-	COMANDO comando=*((COMANDO*)pacote->dados);
-    unsigned char *dados=pacote->dados+sizeof(COMANDO);
-    unsigned long tamDados=pacote->pegaTamanho()-sizeof(COMANDO);
-
+	COMANDO comando=pacote->readShort();
     switch(comando)
     {
 		case LOGIN:
 			#ifdef LOGAR_COMANDOS
 				logar("CMD_LOGIN");
 			#endif
-			slot->iC.read(dados);
-			slot->iU.read(dados);
+			slot->iC.read(pacote->pntL);
+			slot->iU.read(pacote->pntL);
 			slot->setaEstado(Slot::CONECTADO);
 			Usuario *tmp=usuarios.busca(slot->iU);
 			if(tmp==NULL)
@@ -682,20 +676,20 @@ int ClienteP2P::IPH_tratar(Buffer *pacote, Slot *slot)
 			#ifdef LOGAR_COMANDOS
 				logar("CMD_MENSAGEMDIRETA");
 			#endif
-			mostrarMsg(&slot->iU,string((char*)dados,(size_t)tamDados));
+			mostrarMsg(&slot->iU,string((char*)pacote->pntL,(size_t)pacote->disponiveis()));
 		break;
 		case PING:
 			#ifdef LOGAR_COMANDOS
 				logar("CMD_PING");
 			#endif
-			unsigned long timestamp=*((unsigned long*)dados);
+			unsigned long timestamp=pacote->readLong();
 			enviaPong(timestamp, slot);
 		break;
 		case PONG:
 			#ifdef LOGAR_COMANDOS
 				logar("CMD_PONG");
 			#endif
-			unsigned long base=*((unsigned long*)dados);
+			unsigned long base=pacote->readLong();
 			unsigned long agora=(clock()/(CLOCKS_PER_SEC/1000));
 			slot->iC.ping=agora-base;
 		break;
