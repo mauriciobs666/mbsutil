@@ -2,532 +2,72 @@
 #include <ios>
 #include <fstream>
 
-//#define LOGAR_COMANDOS
-//#define LOGAR_SOCKET
+namespace
+{
+	typedef enum CmdCamada2
+	{
+		MENSAGEM,
+		/*	Mensagem instantanea (texto/chat)
+			[char[] (nao-ASCIIZ)]
+		*/
+		LOGIN,
+		/*	pacote com informacoes sobre o cliente e usuario
+			[infoCliente][Usuario]
+				infoCliente = [versao][opcoes][Noh][mtu][mru]
+					Noh = [ip][porta][id]
+						sizeof(Noh)=10
+					sizeof(infoCliente)=12+sizeof(Noh)=22
+				infoUsuario = [Hash128][Nick]
+					sizeof(infoUsuario)=16+TAMNICK=32
+			sizeof(dados)=54
+		*/
+		RETORNO,
+		/*	Pedido de conexao de callback
+		*/
+		BUSCAR,
+		/*	Broadcast de busca
+		*/
+		HIT,
+		/*	Encontrado
+		*/
+		ACK,
+		/*	Acknowledge (pra chat p.e)
+		*/
+		USER,
+		/*	protocolo definido pelo usuario
+			[unsigned char codigo do protocolo][dados]
+		*/
+	};
+};
 
 using namespace std;
 using namespace Protocolo;
 
-namespace
-{
-	const int TAMBUFFER=500;
-	ClienteP2PUI *p2pui=NULL;
-	Mutex mutexMostrarMsg;
-	Mutex mutexLogar;
-	void mostrarMsg(Hash128 *user, string frase)
-	{
-		mutexMostrarMsg.trava();
-		if(p2pui!=NULL)
-			p2pui->mostraMensagemChat(user,frase);
-		else
-		{
-			cerr << "ClienteP2PUI::mostraMensagemChat(" << user->toString();
-			cerr << ", " << frase << ")" << endl;
-		}
-		mutexMostrarMsg.destrava();
-	}
-	void logar(string frase)
-	{
-		mutexLogar.trava();
-		if(p2pui!=NULL)
-			p2pui->relatorio(frase);
-		else
-			cerr << "ClienteP2PUI::relatorio(" << frase << ")" << endl;
-		mutexLogar.destrava();
-	}
-};
+ClienteP2PUI *p2pui=NULL;
+Mutex mutexMostrarMsg;
+Mutex mutexLogar;
 
-//------------------------------------------------------------------------------
-//      Slot
-//------------------------------------------------------------------------------
-
-Slot::Slot()
+void mostrarMsg(Hash128 *user, string frase)
 {
-    temp.mudaTamanho(TAMBUFFER);
-    c=NULL;
-    recebendo=NULL;
-    _reset();
-}
-
-Slot::~Slot()
-{
-	_reset();
-}
-
-int Slot::conectar(Conexao *con)
-{
-	if(estado!=RESERVADO)
-	{
-		return -1;
-	}
-	if(con==NULL)
-	{
-		estado=LIVRE;
-		return -1;
-	}
-	c=con;
-	c->pai=this;
-	c->registraCallback(tratar);
-	timestamp=time(NULL);
-	return 0;
-}
-
-int Slot::conectar(const char *ip, const unsigned short porta)
-{
-	if(c==NULL)
-		c=new Conexao();
-	c->pai=this;
-	c->registraCallback(tratar);
-	timestamp=time(NULL);
-	return c->conectar(ip,porta);
-}
-
-int Slot::conectar(const Noh& n)
-{
-	if(c==NULL)
-		c=new Conexao();
-	c->pai=this;
-	c->registraCallback(tratar);
-	timestamp=time(NULL);
-	return c->conectar(n.ip,n.porta);
-}
-
-int Slot::desconectar()
-{
-	m.trava();
-	_reset();
-	m.destrava();
-    return 0;
-}
-
-Slot::EstadoSlot Slot::pegaEstado()
-{
-    m.trava();
-   	_conectado();
-    m.destrava();
-    return estado;
-}
-
-int Slot::setaEstado(EstadoSlot novo)
-{
-    m.trava();
-	estado=novo;
-    m.destrava();
-    return 0;
-}
-
-int Slot::enviar(Buffer *pkt)
-{
-	int retorno=-1;
-	m.trava();
-	_conectado();
-    if(estado>RESERVADO)
-    {
-        TAMANHO tam=pkt->pegaTamanho();
-        if(c->enviar((char*)&tam,sizeof(TAMANHO))==sizeof(TAMANHO)) //envia tamanho
-            if(c->enviar((char*)pkt->dados,tam)==tam)       		//envia pacote
-                retorno=0;                                  		//tudo ok
-    }
-    delete pkt;
-    m.destrava();
-    return retorno;
-}
-
-Buffer* Slot::receber()
-{
-	int qtd;
-	m.trava();
-	do
-	{
-        temp.reset();
-		qtd=c->receber((char*)temp.pntE, temp.livres());
-		if(qtd>0)
-			temp.pntE+=qtd;
-		while(temp.disponiveis()>0)
-		{
-			switch(estadoRX)
-			{
-				case NOVO:
-					//esperando primeiro byte de tam do novo pacote
-					*((char*)&tamRecebendo)=*temp.pntL;
-					temp.pntL++;
-					estadoRX=ESPERA_TAMANHO;
-				break;
-				case ESPERA_TAMANHO:
-					//esperando segundo byte de tamanho
-					*((char*)(&tamRecebendo+1))=*temp.pntL;
-					temp.pntL++;
-					//tamanho recebido, agora o pacote em si
-					recebendo=new Buffer(tamRecebendo);
-					estadoRX=DADOS;
-				break;
-				case DADOS:
-					//receber comando e dados
-					recebendo->append(temp,recebendo->livres());
-					if(recebendo->livres()==0)	//aceitacao
-					{
-						#ifdef LOGAR_SOCKET
-							logar("pacote completo recebido");
-						#endif
-						recebidos.push(recebendo);
-						recebendo=NULL;
-						estadoRX=NOVO;
-						timestamp=time(NULL);
-					}
-				break;
-				default:
-					logar("__FILE__:__LINE__:IMPOSSIVEL");
-				break;
-			}
-		}
-	} while(qtd>0);
-	Buffer *retorno=NULL;
-	if(!recebidos.empty())
-	{
-		retorno=recebidos.front();
-		recebidos.pop();
-	}
-	m.destrava();
-	return retorno;
-}
-
-int Slot::_reset()
-{
-	estado=LIVRE;
-	estadoRX=NOVO;
-	if(c!=NULL)
-	{
-        delete c;
-		c=NULL;
-	}
-    if(recebendo!=NULL)
-    {
-        delete recebendo;
-        recebendo=NULL;
-    }
-	while(!recebidos.empty())
-	{
-		delete recebidos.front();
-		recebidos.pop();
-	}
-    return 0;
-}
-
-bool Slot::_conectado()
-{
-	if(c!=NULL)
-	{
-		if(!c->ativa())
-			_reset();
-		else
-		{
-			time_t agora=time(NULL);
-			if((agora-timestamp)>TIMEOUT_RX)
-				_reset();
-			else
-				return true;
-		}
-	}
+	mutexMostrarMsg.trava();
+	if(p2pui!=NULL)
+		p2pui->mostraMensagemChat(user,frase);
 	else
-		_reset();
-	return false;
-}
-
-int Slot::tratar(Conexao *con, long codeve, long coderro[])
-{
-	if(con==NULL)
-		return -1;
-
-	Slot *s=(Slot*)con->pai;
-	if(s==NULL)
-		return -1;
-
-	s->iC.ip=con->pegaInfo()->sin_addr.s_addr;
-	s->iC.porta=con->pegaInfo()->sin_port;
-
-	if(codeve & FD_CONNECT)
 	{
-		#ifdef LOGAR_SOCKET
-			logar("FD_CONNECT");
-		#endif
-		if(coderro[FD_CONNECT_BIT]!=0)
-			return 1;
+		cerr << "ClienteP2PUI::mostraMensagemChat(" << user->toString();
+		cerr << ", " << frase << ")" << endl;
 	}
-	if(codeve & FD_READ)
-	{
-		#ifdef LOGAR_SOCKET
-			logar("FD_READ");
-		#endif
-		if(coderro[FD_READ_BIT]!=0)
-			return 1;
-		else
-		{
-			Buffer *f;
-			while((f=s->receber())!=NULL)
-				s->gerenciador->IFH_tratar(f,s);
-		}
-	}
-	if(codeve & FD_WRITE)
-	{
-		#ifdef LOGAR_SOCKET
-			logar("FD_WRITE");
-		#endif
-		if(coderro[FD_WRITE_BIT]!=0)
-			return 1;
-		s->gerenciador->IFH_conectado(s);
-	}
-	if(codeve & FD_CLOSE)
-	{
-		#ifdef LOGAR_SOCKET
-			logar("FD_CLOSE");
-		#endif
-		return 1;	//matar thread...
-	}
-	return 0;
+	mutexMostrarMsg.destrava();
 }
 
-//------------------------------------------------------------------------------
-//      GerenciadorSlots
-//------------------------------------------------------------------------------
-
-GerenciadorSlots::GerenciadorSlots(int num)
+void logar(string frase)
 {
-	slots=NULL;
-	numSlots=0;
-	mudaNumSlots(num);
-    serverSock.pai=this;
-    serverSock.registraCallback(tratarServer);
-}
-
-GerenciadorSlots::~GerenciadorSlots()
-{
-    if((slots!=NULL)&&(numSlots>0))
-        delete[] slots;
-}
-
-int GerenciadorSlots::IFH_tratar(Buffer *frame, Slot *slot)
-{
-	COMANDO comando=frame->readShort();
-	switch(comando)
-    {
-    	case DIRETA:
-			return ph->IPH_tratar(frame,slot);	//repassa pra camada superior
-		case PING:
-			#ifdef LOGAR_COMANDOS
-				logar("CMD_PING");
-			#endif
-			unsigned long timestamp=frame->readLong();
-			Buffer *pong=new Buffer(sizeof(COMANDO)+sizeof(timestamp));
-			pong->writeShort((COMANDO)PONG);
-			pong->writeLong(timestamp);
-			slot->enviar(pong);
-		break;
-		case PONG:
-			#ifdef LOGAR_COMANDOS
-				logar("CMD_PONG");
-			#endif
-			unsigned long base=frame->readLong();
-			unsigned long agora=(clock()/(CLOCKS_PER_SEC/1000));
-			slot->iC.ping=agora-base;
-		break;
-		default:
-			logar("CAMADA1_COMANDO_INVALIDO:");
-		break;
-    }
-    delete frame;
-	return 0;
-}
-
-int GerenciadorSlots::IFH_conectado(Slot *slot)
-{
-	nohs.push(slot->iC);
-	ph->IPH_conectado(slot->iC);
-	return 0;
-}
-
-int GerenciadorSlots::IFH_desconectado(Slot *slot)
-{
-	ph->IPH_desconectado(slot->iC);
-	return 0;
-}
-
-int GerenciadorSlots::mudaNumSlots(int num)
-{
-	if(num>0)
-	{
-		Slot *temp=new Slot[num];
-		if(temp==NULL)
-			return -1;		//erro de alocacao
-		if((slots!=NULL)&&(numSlots>0))
-			delete[] slots;
-		slots=temp;
-		for(int n=0;n<num;n++)
-			slots[n].registraFrameHandler(this);
-	}
-	else if((slots!=NULL)&&(numSlots>0))
-	{
-		delete[] slots;
-		slots=NULL;
-	}
-	numSlots=num;
-	return 0;
-}
-
-Slot* GerenciadorSlots::at(int num) const
-{
-    if((num>=0)&(num<numSlots))
-        return &slots[num];
-    return NULL;
-}
-
-Slot* GerenciadorSlots::operator[](const Hash128& user) const
-{
-    for(int x=0;x<numSlots;x++)
-    	if(slots[x].iU.cmp(user)==0)
-			return &slots[x];
-    return NULL;
-}
-
-Slot* GerenciadorSlots::operator[](const Noh& n) const
-{
-    for(int x=0;x<numSlots;x++)
-    	if(n==slots[x].iC)
-			return &slots[x];
-    return NULL;
-}
-
-int GerenciadorSlots::aloca()
-// busca e aloca (estado 0->1) slot livre
-// retorna num do slot ou -1 caso todos estejam ocupados
-{
-    m.trava();
-    {
-        for(int x=0;x<numSlots;x++)
-        {
-            if(slots[x].pegaEstado()==Slot::LIVRE)
-            {
-                if(slots[x].setaEstado(Slot::RESERVADO)==0)
-                {
-                    m.destrava();
-                    return x;
-                }
-            }
-        }
-    }
-    m.destrava();
-    return -1;
-}
-
-int GerenciadorSlots::enviar(Buffer *pkt, const Noh& n)
-{
-	Slot *s=operator[](n);
-	if(s==NULL)
-		return -1;
-
-	Buffer *frame=new Buffer(sizeof(COMANDO)+pkt->pegaTamanho());
-	frame->writeShort(DIRETA);
-	frame->append(*pkt);
-	delete pkt;
-
-	return s->enviar(frame);
-}
-
-int GerenciadorSlots::ouvir(unsigned short porta)
-{
-	int retorno=0;
-	serverSock.desconectar();
-	if(0==porta)
-		porta=iC.porta;
-	if((retorno=serverSock.ouvir(porta))==0)
-	{
-		logar("Esperando conexoes na porta "+int2str(porta));
-		iC.porta=porta;
-	}
+	mutexLogar.trava();
+	if(p2pui!=NULL)
+		p2pui->relatorio(frase);
 	else
-		logar("Erro ao tentar abrir porta "+int2str(porta));
-	return retorno;
-}
-
-int GerenciadorSlots::conectar(const Noh& n)
-{
-    int ns=aloca();
-    if(ns<0)
-        return ns;  //nenhum slot disponivel
-	int ret=slots[ns].conectar(n);
-	if(ret==0)
-		slots[ns].setaEstado(Slot::LOGIN);
-	else
-		slots[ns].setaEstado(Slot::LIVRE);
-	return ret;
-}
-
-int GerenciadorSlots::conectar(const char *ip, const unsigned short porta)
-{
-    int ns=aloca();
-    if(ns<0)
-        return ns;  //nenhum slot disponivel
-	int ret=slots[ns].conectar(ip,porta);
-	if(ret==0)
-		slots[ns].setaEstado(Slot::LOGIN);
-	else
-		slots[ns].setaEstado(Slot::LIVRE);
-	return ret;
-}
-
-int GerenciadorSlots::conectar(std::string ip, const unsigned short porta)
-{
-	return conectar(ip.c_str(),porta);
-}
-
-int GerenciadorSlots::desconectar(int nslot)
-{
-	if(nslot<0)
-		for(int x=0;x<numSlots;x++)
-			slots[x].desconectar();
-	else if(nslot<numSlots)
-		slots[nslot].desconectar();
-	else
-		return -1;
-    return 0;
-}
-
-void GerenciadorSlots::ping()
-{
-	Buffer *ping;
-	unsigned long timestamp=(clock()/(CLOCKS_PER_SEC/1000));
-
-	for(int x=0;x<numSlots;x++)
-	{
-		ping=new Buffer(sizeof(COMANDO)+sizeof(timestamp));
-		ping->writeShort((COMANDO)PING);
-		ping->writeLong(timestamp);
-		slots[x].enviar(ping);
-	}
-}
-
-int GerenciadorSlots::tratarServer(Conexao *con, long codeve, long coderro[])
-{
-	GerenciadorSlots *pai;
-	if((pai=(GerenciadorSlots*)con->pai)==NULL)
-		return -1;
-
-	if(codeve & FD_ACCEPT)
-	{
-		#ifdef LOGAR_SOCKET
-			logar("FD_ACCEPT");
-		#endif
-		int ns=pai->aloca();
-		if(ns<0)
-		{
-			con->recusar();
-			logar("Conexão recusada");
-			return 0;
-		}
-		pai->slots[ns].conectar(con->aceitar());
-	}
-	if(codeve & FD_CLOSE)
-		return 1;	//matar thread...
-	return 0;
+		cerr << "ClienteP2PUI::relatorio(" << frase << ")" << endl;
+	mutexLogar.destrava();
 }
 
 //------------------------------------------------------------------------------
