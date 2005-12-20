@@ -5,6 +5,7 @@
 #include "Rede.h"
 #include "Parser.h"
 #include "P2Ped.h"
+#include <ctime>
 
 using std::istream;
 using std::ostream;
@@ -40,25 +41,24 @@ public:
 class Slot
 {
 public:
-	friend class ClienteP2P;
-	friend class GerenciadorSlots;
-
 	Cliente iC;
 	Usuario iU;	//TODO: protejer e transformar em * ou usar soh o hash
-	//TODO: timestamps p/ time-out
+	time_t timestamp;	//time-out rx
 
 	Slot();
 	~Slot();
 	void registraFrameHandler(iFrameHandler *pai)
 		{ gerenciador=pai; }
 
-//	int conectar(const char *ip, const unsigned short porta);
+	int conectar(Conexao *con);
+	int conectar(const char *ip, unsigned short porta);
+	int conectar(const Noh& n);
 	int desconectar();
 
 	typedef enum
 	{
 		LIVRE = 0,		//desconectado
-		ESPERANDO,		//desconectado, mas reservado pelo gerenciador
+		RESERVADO,		//desconectado, mas reservado pelo gerenciador
 		LOGIN,			//conectado mas esperando login
 		CONECTADO		//conectado normal
 	} EstadoSlot;
@@ -77,13 +77,11 @@ protected:
 	int _reset();		//desprotegida
 	bool _conectado();	//desprotegida
 
-	//Fila de recepcao
-	std::queue<Buffer*> recebidos;	//fila de frames prontos pra serem tratados
-
 	//Maquina de estados para RX de Slot
 	Buffer temp;					//usado na recepcao de Conexao
 	Protocolo::TAMANHO tamRecebendo;//tamanho temporario do frame "*recebendo"
 	Buffer *recebendo;				//frame sendo recebido
+	std::queue<Buffer*> recebidos;	//fila de frames prontos pra serem tratados
 
 	enum EstadosRX
 	{
@@ -107,7 +105,7 @@ private:
 		- enviar e receber pacotes
 		- roteamento
 		- descobrimento de hosts
-		- pesquisa
+		- broadcast e pesquisa
 		- balanceamento da rede
 		- select() ???
 
@@ -122,13 +120,14 @@ class iPacketHandler	// interface do tratador de pacotes
 {
 public:
 	virtual int IPH_tratar(Buffer *pacote, Slot *slot) = 0;
-	virtual int IPH_conectado(Slot *slot) = 0;
-	virtual int IPH_desconectado(Slot *slot) = 0;
+	virtual int IPH_conectado(const Noh& n) = 0;
+	virtual int IPH_desconectado(const Noh& n) = 0;
 };
 
 class GerenciadorSlots : public iFrameHandler
 {
 public:
+	Cliente iC;
 	ListaNohs nohs;
 
 	GerenciadorSlots(int num=10);
@@ -137,22 +136,29 @@ public:
 	void registraPacketHandler(iPacketHandler *pai)
 		{ ph=pai; }
 
+	int pegaNumSlots() const { return numSlots; }
+	int mudaNumSlots(int num);
+
 	virtual int IFH_tratar(Buffer *frame, Slot *slot);
 	virtual int IFH_conectado(Slot *slot);
 	virtual int IFH_desconectado(Slot *slot);
 
-	int pegaNumSlots() const { return numSlots; }
-	int mudaNumSlots(int num);
-
 	Slot* at(int num) const;
 	Slot* operator[](int i) const { return &slots[i]; }
+
 	Slot* operator[](const Hash128& user) const;	//busca
+	Slot* operator[](const Noh& n) const;			//busca
 
 	int aloca();
 	//TODO:	int libera();	//mata slot com a classificacao mais baixa e aloca
+
+	int enviar(Buffer *pkt, const Noh& n);
+	int ouvir(unsigned short porta=0);	//0=iC.porta
+	int conectar(const Noh& n);
 	int conectar(const char *ip, const unsigned short porta);
 	int conectar(std::string ip, const unsigned short porta);
 	int desconectar(int nslot=-1);	//-1 = todos
+	void ping();					//manda pedido de ping p/ todos slots
 private:
 	Mutex m;
 	int numSlots;
@@ -179,7 +185,6 @@ class ClienteP2P : public iPacketHandler
 {
 public:
 	GerenciadorSlots slots;
-	Cliente iC;
 	Usuario iU;
 
 	ListaUsuarios usuarios;		//arvore com todos usuarios conhecidos
@@ -193,17 +198,13 @@ public:
 	int salvar(std::string dir=".");	//salva todas as listas e info
 	Protocolo::IOArquivo abrirID(std::string arquivo);
 	Protocolo::IOArquivo salvarID(std::string arquivo);
-	int esperarConexoes(unsigned short porta=0);	//0=iC.porta
 	int enviarMsg(std::string msg, const Hash128* user);
 	int enviarMsg(const char *msg, const Hash128* user);
-	void ping();						//manda pedido de ping p/ todos slots
 protected:
-	int enviaLogin(Slot *slot);
-	int enviaPing(Slot *slot);
-	int enviaPong(unsigned long timestamp, Slot *slot);
+	int enviaLogin(const Noh& n);
 	virtual int IPH_tratar(Buffer *pacote, Slot *slot);		//trata pacote recebido
-	virtual int IPH_conectado(Slot *slot);
-	virtual int IPH_desconectado(Slot *slot);
+	virtual int IPH_conectado(const Noh& n);
+	virtual int IPH_desconectado(const Noh& n);
 };
 #endif
 

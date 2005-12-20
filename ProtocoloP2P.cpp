@@ -1,5 +1,4 @@
 #include "ProtocoloP2P.h"
-#include <ctime>
 #include <ios>
 #include <fstream>
 
@@ -55,9 +54,49 @@ Slot::~Slot()
 	_reset();
 }
 
+int Slot::conectar(Conexao *con)
+{
+	if(estado!=RESERVADO)
+	{
+		return -1;
+	}
+	if(con==NULL)
+	{
+		estado=LIVRE;
+		return -1;
+	}
+	c=con;
+	c->pai=this;
+	c->registraCallback(tratar);
+	timestamp=time(NULL);
+	return 0;
+}
+
+int Slot::conectar(const char *ip, const unsigned short porta)
+{
+	if(c==NULL)
+		c=new Conexao();
+	c->pai=this;
+	c->registraCallback(tratar);
+	timestamp=time(NULL);
+	return c->conectar(ip,porta);
+}
+
+int Slot::conectar(const Noh& n)
+{
+	if(c==NULL)
+		c=new Conexao();
+	c->pai=this;
+	c->registraCallback(tratar);
+	timestamp=time(NULL);
+	return c->conectar(n.ip,n.porta);
+}
+
 int Slot::desconectar()
 {
+	m.trava();
 	_reset();
+	m.destrava();
     return 0;
 }
 
@@ -82,7 +121,7 @@ int Slot::enviar(Buffer *pkt)
 	int retorno=-1;
 	m.trava();
 	_conectado();
-    if(estado>ESPERANDO)
+    if(estado>RESERVADO)
     {
         TAMANHO tam=pkt->pegaTamanho();
         if(c->enviar((char*)&tam,sizeof(TAMANHO))==sizeof(TAMANHO)) //envia tamanho
@@ -133,6 +172,7 @@ Buffer* Slot::receber()
 						recebidos.push(recebendo);
 						recebendo=NULL;
 						estadoRX=NOVO;
+						timestamp=time(NULL);
 					}
 				break;
 				default:
@@ -165,7 +205,11 @@ int Slot::_reset()
         delete recebendo;
         recebendo=NULL;
     }
-//TODO:    recebidos.clear();
+	while(!recebidos.empty())
+	{
+		delete recebidos.front();
+		recebidos.pop();
+	}
     return 0;
 }
 
@@ -176,7 +220,13 @@ bool Slot::_conectado()
 		if(!c->ativa())
 			_reset();
 		else
-			return true;
+		{
+			time_t agora=time(NULL);
+			if((agora-timestamp)>TIMEOUT_RX)
+				_reset();
+			else
+				return true;
+		}
 	}
 	else
 		_reset();
@@ -257,62 +307,47 @@ GerenciadorSlots::~GerenciadorSlots()
 
 int GerenciadorSlots::IFH_tratar(Buffer *frame, Slot *slot)
 {
-	COMANDO comando;//=frame->readShort();
+	COMANDO comando=frame->readShort();
 	switch(comando)
     {
-/*
-		case LOGIN:
-			#ifdef LOGAR_COMANDOS
-				logar("CMD_LOGIN");
-			#endif
-			slot->iC.read(dados);
-			slot->iU.read(dados);
-			slot->setaEstado(Slot::CONECTADO);
-			Usuario *tmp=usuarios.busca(slot->iU);
-			if(tmp==NULL)
-				usuarios.insere(slot->iU,new Usuario(slot->iU));
-			//TODO: mandar informacoes sobre o cliente (i.e. ID)
-		break;
-		case MENSAGEM:
-			#ifdef LOGAR_COMANDOS
-				logar("CMD_MENSAGEMDIRETA");
-			#endif
-			mostrarMsg(&slot->iU,string((char*)dados,(size_t)tamDados));
-		break;
+    	case DIRETA:
+			return ph->IPH_tratar(frame,slot);	//repassa pra camada superior
 		case PING:
 			#ifdef LOGAR_COMANDOS
 				logar("CMD_PING");
 			#endif
-			unsigned long timestamp=*((unsigned long*)dados);
-			enviaPong(timestamp, slot);
+			unsigned long timestamp=frame->readLong();
+			Buffer *pong=new Buffer(sizeof(COMANDO)+sizeof(timestamp));
+			pong->writeShort((COMANDO)PONG);
+			pong->writeLong(timestamp);
+			slot->enviar(pong);
 		break;
 		case PONG:
 			#ifdef LOGAR_COMANDOS
 				logar("CMD_PONG");
 			#endif
-			unsigned long base=*((unsigned long*)dados);
+			unsigned long base=frame->readLong();
 			unsigned long agora=(clock()/(CLOCKS_PER_SEC/1000));
 			slot->iC.ping=agora-base;
 		break;
-    }
-*/
 		default:
-//			logar("CAMADA1_COMANDO_INVALIDO:");
+			logar("CAMADA1_COMANDO_INVALIDO:");
 		break;
     }
-	ph->IPH_tratar(frame,slot);
+    delete frame;
 	return 0;
 }
 
 int GerenciadorSlots::IFH_conectado(Slot *slot)
 {
 	nohs.push(slot->iC);
-	ph->IPH_conectado(slot);
+	ph->IPH_conectado(slot->iC);
 	return 0;
 }
 
 int GerenciadorSlots::IFH_desconectado(Slot *slot)
 {
+	ph->IPH_desconectado(slot->iC);
 	return 0;
 }
 
@@ -353,6 +388,14 @@ Slot* GerenciadorSlots::operator[](const Hash128& user) const
     return NULL;
 }
 
+Slot* GerenciadorSlots::operator[](const Noh& n) const
+{
+    for(int x=0;x<numSlots;x++)
+    	if(n==slots[x].iC)
+			return &slots[x];
+    return NULL;
+}
+
 int GerenciadorSlots::aloca()
 // busca e aloca (estado 0->1) slot livre
 // retorna num do slot ou -1 caso todos estejam ocupados
@@ -361,9 +404,9 @@ int GerenciadorSlots::aloca()
     {
         for(int x=0;x<numSlots;x++)
         {
-            if(slots[x].pegaEstado()==0)
+            if(slots[x].pegaEstado()==Slot::LIVRE)
             {
-                if(slots[x].setaEstado(Slot::LOGIN)==0)
+                if(slots[x].setaEstado(Slot::RESERVADO)==0)
                 {
                     m.destrava();
                     return x;
@@ -375,21 +418,60 @@ int GerenciadorSlots::aloca()
     return -1;
 }
 
-int GerenciadorSlots::conectar(const char *ip, const unsigned short porta)
+int GerenciadorSlots::enviar(Buffer *pkt, const Noh& n)
 {
-    Slot *s;
+	Slot *s=operator[](n);
+	if(s==NULL)
+		return -1;
+
+	Buffer *frame=new Buffer(sizeof(COMANDO)+pkt->pegaTamanho());
+	frame->writeShort(DIRETA);
+	frame->append(*pkt);
+	delete pkt;
+
+	return s->enviar(frame);
+}
+
+int GerenciadorSlots::ouvir(unsigned short porta)
+{
+	int retorno=0;
+	serverSock.desconectar();
+	if(0==porta)
+		porta=iC.porta;
+	if((retorno=serverSock.ouvir(porta))==0)
+	{
+		logar("Esperando conexoes na porta "+int2str(porta));
+		iC.porta=porta;
+	}
+	else
+		logar("Erro ao tentar abrir porta "+int2str(porta));
+	return retorno;
+}
+
+int GerenciadorSlots::conectar(const Noh& n)
+{
     int ns=aloca();
     if(ns<0)
         return ns;  //nenhum slot disponivel
-    s=&slots[ns];
+	int ret=slots[ns].conectar(n);
+	if(ret==0)
+		slots[ns].setaEstado(Slot::LOGIN);
+	else
+		slots[ns].setaEstado(Slot::LIVRE);
+	return ret;
+}
 
-    if(s->c==NULL)
-        s->c=new Conexao();
-    Conexao *c=s->c;
-    c->pai=s;
-    c->id=ns;
-    c->registraCallback(Slot::tratar);
-    return c->conectar(ip,porta);
+int GerenciadorSlots::conectar(const char *ip, const unsigned short porta)
+{
+    int ns=aloca();
+    if(ns<0)
+        return ns;  //nenhum slot disponivel
+	int ret=slots[ns].conectar(ip,porta);
+	if(ret==0)
+		slots[ns].setaEstado(Slot::LOGIN);
+	else
+		slots[ns].setaEstado(Slot::LIVRE);
+	return ret;
 }
 
 int GerenciadorSlots::conectar(std::string ip, const unsigned short porta)
@@ -409,36 +491,39 @@ int GerenciadorSlots::desconectar(int nslot)
     return 0;
 }
 
+void GerenciadorSlots::ping()
+{
+	Buffer *ping;
+	unsigned long timestamp=(clock()/(CLOCKS_PER_SEC/1000));
+
+	for(int x=0;x<numSlots;x++)
+	{
+		ping=new Buffer(sizeof(COMANDO)+sizeof(timestamp));
+		ping->writeShort((COMANDO)PING);
+		ping->writeLong(timestamp);
+		slots[x].enviar(ping);
+	}
+}
+
 int GerenciadorSlots::tratarServer(Conexao *con, long codeve, long coderro[])
 {
-    GerenciadorSlots *pai;
-    int ns;
-    Slot *s;
-
-    if((pai=(GerenciadorSlots*)con->pai)==NULL)
-        return -1;
+	GerenciadorSlots *pai;
+	if((pai=(GerenciadorSlots*)con->pai)==NULL)
+		return -1;
 
 	if(codeve & FD_ACCEPT)
 	{
 		#ifdef LOGAR_SOCKET
 			logar("FD_ACCEPT");
 		#endif
-        ns=pai->aloca();
-        if(ns<0)
-        {
-            con->recusar();
-            logar("Conexão recusada");
-            return 0;
-        }
-        s=&pai->slots[ns];
-		s->_reset();	//TODO: _reset() naum eh publico
-        s->c=con->aceitar();
-        if(s->c!=NULL)
-        {
-            s->c->pai=s;
-            s->c->id=ns;
-            s->c->registraCallback(Slot::tratar);
-        }
+		int ns=pai->aloca();
+		if(ns<0)
+		{
+			con->recusar();
+			logar("Conexão recusada");
+			return 0;
+		}
+		pai->slots[ns].conectar(con->aceitar());
 	}
 	if(codeve & FD_CLOSE)
 		return 1;	//matar thread...
@@ -577,22 +662,6 @@ IOArquivo ClienteP2P::salvarID(std::string arquivo)
 	return ERRO_IO;
 }
 
-int ClienteP2P::esperarConexoes(unsigned short porta)
-{
-	int retorno=0;
-	slots.serverSock.desconectar();
-	if(0==porta)
-		porta=iC.porta;
-	if((retorno=slots.serverSock.ouvir(porta))==0)
-	{
-		logar("Esperando conexoes na porta "+int2str(porta));
-		iC.porta=porta;
-	}
-	else
-		logar("Erro ao tentar abrir porta "+int2str(porta));
-	return retorno;
-}
-
 int ClienteP2P::enviarMsg(string msg, const Hash128* user)
 {
 	return enviarMsg(msg.c_str(),user);
@@ -602,9 +671,12 @@ int ClienteP2P::enviarMsg(const char *msg, const Hash128* user)
 //  -1 = desconectado
 //  -2 = erro
 {
+//TODO: begin gambia
     Slot *s=slots[*user];
     if(s==NULL)
 		return -1;
+	Noh n=s->iC;
+//TODO: end gambia
 
     unsigned short tam=strlen(msg);
     Buffer *p=new Buffer(sizeof(COMANDO)+tam);	//comando + dados
@@ -612,45 +684,20 @@ int ClienteP2P::enviarMsg(const char *msg, const Hash128* user)
         return -2;
     p->writeShort((COMANDO)MENSAGEM);
     memcpy(p->pntE,msg,tam);
-    if(s->enviar(p))
+    p->pntE+=tam;
+
+    if(slots.enviar(p,n))
         return -2;
     return 0;
 }
 
-void ClienteP2P::ping()
-{
-	for(int x=0;x<slots.pegaNumSlots();x++)
-		enviaPing(slots[x]);
-}
-
-int ClienteP2P::enviaLogin(Slot *slot)
+int ClienteP2P::enviaLogin(const Noh& n)
 {
 	Buffer *login=new Buffer(56);
 	login->writeShort((COMANDO)LOGIN);
-	iC.write(login->pntE);
+	slots.iC.write(login->pntE);
 	iU.write(login->pntE);
-	if(slot->enviar(login))
-		return -1;
-	return 0;
-}
-
-int ClienteP2P::enviaPing(Slot *slot)
-{
-	Buffer *ping=new Buffer(6);
-	ping->writeShort((COMANDO)PING);
-	unsigned long timestamp=(clock()/(CLOCKS_PER_SEC/1000));
-	ping->writeLong(timestamp);
-	if(slot->enviar(ping))
-		return -1;
-	return 0;
-}
-
-int ClienteP2P::enviaPong(unsigned long timestamp, Slot *slot)
-{
-	Buffer *pong=new Buffer(6);
-	pong->writeShort((COMANDO)PONG);
-	pong->writeLong(timestamp);
-	if(slot->enviar(pong))
+	if(slots.enviar(login,n))
 		return -1;
 	return 0;
 }
@@ -670,28 +717,12 @@ int ClienteP2P::IPH_tratar(Buffer *pacote, Slot *slot)
 			Usuario *tmp=usuarios.busca(slot->iU);
 			if(tmp==NULL)
 				usuarios.insere(slot->iU,new Usuario(slot->iU));
-			//TODO: mandar informacoes sobre o cliente (i.e. ID)
 		break;
 		case MENSAGEM:
 			#ifdef LOGAR_COMANDOS
 				logar("CMD_MENSAGEMDIRETA");
 			#endif
 			mostrarMsg(&slot->iU,string((char*)pacote->pntL,(size_t)pacote->disponiveis()));
-		break;
-		case PING:
-			#ifdef LOGAR_COMANDOS
-				logar("CMD_PING");
-			#endif
-			unsigned long timestamp=pacote->readLong();
-			enviaPong(timestamp, slot);
-		break;
-		case PONG:
-			#ifdef LOGAR_COMANDOS
-				logar("CMD_PONG");
-			#endif
-			unsigned long base=pacote->readLong();
-			unsigned long agora=(clock()/(CLOCKS_PER_SEC/1000));
-			slot->iC.ping=agora-base;
 		break;
 		default:
 			logar("CMD_INVALIDO");
@@ -701,13 +732,13 @@ int ClienteP2P::IPH_tratar(Buffer *pacote, Slot *slot)
     return 0;
 }
 
-int ClienteP2P::IPH_conectado(Slot *slot)
+int ClienteP2P::IPH_conectado(const Noh& n)
 {
-	enviaLogin(slot);
+	enviaLogin(n);
 	return 0;
 }
 
-int ClienteP2P::IPH_desconectado(Slot *slot)
+int ClienteP2P::IPH_desconectado(const Noh& n)
 {
 	return 0;
 }

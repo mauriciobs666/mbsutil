@@ -8,6 +8,9 @@ namespace Protocolo
 
 	typedef enum CmdCamada1
 	{
+		DIRETA,
+		/*
+		*/
 		PING,
 		/*	Ping
 			[unsigned long timestamp]
@@ -16,30 +19,27 @@ namespace Protocolo
 		/*	Resposta ao ping
 			[unsigned long timestamp] (copia do recebido em ping)
 		*/
+		BROADCAST,
+		/*
+			[unsigned char TTL][Noh remetente][unsigned long seqno][dados]
+		*/
 		ROTEAR,
 		/*	Pedido de roteamento do pacote pra cliente com id baixa
-			[remetente][destinatario][dados]
-			[Noh][Hash128]
+			[Noh remetente][Noh destinatario][dados]
 		*/
 		ROTEAR_ERRO,
-		/*	Nao foi possivel rotear pacote (Usuario desconectado)
+		/*	Nao foi possivel rotear pacote (Usuario desconhecido)
 		*/
 		ROTEAR_BLOQUEADO,
 		/*	Cliente nao aceita rotear este comando
 		*/
-		RETORNO,
-		/*	Pedido de conexao de callback
-		*/
-		BUSCAR,
-		/*	Broadcast de busca
-			[unsigned char TTL][criterio]
-		*/
-		HIT,
-		/*
-			Encontrado
-		*/
-		ACK,
-		/*	Acknowledge (pra chat p.e)
+	};
+
+	typedef enum CmdCamada2
+	{
+		MENSAGEM,
+		/*	Mensagem instantanea (texto/chat)
+			[char[] (nao-ASCIIZ)]
 		*/
 		LOGIN,
 		/*	pacote com informacoes sobre o cliente e usuario
@@ -52,14 +52,18 @@ namespace Protocolo
 					sizeof(infoUsuario)=16+TAMNICK=32
 			sizeof(dados)=54
 		*/
-		MENSAGEM,
-		/*	Mensagem instantanea (texto/chat)
-			[char[] (nao-ASCIIZ)]
+		RETORNO,
+		/*	Pedido de conexao de callback
 		*/
-	};
-
-	typedef enum CmdCamada2
-	{
+		BUSCAR,
+		/*	Broadcast de busca
+		*/
+		HIT,
+		/*	Encontrado
+		*/
+		ACK,
+		/*	Acknowledge (pra chat p.e)
+		*/
 		USER,
 		/*	protocolo definido pelo usuario
 			[unsigned char codigo do protocolo][dados]
@@ -70,6 +74,7 @@ namespace Protocolo
 	const int PORTA_PADRAO=6661;
 	const int TAMNICK=15+1;
 	const int VERSAOINFO=1;		//versao dos arquivos
+	const int TIMEOUT_RX=60;	//timeout de recepcao de frames (em segundos)
 
 	typedef enum
 	{

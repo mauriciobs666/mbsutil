@@ -17,7 +17,7 @@ public:
 	unsigned long ocupados() const { return pntE-dados; }
 	unsigned long append(Buffer& b, unsigned long qtd=0);
 		//anexa qtd bytes de b->pntL em pntE
-		//se qtd==0, anexa faltaTratar() bytes de b->pntL em pntE
+		//se qtd==0, anexa disponiveis() bytes de b->pntL em pntE
 
 	unsigned short readShort();
 	unsigned long writeShort(unsigned short us);
