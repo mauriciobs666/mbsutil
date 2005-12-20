@@ -257,7 +257,7 @@ GerenciadorSlots::~GerenciadorSlots()
 
 int GerenciadorSlots::IFH_tratar(Buffer *frame, Slot *slot)
 {
-//	COMANDO comando=frame->readShort();
+	COMANDO comando;//=frame->readShort();
 	switch(comando)
     {
 /*
