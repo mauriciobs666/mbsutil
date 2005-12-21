@@ -37,7 +37,7 @@ class Slot
 {
 public:
 	Cliente iC;
-	Usuario iU;	//TODO: protejer e transformar em * ou usar soh o hash
+	Usuario iU;			//TODO: protejer e transformar em * ou usar soh o hash
 	time_t timestamp;	//time-out rx
 
 	Slot();
@@ -54,8 +54,9 @@ public:
 	{
 		LIVRE = 0,		//desconectado
 		RESERVADO,		//desconectado, mas reservado pelo gerenciador
-		LOGIN,			//conectado mas esperando login
-		CONECTADO		//conectado normal
+		HANDSHAKE,		//conectado, descobrindo ip, id etc
+		LOGIN,			//conectado, esperando login
+		CONECTADO		//conectado, normal
 	} EstadoSlot;
 	EstadoSlot pegaEstado();
 	int setaEstado(EstadoSlot estado);

@@ -3,7 +3,7 @@
 
 namespace
 {
-	const int TAMBUFFER=500;
+	const int TAMBUFFER=500;	//Buffer temp
 	const int TIMEOUT_RX=60;	//timeout de recepcao de frames (em segundos)
 };
 

@@ -19,6 +19,8 @@ public:
 		//anexa qtd bytes de b->pntL em pntE
 		//se qtd==0, anexa disponiveis() bytes de b->pntL em pntE
 
+	unsigned char readByte();
+	unsigned long writeByte(unsigned char uc);
 	unsigned short readShort();
 	unsigned long writeShort(unsigned short us);
 	unsigned long readLong();

@@ -39,6 +39,7 @@ class GerenciadorSlots : public iFrameHandler
 public:
 	Cliente iC;
 	ListaNohs nohs;
+//TODO:	ListaNohs roteadores;	//lista de roteadores disponiveis
 
 	GerenciadorSlots(int num=10);
 	virtual ~GerenciadorSlots();

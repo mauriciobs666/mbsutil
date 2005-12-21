@@ -7,6 +7,7 @@ namespace
 	{
 		DIRETA,
 		/*
+			[dados]
 		*/
 		PING,
 		/*	Ping
@@ -16,22 +17,76 @@ namespace
 		/*	Resposta ao ping
 			[unsigned long timestamp] (copia do recebido em ping)
 		*/
-		BROADCAST,
-		/*
-			[unsigned char TTL][Noh remetente][unsigned long seqno][dados]
+		INFO_CLIENTE,
+		/*	Informacoes sobre o cliente, recursos disponiveis no protocolo.
+			Usado no processo de hand-shake.
+			[Cliente]
+		*/
+		ID_ASK,
+		/*	Pede conexao callback pra teste de porta de entrada
+			[]
+		*/
+		ID_RET,
+		/*	Resposta de ID_ASK, se !idAlta() pedido de roteamento foi aceito
+			[Noh]
+		*/
+		ID_ND,
+		/*	Resposta de ID_ASK, !idAlta() & pedido de roteamento recusado
+			[]
+		*/
+		NOH_LIST_ASK,
+		/*	Pedido de lista de Nohs idAlta conhecidos
+			[]
+		*/
+		NOH_LIST,
+		/*	Lista de Nohs
+			[unsigned char n][n*[Noh]]
 		*/
 		ROTEAR,
 		/*	Pedido de roteamento do pacote pra cliente com id baixa
-			[Noh remetente][Noh destinatario][dados]
+			[Noh destinatario][Noh remetente][dados]
 		*/
 		ROTEAR_ERRO,
-		/*	Nao foi possivel rotear pacote (Usuario desconhecido)
+		/*	Nao foi possivel rotear pacote (destinatario desconhecido)
+			[Noh destinatario]
 		*/
-		ROTEAR_BLOQUEADO,
-		/*	Cliente nao aceita rotear este comando
+		BROADCAST,
+		/*
+			[Noh remetente][unsigned long seqno][unsigned char TTL][dados]
 		*/
+		COMPACTADO,
+		/*
+			[unsigned cchar METODO][dados]
+		*/
+		DROP
 	};
 };
+
+/*	Processo de conexao
+
+	C - cliente, quem inicia a conexao
+	S - servidor, recebe a conexao
+
+	Cliente							|	Servidor
+	-------------------------------------------------------------------------
+	envia(INFO_CLIENTE)					envia(INFO_CLIENTE)
+	recebe(INFO_CLIENTE)				recebe(INFO_CLIENTE)
+	se !inicializado
+		envia(ID_ASK)
+										recebe(ID_ASK)
+										se conecta(C)
+											envia(ID_RET Noh idAlta)
+										senao se(recursos_de roteador_disponiveis)
+											envia(ID_RET Noh idBaixa)
+										senao
+											envia(ID_ND)
+	se recebe(ID_RET)
+		inicializado=true
+	senao
+		envia(NOH_LIST_ASK)
+										recebe(NOH_LIST_ASK)
+										envia(NOH_LIST)
+*/
 
 using namespace std;
 using namespace Protocolo;
@@ -59,7 +114,7 @@ GerenciadorSlots::~GerenciadorSlots()
 
 int GerenciadorSlots::IFH_tratar(Buffer *frame, Slot *slot)
 {
-	COMANDO comando=frame->readShort();
+	COMANDO comando=frame->readByte();
 	switch(comando)
     {
     	case DIRETA:
@@ -70,7 +125,7 @@ int GerenciadorSlots::IFH_tratar(Buffer *frame, Slot *slot)
 			#endif
 			unsigned long timestamp=frame->readLong();
 			Buffer *pong=new Buffer(sizeof(COMANDO)+sizeof(timestamp));
-			pong->writeShort((COMANDO)PONG);
+			pong->writeByte((COMANDO)PONG);
 			pong->writeLong(timestamp);
 			slot->enviar(pong);
 		break;
@@ -177,7 +232,7 @@ int GerenciadorSlots::enviar(Buffer *pkt, const Noh& n)
 		return -1;
 
 	Buffer *frame=new Buffer(sizeof(COMANDO)+pkt->pegaTamanho());
-	frame->writeShort(DIRETA);
+	frame->writeByte(DIRETA);
 	frame->append(*pkt);
 	delete pkt;
 
@@ -251,7 +306,7 @@ void GerenciadorSlots::ping()
 	for(int x=0;x<numSlots;x++)
 	{
 		ping=new Buffer(sizeof(COMANDO)+sizeof(timestamp));
-		ping->writeShort((COMANDO)PING);
+		ping->writeByte((COMANDO)PING);
 		ping->writeLong(timestamp);
 		slots[x].enviar(ping);
 	}

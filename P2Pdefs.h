@@ -7,7 +7,7 @@
 namespace Protocolo
 {
 	typedef unsigned short TAMANHO;
-	typedef unsigned short COMANDO;
+	typedef unsigned char COMANDO;
 
 	//	Constantes diversas
 	const int PORTA_PADRAO=6661;

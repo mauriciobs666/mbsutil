@@ -77,6 +77,24 @@ unsigned long Buffer::append(Buffer& b, unsigned long qtd)
     return qtd;
 }
 
+unsigned char Buffer::readByte()
+{
+	if(disponiveis()<1)
+		return 0;
+	return *pntL++;
+}
+
+unsigned long Buffer::writeByte(unsigned char uc)
+{
+	unsigned long novotam=ocupados()+1;
+	if(novotam>tamanho)
+		if(mudaTamanho(novotam))
+			return 0;
+	*pntE=uc;
+	pntE++;
+	return 1;
+}
+
 unsigned short Buffer::readShort()
 {
 	unsigned short us;

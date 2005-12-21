@@ -222,7 +222,7 @@ int ClienteP2P::enviarMsg(const char *msg, const Hash128* user)
     Buffer *p=new Buffer(sizeof(COMANDO)+tam);	//comando + dados
     if(p==NULL)
         return -2;
-    p->writeShort((COMANDO)MENSAGEM);
+    p->writeByte((COMANDO)MENSAGEM);
     memcpy(p->pntE,msg,tam);
     p->pntE+=tam;
 
@@ -233,8 +233,8 @@ int ClienteP2P::enviarMsg(const char *msg, const Hash128* user)
 
 int ClienteP2P::enviaLogin(const Noh& n)
 {
-	Buffer *login=new Buffer(56);
-	login->writeShort((COMANDO)LOGIN);
+	Buffer *login=new Buffer(55);
+	login->writeByte((COMANDO)LOGIN);
 	slots.iC.write(login->pntE);
 	iU.write(login->pntE);
 	if(slots.enviar(login,n))
@@ -244,7 +244,7 @@ int ClienteP2P::enviaLogin(const Noh& n)
 
 int ClienteP2P::IPH_tratar(Buffer *pacote, Slot *slot)
 {
-	COMANDO comando=pacote->readShort();
+	COMANDO comando=pacote->readByte();
     switch(comando)
     {
 		case LOGIN:
