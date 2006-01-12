@@ -14,7 +14,7 @@
                 <Option compiler="0" />
                 <Option includeInTargetAll="1" />
                 <Option createDefFile="1" />
-                <Option projectResourceIncludeDirsRelation="2" />
+                <Option projectResourceIncludeDirsRelation="0" />
                 <Compiler>
                     <Add option="-O3" />
                     <Add option="-Wall" />

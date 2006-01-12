@@ -4,6 +4,8 @@
 #include <iostream>
 #include <map>
 
+using std::string;
+
 enum Tipo
 {
 			//	Tipos de tokens:
@@ -22,7 +24,7 @@ public:
 	{
 		Tipo tipo;
 		double num;
-		std::string str;
+		string str;
 	} atual;
 	Lexer(std::istream *ent=NULL) : input(ent) {}
 	~Lexer() {}
@@ -33,6 +35,25 @@ protected:
 	std::istream *input;
 };
 
+class Variavel
+{
+public:
+	enum Tipo
+	{
+		DOUBLE,
+		CHAR,
+		INT,
+		STRING
+	};
+	union valor
+	{
+		double dbl;
+		char chr;
+		int itg;
+//		string str;
+	};
+};
+
 class Expressao
 {
 public:
@@ -41,10 +62,10 @@ public:
 	double eval(const std::string& s);
 private:
 	Lexer lexer;
-	std::map<std::string,double> tabela;
-	double term(bool get);
+	std::map<std::string,double> simbolos;
+	double term(bool get) throw(string);
 	double expr(bool get);
-	double prim(bool get);
+	double prim(bool get) throw(string);
 };
 
 std::string int2str(int i);

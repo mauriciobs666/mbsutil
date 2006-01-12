@@ -54,16 +54,21 @@ Tipo Lexer::pegaString()
 
 double Expressao::eval(const string& s)
 {
-	return eval(new istringstream(s));
+	istringstream *iss=new istringstream(s);
+	double ret=eval(iss);
+	delete iss;
+	return ret;
 }
 
 double Expressao::eval(istream *ent)
 {
 	lexer.setaEntrada(ent);
-	return expr(true);
+	double ret=expr(true);
+	lexer.setaEntrada(NULL);
+	return ret;
 }
 
-double Expressao::term(bool get)
+double Expressao::term(bool get) throw(string)
 {
 	double esq=prim(get);
 	for(;;)
@@ -77,7 +82,7 @@ double Expressao::term(bool get)
 				if(double d=prim(true))
 					esq/=d;
 				else
-					return 1;//erro("divisao por zero");
+					throw(string("Divisao por zero"));
 			}
 			else
 				return esq;
@@ -105,7 +110,7 @@ double Expressao::expr(bool get)
 			return esq;
 }
 
-double Expressao::prim(bool get)
+double Expressao::prim(bool get) throw(string)
 {
 	double n;
 	double e;
@@ -120,7 +125,7 @@ double Expressao::prim(bool get)
 		return n;
 		case NOME:
         {
-			double& v=tabela[lexer.atual.str];
+			double& v=simbolos[lexer.atual.str];
 			if(DELIM==lexer.pegaToken())
 				if("="==lexer.atual.str)
 					v=expr(true);
@@ -134,15 +139,15 @@ double Expressao::prim(bool get)
 			{
 				e=expr(true);
 				if((lexer.atual.tipo!=DELIM)||(")"!=lexer.atual.str))
-					return 1;//erro(") esperado");
+					throw(string(") esperado"));
 				lexer.pegaToken();
 				return e;
 			}
-		return 1;	//erro("primario esperado");
+		break;
 		default:
-		return 1; //erro
+		break;
 	}
-    return 1;//erro("primario esperado");
+    throw(string("Primario esperado"));
 }
 
 string int2str(int i)
