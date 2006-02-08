@@ -118,7 +118,7 @@ MD4::MD4()
     reset();
 }
 
-int MD4::arquivo(char *arq)
+int MD4::arquivo(const char *arq)
 {
     unsigned char X[64];
     int b;

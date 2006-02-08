@@ -45,7 +45,7 @@ class MD4 : public Hash128
 {
 public:
 	MD4();
-	int arquivo(char *arq);
+	int arquivo(const char *arq);
 private:
 	unsigned char count[8];
 	unsigned int done;

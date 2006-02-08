@@ -1,147 +1,148 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-    <FileVersion major="1" minor="2" />
-    <Project>
-        <Option title="MBSUtil" />
-        <Option default_target="-1" />
-        <Option compiler="0" />
-        <Build>
-            <Target title="default">
-                <Option output="..\MBSUtil.a" />
-                <Option working_dir="" />
-                <Option object_output="c:\temp" />
-                <Option type="2" />
-                <Option compiler="0" />
-                <Option includeInTargetAll="1" />
-                <Option createDefFile="1" />
-                <Option projectResourceIncludeDirsRelation="0" />
-                <Compiler>
-                    <Add option="-O3" />
-                    <Add option="-Wall" />
-                </Compiler>
-                <Linker>
-                    <Add option="-s" />
-                </Linker>
-            </Target>
-        </Build>
-        <Compiler>
-            <Add option="-O3" />
-            <Add option="-Wall" />
-        </Compiler>
-        <Linker>
-            <Add option="-s" />
-        </Linker>
-        <Unit filename="Bufer.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="default" />
-        </Unit>
-        <Unit filename="Bufer.h">
-            <Option compilerVar="CPP" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="default" />
-        </Unit>
-        <Unit filename="Hash.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="default" />
-        </Unit>
-        <Unit filename="Hash.h">
-            <Option compilerVar="CPP" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="default" />
-        </Unit>
-        <Unit filename="MBSUtil.h">
-            <Option compilerVar="CPP" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="default" />
-        </Unit>
-        <Unit filename="P2PGerenciadorSlots.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="default" />
-        </Unit>
-        <Unit filename="P2PGerenciadorSlots.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="default" />
-        </Unit>
-        <Unit filename="P2PSlot.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="default" />
-        </Unit>
-        <Unit filename="P2PSlot.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="default" />
-        </Unit>
-        <Unit filename="P2Pdefs.h">
-            <Option compilerVar="CPP" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="default" />
-        </Unit>
-        <Unit filename="P2Ped.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="default" />
-        </Unit>
-        <Unit filename="P2Ped.h">
-            <Option compilerVar="CPP" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="default" />
-        </Unit>
-        <Unit filename="Parser.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="default" />
-        </Unit>
-        <Unit filename="Parser.h">
-            <Option compilerVar="CPP" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="default" />
-        </Unit>
-        <Unit filename="ProtocoloP2P.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="default" />
-        </Unit>
-        <Unit filename="ProtocoloP2P.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="default" />
-        </Unit>
-        <Unit filename="Rede.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="default" />
-        </Unit>
-        <Unit filename="Rede.h">
-            <Option compilerVar="CPP" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="default" />
-        </Unit>
-        <Unit filename="Tempo.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="default" />
-        </Unit>
-        <Unit filename="Tempo.h">
-            <Option compilerVar="CPP" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="default" />
-        </Unit>
-        <Unit filename="Thread.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="default" />
-        </Unit>
-        <Unit filename="Thread.h">
-            <Option compilerVar="CPP" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="default" />
-        </Unit>
-    </Project>
+	<FileVersion major="1" minor="2" />
+	<Project>
+		<Option title="MBSUtil" />
+		<Option default_target="-1" />
+		<Option compiler="0" />
+		<Build>
+			<Target title="default">
+				<Option output="lib\MBSUtil.a" />
+				<Option working_dir="" />
+				<Option object_output="c:\temp" />
+				<Option type="2" />
+				<Option compiler="0" />
+				<Option includeInTargetAll="1" />
+				<Option createDefFile="1" />
+				<Option projectResourceIncludeDirsRelation="0" />
+				<Compiler>
+					<Add option="-O3" />
+					<Add option="-Wall" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-O3" />
+			<Add option="-Wall" />
+			<Add directory="include" />
+		</Compiler>
+		<Linker>
+			<Add option="-s" />
+		</Linker>
+		<Unit filename="Bufer.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="Hash.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="P2PGerenciadorSlots.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="P2PSlot.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="P2Ped.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="Parser.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="ProtocoloP2P.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="Rede.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="Tempo.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="Thread.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="include\Bufer.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="include\Hash.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="include\MBSUtil.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="include\P2PGerenciadorSlots.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="include\P2PSlot.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="include\P2Pdefs.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="include\P2Ped.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="include\Parser.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="include\ProtocoloP2P.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="include\Rede.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="include\Tempo.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="include\Thread.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+	</Project>
 </CodeBlocks_project_file>
