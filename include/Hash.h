@@ -13,6 +13,9 @@ public:
 		unsigned long l[4];
 	} h;
 
+	virtual int calc(const unsigned char *pnt, unsigned long tam);
+	virtual int calc(std::istream& is, unsigned long tam=0);
+
 	int cmp(const Hash128& base) const
 		/*
 			 1 : local > base
@@ -46,12 +49,14 @@ class MD4 : public Hash128
 public:
 	MD4();
 	int arquivo(const char *arq);
+	virtual int calc(const unsigned char *pnt, unsigned long tam);
+	virtual int calc(std::istream& is, unsigned long tam=0);
 private:
 	unsigned char count[8];
-	unsigned int done;
-	void bloco(unsigned int *X);
+	bool done;
 	void reset();
-	int update(unsigned char *X,unsigned int qtd);
+	void bloco(const unsigned long *X);
+	int update(const unsigned char *X, unsigned long qtdbits);
 };
 
 #endif
