@@ -15,23 +15,11 @@
 				<Option includeInTargetAll="1" />
 				<Option createDefFile="1" />
 				<Option projectResourceIncludeDirsRelation="0" />
-				<Compiler>
-					<Add option="-O3" />
-					<Add option="-Wall" />
-				</Compiler>
-				<Linker>
-					<Add option="-s" />
-				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-O3" />
-			<Add option="-Wall" />
 			<Add directory="include" />
 		</Compiler>
-		<Linker>
-			<Add option="-s" />
-		</Linker>
 		<Unit filename="Bufer.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />

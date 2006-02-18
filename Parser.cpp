@@ -112,39 +112,47 @@ double Expressao::expr(bool get)
 
 double Expressao::prim(bool get) throw(string)
 {
-	double n;
-	double e;
+	double d;
 
 	if(get)
 		lexer.pegaToken();
 	switch(lexer.atual.tipo)
 	{
 		case NUM:
-			n=lexer.atual.num;
+			d=lexer.atual.num;
 			lexer.pegaToken();
-		return n;
+		return d;
 		case NOME:
         {
+        	string nome=lexer.atual.str;
+        	lexer.pegaToken();
+
+        	if(simbolos.find(nome)==simbolos.end())		//se não declarado
+        		if((DELIM!=lexer.atual.tipo)||("="!=lexer.atual.str))
+					throw(string("Simbolo invalido"));
+
 			double& v=simbolos[lexer.atual.str];
-			if(DELIM==lexer.pegaToken())
-				if("="==lexer.atual.str)
-					v=expr(true);
+			if((DELIM==lexer.atual.tipo)&&("="==lexer.atual.str))
+				v=expr(true);
 		    return v;
         }
         break;
 		case DELIM:
-			if("-"==lexer.atual.str)
+			if("-"==lexer.atual.str)		//menos unario
 				return -prim(true);
 			else if("("==lexer.atual.str)
 			{
-				e=expr(true);
+				d=expr(true);
 				if((lexer.atual.tipo!=DELIM)||(")"!=lexer.atual.str))
 					throw(string(") esperado"));
 				lexer.pegaToken();
-				return e;
+				return d;
 			}
+			else
+				throw(string("Operacao invalida"));
 		break;
 		default:
+			throw(string("Token invalido"));
 		break;
 	}
     throw(string("Primario esperado"));

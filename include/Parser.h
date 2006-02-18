@@ -38,20 +38,11 @@ protected:
 class Variavel
 {
 public:
-	enum Tipo
-	{
-		DOUBLE,
-		CHAR,
-		INT,
-		STRING
-	};
-	union valor
-	{
-		double dbl;
-		char chr;
-		int itg;
-//		string str;
-	};
+	virtual ~Variavel();
+};
+
+class VariavelDouble : public Variavel
+{
 };
 
 class Expressao

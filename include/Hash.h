@@ -13,8 +13,10 @@ public:
 		unsigned long l[4];
 	} h;
 
-	virtual int calc(const unsigned char *pnt, unsigned long tam);
-	virtual int calc(std::istream& is, unsigned long tam=0);
+	virtual int calc(const unsigned char *pnt, unsigned long tam)
+		{ return 0; }
+	virtual int calc(std::istream& is, unsigned long tam=0)
+		{ return 0; }
 
 	int cmp(const Hash128& base) const
 		/*
