@@ -1,8 +1,8 @@
 #include "Parser.h"
 #include <cstdlib>
-#include <map>
 #include <cctype>
 #include <sstream>
+#include <cmath>
 
 using namespace std;
 
@@ -52,6 +52,30 @@ Tipo Lexer::pegaString()
 	return atual.tipo=NOME;
 }
 
+Expressao::Expressao()
+{
+	funcoes.insert("acos");
+	funcoes.insert("asin");
+	funcoes.insert("atan");
+	funcoes.insert("atan2");
+	funcoes.insert("ceil");
+	funcoes.insert("cos");
+	funcoes.insert("cosh");
+	funcoes.insert("exp");
+	funcoes.insert("fabs");
+	funcoes.insert("floor");
+	funcoes.insert("fmod");
+	funcoes.insert("ldexp");
+	funcoes.insert("log");
+	funcoes.insert("log10");
+	funcoes.insert("pow");
+	funcoes.insert("sin");
+	funcoes.insert("sinh");
+	funcoes.insert("sqrt");
+	funcoes.insert("tan");
+	funcoes.insert("tanh");
+}
+
 double Expressao::eval(const string& s)
 {
 	istringstream *iss=new istringstream(s);
@@ -98,7 +122,6 @@ double Expressao::expr(bool get)
 	for(;;)
 		if(DELIM==lexer.atual.tipo)
 		{
-
 			if("+"==lexer.atual.str)
 				esq+=term(true);
 			else if("-"==lexer.atual.str)
@@ -125,13 +148,16 @@ double Expressao::prim(bool get) throw(string)
 		case NOME:
         {
         	string nome=lexer.atual.str;
-        	lexer.pegaToken();
+			lexer.pegaToken();
+
+			if(funcoes.find(nome)!=funcoes.end())
+				return func(nome, false);
 
         	if(simbolos.find(nome)==simbolos.end())		//se não declarado
         		if((DELIM!=lexer.atual.tipo)||("="!=lexer.atual.str))
 					throw(string("Simbolo invalido"));
 
-			double& v=simbolos[lexer.atual.str];
+			double& v=simbolos[nome];
 			if((DELIM==lexer.atual.tipo)&&("="==lexer.atual.str))
 				v=expr(true);
 		    return v;
@@ -152,10 +178,81 @@ double Expressao::prim(bool get) throw(string)
 				throw(string("Operacao invalida"));
 		break;
 		default:
-			throw(string("Token invalido"));
+			throw(string("Token invalido: ")+lexer.atual.str);
 		break;
 	}
     throw(string("Primario esperado"));
+}
+
+double Expressao::func(string nome, bool get) throw(string)
+{
+	double args[32];
+	int n=0;
+
+	if(get)
+		lexer.pegaToken();
+	if((DELIM==lexer.atual.tipo)&&("("==lexer.atual.str))
+	{
+		do
+		{
+			args[n]=expr(true);
+			n++;
+		}
+		while((lexer.atual.tipo==DELIM)&&(","==lexer.atual.str));
+
+		if((lexer.atual.tipo!=DELIM)||(")"!=lexer.atual.str))
+			throw(string(") esperado"));
+		lexer.pegaToken();
+		if(1==n)
+		{
+			if("acos"==nome)
+				return acos(args[0]);
+			else if("asin"==nome)
+				return asin(args[0]);
+			else if("atan"==nome)
+				return atan(args[0]);
+			else if("ceil"==nome)
+				return ceil(args[0]);
+			else if("cos"==nome)
+				return cos(args[0]);
+			else if("cosh"==nome)
+				return cosh(args[0]);
+			else if("exp"==nome)
+				return exp(args[0]);
+			else if("fabs"==nome)
+				return fabs(args[0]);
+			else if("floor"==nome)
+				return floor(args[0]);
+			else if("log"==nome)
+				return log(args[0]);
+			else if("log10"==nome)
+				return log10(args[0]);
+			else if("sin"==nome)
+				return sin(args[0]);
+			else if("sinh"==nome)
+				return sinh(args[0]);
+			else if("sqrt"==nome)
+				return sqrt(args[0]);
+			else if("tan"==nome)
+				return tan(args[0]);
+			else if("tanh"==nome)
+				return tanh(args[0]);
+		}
+		else if(2==n)
+		{
+			if("atan2"==nome)
+				return atan2(args[0], args[1]);
+			else if("fmod"==nome)
+				return fmod(args[0], args[1]);
+			else if("ldexp"==nome)
+				return ldexp(args[0], int(args[1]));
+			else if("pow"==nome)
+				return pow(args[0], args[1]);
+		}
+		throw(nome + string("(): Numero invalido de argumentos"));
+	}
+	else
+		throw(string("( esperado"));
 }
 
 string int2str(int i)

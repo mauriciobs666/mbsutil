@@ -2,6 +2,7 @@
 #define MBSUTIL_PARSER_H
 
 #include <iostream>
+#include <set>
 #include <map>
 
 using std::string;
@@ -35,28 +36,20 @@ protected:
 	std::istream *input;
 };
 
-class Variavel
-{
-public:
-	virtual ~Variavel();
-};
-
-class VariavelDouble : public Variavel
-{
-};
-
 class Expressao
 {
 public:
-	Expressao() {}
+	Expressao();
 	double eval(std::istream *ent);
 	double eval(const std::string& s);
 private:
 	Lexer lexer;
 	std::map<std::string,double> simbolos;
+	std::set<std::string> funcoes;
 	double term(bool get) throw(string);
 	double expr(bool get);
 	double prim(bool get) throw(string);
+	double func(std::string nome, bool get) throw(string);
 };
 
 std::string int2str(int i);
