@@ -29,7 +29,7 @@
 class iPacketHandler	// interface do tratador de pacotes
 {
 public:
-	virtual int IPH_tratar(Buffer *pacote, Slot *slot) = 0;
+	virtual int IPH_tratar(Buffer *pacote, const Noh& n) = 0;
 	virtual int IPH_conectado(const Noh& n) = 0;
 	virtual int IPH_desconectado(const Noh& n) = 0;
 };
@@ -57,7 +57,7 @@ public:
 	Slot* at(int num) const;
 	Slot* operator[](int i) const { return &slots[i]; }
 
-	Slot* operator[](const Hash128& user) const;	//busca
+	Slot* operator[](const Hash128& user) const;	//TODO: busca *** ops naum deveria existir
 	Slot* operator[](const Noh& n) const;			//busca
 
 	int aloca();

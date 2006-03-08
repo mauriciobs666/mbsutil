@@ -37,7 +37,7 @@ class Slot
 {
 public:
 	Cliente iC;
-	Usuario iU;			//TODO: protejer e transformar em * ou usar soh o hash
+	Usuario iU;			//TODO: remover... informacao de usuarios nao deveria existir aqui
 	time_t timestamp;	//time-out rx
 
 	Slot();

@@ -40,7 +40,7 @@ public:
 	int enviarMsg(const char *msg, const Hash128* user);
 protected:
 	int enviaLogin(const Noh& n);
-	virtual int IPH_tratar(Buffer *pacote, Slot *slot);		//trata pacote recebido
+	virtual int IPH_tratar(Buffer *pacote, const Noh& n);
 	virtual int IPH_conectado(const Noh& n);
 	virtual int IPH_desconectado(const Noh& n);
 };

@@ -47,6 +47,7 @@ public:
 			return ::ReleaseMutex(hnd);
 		#else
 			pthread_mutex_unlock(&hnd);
+			return 0;
 		#endif
 	}
     unsigned long estado()
@@ -64,31 +65,7 @@ private:
 		pthread_mutex_t hnd;
 	#endif
 };
-/*
-class Thread
-{
-public:
-	Thread(bool release = true);
-	virtual ~Thread();
-	static threadfunc_t STDPREFIX StartThread(threadparam_t);
-	virtual void Run() = 0;
-	bool IsRunning() { return m_running; }
-	void SetRunning(bool x) { m_running = x; }
-	bool IsReleased(); { return m_release; }
-	void SetRelease(bool x); { m_release = x; }
-private:
-	Thread(const Thread& ) {}
-	Thread& operator=(const Thread& ) { return *this; }
-#ifdef _WIN32
-	HANDLE m_thread;
-	DWORD m_dwThreadId;
-#else
-	pthread_t m_thread;
-#endif
-	bool m_running;
-	bool m_release;
-};
-*/
+
 class Thread
 {
 public:

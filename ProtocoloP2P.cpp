@@ -242,8 +242,9 @@ int ClienteP2P::enviaLogin(const Noh& n)
 	return 0;
 }
 
-int ClienteP2P::IPH_tratar(Buffer *pacote, Slot *slot)
+int ClienteP2P::IPH_tratar(Buffer *pacote, const Noh& n)
 {
+	Slot *slot=slots[n];
 	COMANDO comando=pacote->readByte();
     switch(comando)
     {

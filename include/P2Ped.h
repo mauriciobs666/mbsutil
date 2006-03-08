@@ -129,6 +129,29 @@ public:
     ostream& write(ostream& os);
 };
 
+/*	Classe MapaUsuarios
+	Relaciona Usuarios com Nohs.
+*/
+class MapaUsuarios
+{
+public:
+	MapaUsuarios() {}
+	~MapaUsuarios() { limpa(); }
+
+	bool insere(const Hash128& h, const Noh& n);
+	void remove(const Hash128& h);
+	void remove(const Noh& n);
+	Noh* operator[](const Hash128& h);
+	Hash128* operator[](const Noh& n);
+	int tamanho();
+	void limpa();
+    istream& read(istream& is);
+    ostream& write(ostream& os);
+private:
+	Mutex m;
+	std::map<Hash128,Noh> mapa;
+};
+
 /*	Classe ListaHash128
 	Fornece acesso facil e sincronizado para listas de hashs
 	IMPORTANTE: acessos diretos devem ser protegidos pelo mutex

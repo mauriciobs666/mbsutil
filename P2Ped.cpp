@@ -385,3 +385,72 @@ ostream& ListaNohs::write(ostream& os)
 	m.destrava();
 	return os;
 }
+/*
+//------------------------------------------------------------------------------
+//      MapaUsuarios
+//------------------------------------------------------------------------------
+
+bool MapaUsuarios::insere(const Hash128& h, const Noh& n)
+{
+	bool ret=true;
+	m.trava();
+	if(lista.find(h)!=lista.end())
+		ret=false;	//jah existe
+	else
+		lista[h]=n;
+	m.destrava();
+	return ret;
+}
+
+void MapaUsuarios::remove(const Hash128& h)
+{
+	m.trava();
+	lista.erase(h);
+	m.destrava();
+}
+
+Usuario* MapaUsuarios::busca(const Hash128& h)
+{
+	Usuario* ret=NULL;
+	m.trava();
+	map<Hash128,Usuario*>::iterator i=lista.find(h);
+	if(i!=lista.end())
+		ret=i->second;
+	m.destrava();
+	return ret;
+}
+
+int MapaUsuarios::tamanho()
+{
+	m.trava();
+	int tam=lista.size();
+	m.destrava();
+	return tam;
+}
+
+void MapaUsuarios::limpa()
+{
+	m.trava();
+	lista.clear();
+	m.destrava();
+}
+
+istream& MapaUsuarios::read(istream& is)
+{
+    Usuario tmp;
+    while(tmp.read(is))
+        lista[tmp]=new Usuario(tmp);
+	return is;
+}
+
+ostream& MapaUsuarios::write(ostream& os)
+{
+    map<Hash128,Usuario*>::iterator i=lista.begin();
+    while(i!=lista.end())
+    {
+        i->second->write(os);
+        i++;
+    }
+	return os;
+}
+*/

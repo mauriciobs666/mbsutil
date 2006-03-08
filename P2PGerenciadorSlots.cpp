@@ -118,7 +118,7 @@ int GerenciadorSlots::IFH_tratar(Buffer *frame, Slot *slot)
 	switch(comando)
     {
     	case DIRETA:
-			return ph->IPH_tratar(frame,slot);	//repassa pra camada superior
+			return ph->IPH_tratar(frame,(const Noh&)*slot);	//repassa pra camada superior
 		case PING:
 			#ifdef LOGAR_COMANDOS
 				logar("CMD_PING");
