@@ -118,7 +118,7 @@ int GerenciadorSlots::IFH_tratar(Buffer *frame, Slot *slot)
 	switch(comando)
     {
     	case DIRETA:
-			return ph->IPH_tratar(frame,(const Noh&)*slot);	//repassa pra camada superior
+			return ph->IPH_tratar(frame,slot->iC);	//repassa pra camada superior
 		case PING:
 			#ifdef LOGAR_COMANDOS
 				logar("CMD_PING");
@@ -184,14 +184,6 @@ Slot* GerenciadorSlots::at(int num) const
 {
     if((num>=0)&(num<numSlots))
         return &slots[num];
-    return NULL;
-}
-
-Slot* GerenciadorSlots::operator[](const Hash128& user) const
-{
-    for(int x=0;x<numSlots;x++)
-    	if(slots[x].iU.cmp(user)==0)
-			return &slots[x];
     return NULL;
 }
 

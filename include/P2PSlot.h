@@ -37,7 +37,6 @@ class Slot
 {
 public:
 	Cliente iC;
-	Usuario iU;			//TODO: remover... informacao de usuarios nao deveria existir aqui
 	time_t timestamp;	//time-out rx
 
 	Slot();

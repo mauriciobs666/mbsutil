@@ -56,8 +56,6 @@ public:
 
 	Slot* at(int num) const;
 	Slot* operator[](int i) const { return &slots[i]; }
-
-	Slot* operator[](const Hash128& user) const;	//TODO: busca *** ops naum deveria existir
 	Slot* operator[](const Noh& n) const;			//busca
 
 	int aloca();
@@ -75,7 +73,7 @@ private:
 	int numSlots;
 	Slot *slots;
 	iPacketHandler *ph;
-	friend class ClienteP2P;
+	//friend class ClienteP2P;
 	Conexao serverSock;
 	static int tratarServer(Conexao *con, long codeve, long coderro[]);
 };

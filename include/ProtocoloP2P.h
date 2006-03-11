@@ -26,6 +26,7 @@ public:
 	Usuario iU;
 
 	ListaUsuarios usuarios;		//arvore com todos usuarios conhecidos
+	ListaSessoes sessoes;
 	ListaHash128 amigos;		//lista de amigos
 	ListaHash128 blacklist;		//lista negra
 

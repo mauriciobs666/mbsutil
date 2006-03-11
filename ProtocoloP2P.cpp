@@ -47,7 +47,7 @@ ClienteP2PUI *p2pui=NULL;
 Mutex mutexMostrarMsg;
 Mutex mutexLogar;
 
-void mostrarMsg(Hash128 *user, string frase)
+void mostrarMsg(const Hash128 *user, string frase)
 {
 	mutexMostrarMsg.trava();
 	if(p2pui!=NULL)
@@ -211,12 +211,9 @@ int ClienteP2P::enviarMsg(const char *msg, const Hash128* user)
 //  -1 = desconectado
 //  -2 = erro
 {
-//TODO: begin gambia
-    Slot *s=slots[*user];
-    if(s==NULL)
+	const Noh *n=sessoes[*user];
+	if(n==NULL)
 		return -1;
-	Noh n=s->iC;
-//TODO: end gambia
 
     unsigned short tam=strlen(msg);
     Buffer *p=new Buffer(sizeof(COMANDO)+tam);	//comando + dados
@@ -226,7 +223,7 @@ int ClienteP2P::enviarMsg(const char *msg, const Hash128* user)
     memcpy(p->pntE,msg,tam);
     p->pntE+=tam;
 
-    if(slots.enviar(p,n))
+    if(slots.enviar(p,*n))
         return -2;
     return 0;
 }
@@ -249,21 +246,28 @@ int ClienteP2P::IPH_tratar(Buffer *pacote, const Noh& n)
     switch(comando)
     {
 		case LOGIN:
+		{
 			#ifdef LOGAR_COMANDOS
 				logar("CMD_LOGIN");
 			#endif
+			Usuario u;
 			slot->iC.read(pacote->pntL);
-			slot->iU.read(pacote->pntL);
+			u.read(pacote->pntL);
 			slot->setaEstado(Slot::CONECTADO);
-			Usuario *tmp=usuarios.busca(slot->iU);
+			Usuario *tmp=usuarios.busca(u);
 			if(tmp==NULL)
-				usuarios.insere(slot->iU,new Usuario(slot->iU));
+				usuarios.insere(u,new Usuario(u));
+			sessoes.insere(u,n);
+		}
 		break;
 		case MENSAGEM:
+		{
 			#ifdef LOGAR_COMANDOS
 				logar("CMD_MENSAGEMDIRETA");
 			#endif
-			mostrarMsg(&slot->iU,string((char*)pacote->pntL,(size_t)pacote->disponiveis()));
+			const Hash128 *u=sessoes[n];
+			mostrarMsg(u,string((char*)pacote->pntL,(size_t)pacote->disponiveis()));
+		}
 		break;
 		default:
 			logar("CMD_INVALIDO");
