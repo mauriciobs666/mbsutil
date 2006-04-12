@@ -39,14 +39,16 @@ public:
 	Cliente iC;
 	time_t timestamp;	//time-out rx
 
-	Slot();
-	~Slot();
+	Slot(iFrameHandler *pai=NULL) : gerenciador(pai), c(NULL), temp(500), recebendo(NULL)
+		{ _reset();	}
+	~Slot()
+		{ _reset(); }
 	void registraFrameHandler(iFrameHandler *pai)
 		{ gerenciador=pai; }
 
-	int conectar(Conexao *con);
 	int conectar(const char *ip, unsigned short porta);
 	int conectar(const Noh& n);
+	int conectar(Conexao *con);
 	int desconectar();
 
 	typedef enum

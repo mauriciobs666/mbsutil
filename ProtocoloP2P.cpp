@@ -11,15 +11,10 @@ namespace
 			[char[] (nao-ASCIIZ)]
 		*/
 		LOGIN,
-		/*	pacote com informacoes sobre o cliente e usuario
-			[infoCliente][Usuario]
-				infoCliente = [versao][opcoes][Noh][mtu][mru]
-					Noh = [ip][porta][id]
-						sizeof(Noh)=10
-					sizeof(infoCliente)=12+sizeof(Noh)=22
-				infoUsuario = [Hash128][Nick]
-					sizeof(infoUsuario)=16+TAMNICK=32
-			sizeof(dados)=54
+		/*	Pacote com informacoes sobre o usuario
+			[Usuario]
+				[Hash128][Nick]
+					sizeof(Usuario)=16+TAMNICK=32
 		*/
 		RETORNO,
 		/*	Pedido de conexao de callback
@@ -209,12 +204,12 @@ int ClienteP2P::enviarMsg(string msg, const Hash128* user)
 
 int ClienteP2P::enviarMsg(const char *msg, const Hash128* user)
 //  -1 = desconectado
-//  -2 = erro
+//  -2 = erro alocacao memoria
+//	-3 = erro ao enviar
 {
-	const Noh *n=sessoes[*user];
-	if(n==NULL)
+	if(!sessoes.busca(*user))
 		return -1;
-
+	Noh n=sessoes[*user];
     unsigned short tam=strlen(msg);
     Buffer *p=new Buffer(sizeof(COMANDO)+tam);	//comando + dados
     if(p==NULL)
@@ -223,16 +218,17 @@ int ClienteP2P::enviarMsg(const char *msg, const Hash128* user)
     memcpy(p->pntE,msg,tam);
     p->pntE+=tam;
 
-    if(slots.enviar(p,*n))
-        return -2;
+    if(slots.enviar(p,n))
+        return -3;
     return 0;
 }
 
 int ClienteP2P::enviaLogin(const Noh& n)
 {
-	Buffer *login=new Buffer(55);
+//	Buffer *login=new Buffer(55);
+	Buffer *login=new Buffer(33);
 	login->writeByte((COMANDO)LOGIN);
-	slots.iC.write(login->pntE);
+//	slots.iC.write(login->pntE);
 	iU.write(login->pntE);
 	if(slots.enviar(login,n))
 		return -1;
@@ -251,7 +247,8 @@ int ClienteP2P::IPH_tratar(Buffer *pacote, const Noh& n)
 				logar("CMD_LOGIN");
 			#endif
 			Usuario u;
-			slot->iC.read(pacote->pntL);
+//			Cliente c;
+//			c.read(pacote->pntL);
 			u.read(pacote->pntL);
 			slot->setaEstado(Slot::CONECTADO);
 			Usuario *tmp=usuarios.busca(u);
@@ -265,8 +262,13 @@ int ClienteP2P::IPH_tratar(Buffer *pacote, const Noh& n)
 			#ifdef LOGAR_COMANDOS
 				logar("CMD_MENSAGEMDIRETA");
 			#endif
-			const Hash128 *u=sessoes[n];
-			mostrarMsg(u,string((char*)pacote->pntL,(size_t)pacote->disponiveis()));
+			if(!sessoes.busca(n))
+				mostrarMsg(NULL,string((char*)pacote->pntL,(size_t)pacote->disponiveis()));
+			else
+			{
+				Hash128 u=sessoes[n];
+				mostrarMsg(&u,string((char*)pacote->pntL,(size_t)pacote->disponiveis()));
+			}
 		}
 		break;
 		default:

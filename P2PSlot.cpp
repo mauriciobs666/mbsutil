@@ -3,7 +3,7 @@
 
 namespace
 {
-	const int TAMBUFFER=500;	//Buffer temp
+//	const int TAMBUFFER=500;	//Buffer temp
 	const int TIMEOUT_RX=60;	//timeout de recepcao de frames (em segundos)
 };
 
@@ -15,19 +15,6 @@ void logar(string frase);
 //------------------------------------------------------------------------------
 //      Slot
 //------------------------------------------------------------------------------
-
-Slot::Slot()
-{
-    temp.mudaTamanho(TAMBUFFER);
-    c=NULL;
-    recebendo=NULL;
-    _reset();
-}
-
-Slot::~Slot()
-{
-	_reset();
-}
 
 int Slot::conectar(Conexao *con)
 {

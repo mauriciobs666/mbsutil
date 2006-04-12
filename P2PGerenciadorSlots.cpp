@@ -21,6 +21,10 @@ namespace
 		/*	Informacoes sobre o cliente, recursos disponiveis no protocolo.
 			Usado no processo de hand-shake.
 			[Cliente]
+				infoCliente = [versao][opcoes][Noh][mtu][mru]
+					Noh = [ip][porta][id]
+						sizeof(Noh)=10
+					sizeof(infoCliente)=12+sizeof(Noh)=22
 		*/
 		ID_ASK,
 		/*	Pede conexao callback pra teste de porta de entrada
@@ -56,7 +60,7 @@ namespace
 		*/
 		COMPACTADO,
 		/*
-			[unsigned cchar METODO][dados]
+			[unsigned char METODO][dados]
 		*/
 		DROP
 	};

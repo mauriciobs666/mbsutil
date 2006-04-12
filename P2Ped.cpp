@@ -405,20 +405,22 @@ void ListaSessoes::remove(const Hash128& h)
 	m.destrava();
 }
 
-const Noh* ListaSessoes::operator[](const Hash128& h)
+Noh ListaSessoes::operator[](const Hash128& h)
 {
-	Noh* ret=NULL;
 	m.trava();
 	map<Hash128,Noh>::iterator i=sessoes.find(h);
 	if(i!=sessoes.end())
-		ret=&(i->second);
+	{
+		m.destrava();
+		return i->second;
+	}
 	m.destrava();
+	Noh ret;
 	return ret;
 }
 
-const Hash128* ListaSessoes::operator[](const Noh& n)
+Hash128 ListaSessoes::operator[](const Noh& n)
 {
-	const Hash128* ret=NULL;
 	m.trava();
 	map<Hash128,Noh>::iterator i;
 
@@ -426,12 +428,40 @@ const Hash128* ListaSessoes::operator[](const Noh& n)
 	{
 		if(n==i->second)
 		{
-			ret=&(i->first);
-			break;
+			m.destrava();
+			return i->first;
 		}
 	}
 	m.destrava();
+	Hash128 ret;
 	return ret;
+}
+
+bool ListaSessoes::busca(const Hash128& h)
+{
+	m.trava();
+	map<Hash128,Noh>::iterator i=sessoes.find(h);
+	m.destrava();
+	if(i!=sessoes.end())
+		return true;
+	return false;
+}
+
+bool ListaSessoes::busca(const Noh& n)
+{
+	m.trava();
+	map<Hash128,Noh>::iterator i;
+
+	for(i=sessoes.begin();i!=sessoes.end();i++)
+	{
+		if(n==i->second)
+		{
+			m.destrava();
+			return true;
+		}
+	}
+	m.destrava();
+	return false;
 }
 
 int ListaSessoes::tamanho()

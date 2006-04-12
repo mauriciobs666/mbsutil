@@ -139,8 +139,10 @@ public:
 
 	bool insere(const Hash128& h, const Noh& n);
 	void remove(const Hash128& h);
-	const Noh* operator[](const Hash128& h);
-	const Hash128* operator[](const Noh& n);
+	Noh operator[](const Hash128& h);
+	Hash128 operator[](const Noh& n);
+	bool busca(const Hash128& h);
+	bool busca(const Noh& n);
 	int tamanho();
 	void limpa();
 private:
