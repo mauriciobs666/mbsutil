@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <cstdlib>
 #include <iostream>
-#include "../mbsutil.h"
+#include "mbsutil.h"
 
 using namespace std;
 
@@ -22,10 +22,11 @@ int testeConversao()
 
 int testeThread()
 {
-	Thread teste(thread,NULL);
-	cout << "Esperando finalizacao da thread";
-	while(teste.executando());
-	cout << "ok." << endl;
+//	Thread teste(thread,NULL);
+//	cout << "Esperando finalizacao da thread";
+//	while(teste.executando());
+//	cout << "ok." << endl;
+	cout << "todo";
 	return 0;
 }
 

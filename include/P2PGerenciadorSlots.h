@@ -76,5 +76,6 @@ private:
 	//friend class ClienteP2P;
 	Conexao serverSock;
 	static int tratarServer(Conexao *con, long codeve, long coderro[]);
+	bool idAlta(const Noh &n);
 };
 #endif

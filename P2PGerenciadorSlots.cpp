@@ -141,6 +141,21 @@ int GerenciadorSlots::IFH_tratar(Buffer *frame, Slot *slot)
 			unsigned long agora=(clock()/(CLOCKS_PER_SEC/1000));
 			slot->iC.ping=agora-base;
 		break;
+		case ID_ASK:
+			logar("CMD_ID_ASK");
+			Buffer *id_ask=new Buffer(sizeof(COMANDO)+sizeof(Noh));
+			if(idAlta(slot->iC))
+				id_ask->writeByte((COMANDO)ID_RET);
+			else
+				id_ask->writeByte((COMANDO)ID_ND);
+			slot->enviar(id_ask);
+		break;
+		case ID_RET:
+			logar("CMD_ID_RET");
+		break;
+		case ID_ND:
+			logar("CMD_ID_ND");
+		break;
 		default:
 			logar("CAMADA1_COMANDO_INVALIDO:");
 		break;
@@ -151,6 +166,10 @@ int GerenciadorSlots::IFH_tratar(Buffer *frame, Slot *slot)
 
 int GerenciadorSlots::IFH_conectado(Slot *slot)
 {
+	Buffer *id_ask=new Buffer(sizeof(COMANDO));//+sizeof(Noh));
+	id_ask->writeByte((COMANDO)ID_ASK);
+	slot->enviar(id_ask);
+
 	nohs.push(slot->iC);
 	ph->IPH_conectado(slot->iC);
 	return 0;
@@ -331,4 +350,12 @@ int GerenciadorSlots::tratarServer(Conexao *con, long codeve, long coderro[])
 	if(codeve & FD_CLOSE)
 		return 1;	//matar thread...
 	return 0;
+}
+
+bool GerenciadorSlots::idAlta(const Noh &n)
+{
+	Conexao ct;
+	if(ct.conectar(n.ip,n.porta)==0)
+		return true;
+	return false;
 }
