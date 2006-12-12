@@ -27,6 +27,10 @@
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
+		<Unit filename="Geometria.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
 		<Unit filename="Hash.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
@@ -64,6 +68,12 @@
 			<Option target="default" />
 		</Unit>
 		<Unit filename="include\Bufer.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="include\Geometria.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
