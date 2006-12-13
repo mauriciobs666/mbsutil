@@ -1,15 +1,79 @@
 /*
-  Name: Vetores
-  Copyright: Todos direitos reservados - 2005
-  Author: Mauricio Bieze Stefani
-  Date: 13/09/05 20:59
-  Description: 
+	Copyright 2006 - Mauricio Bieze Stefani
 */
 
 #include "Geometria.h"
 #include <math.h>
 
 using namespace std;
+
+/*
+	Vetor2i
+*/
+
+Vetor2i Vetor2i::operator+(const Vetor2i& v) const
+{
+	Vetor2i n=*this;
+	n.x+=v.x;
+	n.y+=v.y;
+	return n;
+}
+
+Vetor2i Vetor2i::operator-(const Vetor2i& v) const
+{
+	Vetor2i n=*this;
+	n.x-=v.x;
+	n.y-=v.y;
+	return n;
+}
+
+Vetor2i Vetor2i::operator*(int i) const
+{
+	Vetor2i n=*this;
+	n.x*=i;
+	n.y*=i;
+	return n;
+}
+
+Vetor2i Vetor2i::operator/(int i) const
+{
+	Vetor2i n=*this;
+	n.x/=i;
+	n.y/=i;
+	return n;
+}
+
+Vetor2i& Vetor2i::operator+=(const Vetor2i& v)
+{
+	x+=v.x;
+	y+=v.y;
+	return *this;
+}
+
+Vetor2i& Vetor2i::operator-=(const Vetor2i& v)
+{
+	x-=v.x;
+	y-=v.y;
+	return *this;
+}
+
+Vetor2i& Vetor2i::operator*=(int i)
+{
+	x*=i;
+	y*=i;
+	return *this;
+}
+
+Vetor2i& Vetor2i::operator/=(int i)
+{
+	x/=i;
+	y/=i;
+	return *this;
+}
+
+/*
+	Vetor3D
+*/
 
 Vetor3D Vetor3D::operator+(const Vetor3D& v) const
 {
@@ -107,30 +171,30 @@ Vetor3D Vetor3D::gira(Real ax, Real ay, Real az) const
 {
 	Vetor3D n=*this;
 	Real xtmp,ztmp;
-	
+
 	ax=(ax*PI)/180;
 	ay=(ay*PI)/180;
 	az=(az*PI)/180;
-	
+
 	Real senx=sin(ax);
 	Real cosx=cos(ax);
 	Real seny=sin(ay);
 	Real cosy=cos(ay);
 	Real senz=sin(az);
 	Real cosz=cos(az);
-	
+
 	//rotacao em torno do eixo X
 	n.y=y*cosx-z*senx;
 	ztmp=n.z=z*cosx+y*senx;
-	
+
 	//rotacao em torno do eixo Y
 	n.z=n.z*cosy-x*seny;
 	xtmp=n.x=x*cosy+ztmp*seny;
-	
+
 	//rotacao em torno do eixo  Z
 	n.x=n.x*cosz-n.y*senz;
 	n.y=n.y*cosz+xtmp*senz;
-	
+
 	return n;
 }
 

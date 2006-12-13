@@ -14,6 +14,19 @@ class Vetor2i
 public:
 	int x,y;
 	Vetor2i(int xx=0, int yy=0) : x(xx), y(yy) {}
+
+	Vetor2i operator+(const Vetor2i& v) const;
+	Vetor2i operator-(const Vetor2i& v) const;
+	Vetor2i operator*(int i) const;
+	Vetor2i operator/(int i) const;
+
+	Vetor2i& operator+=(const Vetor2i& v);
+	Vetor2i& operator-=(const Vetor2i& v);
+	Vetor2i& operator*=(int i);
+	Vetor2i& operator/=(int i);
+
+	bool operator==(const Vetor2i& v) const { return ((x==v.x)&(y==v.y)); }
+	bool operator!=(const Vetor2i& v) const { return ((x!=v.x)|(y!=v.y)); }
 };
 
 class Vetor2D
