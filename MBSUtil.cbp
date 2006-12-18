@@ -95,6 +95,11 @@
 			<Option target="Release" />
 			<Option target="Debug" />
 		</Unit>
+		<Unit filename="glImagem.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+			<Option target="Debug" />
+		</Unit>
 		<Unit filename="include\Bufer.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
@@ -180,6 +185,13 @@
 			<Option target="Debug" />
 		</Unit>
 		<Unit filename="include\Thread.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="include\glImagem.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
