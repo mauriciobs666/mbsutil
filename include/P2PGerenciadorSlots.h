@@ -1,14 +1,40 @@
+/*
+	MBS-Util - General purpose C++ library
+	Copyright (C) 2007 - Mauricio Bieze Stefani
+
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License as published by the Free Software Foundation; either
+	version 2.1 of the License, or (at your option) any later version.
+
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	Lesser General Public License for more details.
+
+	You should have received a copy of the GNU Lesser General Public
+	License along with this library; if not, write to the Free Software
+	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+*/
+
 #ifndef MBSUTIL_P2PGERENCIADORSLOTS_H
 #define MBSUTIL_P2PGERENCIADORSLOTS_H
 
 #include "P2PSlot.h"
 
-/*	===========================================================================
-	Classe GerenciadorSlots - Camada 1 fo protocolo (rede):
-	===========================================================================
+//!Interface do tratador de pacotes
+class iPacketHandler
+{
+public:
+	virtual int IPH_tratar(Buffer *pacote, const Noh& n) = 0;
+	virtual int IPH_conectado(const Noh& n) = 0;
+	virtual int IPH_desconectado(const Noh& n) = 0;
+};
+
+/**
+	\brief Camada 1 do protocolo (rede):
 
 	Responsavel por:
-		- camada 1 do protocolo
 		- gerenciamento de conexoes e outros recursos de rede
 		- limite de max de conexoes simultaneas
 		- alocacao e liberacao de Slots
@@ -23,17 +49,7 @@
 		[COMANDO][dados]
 			COMANDO = typedef = enum Protocolo::CmdCamada1
 			dados = depende do COMANDO
-
-	===========================================================================
 */
-class iPacketHandler	// interface do tratador de pacotes
-{
-public:
-	virtual int IPH_tratar(Buffer *pacote, const Noh& n) = 0;
-	virtual int IPH_conectado(const Noh& n) = 0;
-	virtual int IPH_desconectado(const Noh& n) = 0;
-};
-
 class GerenciadorSlots : public iFrameHandler
 {
 public:
@@ -78,4 +94,5 @@ private:
 	static int tratarServer(Conexao *con, long codeve, long coderro[]);
 	bool idAlta(const Noh &n);
 };
+
 #endif

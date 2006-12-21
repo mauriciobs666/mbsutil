@@ -1,3 +1,22 @@
+/*
+	MBS-Util - General purpose C++ library
+	Copyright (C) 2007 - Mauricio Bieze Stefani
+
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License as published by the Free Software Foundation; either
+	version 2.1 of the License, or (at your option) any later version.
+
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	Lesser General Public License for more details.
+
+	You should have received a copy of the GNU Lesser General Public
+	License along with this library; if not, write to the Free Software
+	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+*/
+
 #ifndef MBSUTIL_P2PED_H
 #define MBSUTIL_P2PED_H
 
@@ -16,9 +35,8 @@
 using std::istream;
 using std::ostream;
 
-/*	Classe Noh
-	Responsavel por armazenar informacoes sobre um endereco de rede TCP/IP.
-*/
+//!Responsavel por armazenar informacoes sobre um endereco de rede TCP/IP.
+
 class Noh
 {
 public:
@@ -57,9 +75,8 @@ private:
 	std::list<Noh> lista;
 };
 
-/*	Classe Cliente
-	Responsavel por descrever um cliente da rede P2P, protocolos aceitos etc.
-*/
+//!Responsavel por descrever um cliente da rede P2P, protocolos aceitos etc.
+
 class Cliente : public Noh
 {
 public:
@@ -76,9 +93,9 @@ public:
     ostream& write(ostream& os);
 };
 
-/*	Classe Usuario
-	Descreve um usuario da rede
-*/
+
+//!Descreve um usuario da rede
+
 class Usuario : public Hash128
 {
 public:
@@ -106,10 +123,8 @@ public:
     ostream& write(ostream& os);
 };
 
-/*	Classe ListaUsuarios
-	Fornece acesso facil e sincronizado para listas de usuarios
-	IMPORTANTE: acessos diretos devem ser protegidos pelo mutex
-*/
+//!Fornece acesso facil e sincronizado para listas de usuarios
+//IMPORTANTE: acessos diretos devem ser protegidos pelo mutex
 class ListaUsuarios
 {
 public:
@@ -128,9 +143,7 @@ public:
     ostream& write(ostream& os);
 };
 
-/*	Classe ListaSessoes
-	Relaciona Usuarios com Nohs.
-*/
+//!Relaciona Usuarios com Nohs.
 class ListaSessoes
 {
 public:
@@ -150,10 +163,8 @@ private:
 	std::map<Hash128,Noh> sessoes;
 };
 
-/*	Classe ListaHash128
-	Fornece acesso facil e sincronizado para listas de hashs
-	IMPORTANTE: acessos diretos devem ser protegidos pelo mutex
-*/
+//!Fornece acesso facil e sincronizado para listas de hashs
+//IMPORTANTE: acessos diretos devem ser protegidos pelo mutex
 class ListaHash128
 {
 public:
