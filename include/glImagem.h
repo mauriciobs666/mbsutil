@@ -52,6 +52,8 @@ class glImagem
 
 		int resize();	//!<redimensiona imagens pra tamanhos potencia de 2
 		Vetor2D ratio;	//!<proporcao pra ser usada com glTexCoord2f
+
+		int setaPixel(unsigned short x, unsigned short y, glCor *c);
 };
 
 #endif // GLIMAGEM_H

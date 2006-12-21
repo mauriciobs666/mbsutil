@@ -121,3 +121,18 @@ int glImagem::resize()
 	#endif
 	return 0;
 }
+
+int glImagem::setaPixel(unsigned short x, unsigned short y, glCor *c)
+{
+	GLubyte *ptmp;
+	ptmp=pixels+(pitch*y)+(x*4);
+	*ptmp=c->r;
+	ptmp++;
+	*ptmp=c->g;
+	ptmp++;
+	*ptmp=c->b;
+	ptmp++;
+	if(format==GL_RGBA)
+		*ptmp=c->a;
+	return 0;
+}
