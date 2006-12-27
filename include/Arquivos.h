@@ -36,7 +36,7 @@ public:
 	std::string relativo();
 	std::string relativo(const std::string &nome);
 
-	std::list<std::string> find(const std::string &nome, int restricoes=0);
+	static std::list<std::string> find(const std::string &nome, int restricoes=0);
 };
 
 #endif

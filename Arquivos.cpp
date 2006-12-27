@@ -32,7 +32,9 @@ list<string> Path::find(const string &nome, int restricoes)
 		list<string> temp;
 		do
 		{
-			temp.push_back(wfd.cFileName);
+			string str=string(wfd.cFileName);
+			if((str!=".")&(str!=".."))
+				temp.push_back(str);
 		} while(FindNextFile(hnd,&wfd));
 		FindClose(hnd);
 		return temp;
