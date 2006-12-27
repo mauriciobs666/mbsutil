@@ -40,6 +40,11 @@
 		<Compiler>
 			<Add directory="include" />
 		</Compiler>
+		<Unit filename="Arquivos.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+			<Option target="Debug" />
+		</Unit>
 		<Unit filename="Bufer.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Release" />
@@ -102,6 +107,13 @@
 		</Unit>
 		<Unit filename="glImagem.cpp">
 			<Option compilerVar="CPP" />
+			<Option target="Release" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="include\Arquivos.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
 			<Option target="Release" />
 			<Option target="Debug" />
 		</Unit>

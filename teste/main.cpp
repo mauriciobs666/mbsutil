@@ -98,6 +98,14 @@ int testeHash()
 	return 0;
 }
 
+int testePath()
+{
+	Path tmp;
+	list<string> lst=tmp.find("../*");
+	for(list<string>::iterator i=lst.begin();i!=lst.end();i++)
+		cout << *i << endl;
+}
+
 int main(int argc, char *argv[])
 {
 	char op;
@@ -108,6 +116,7 @@ int main(int argc, char *argv[])
 	cout << "4 - testeExpressao()" << endl;
 	cout << "5 - testeHash()" << endl;
 	cout << "6 - testeConversao()" << endl;
+	cout << "7 - testePath()" << endl;
 	cout << endl << "Escolha uma opcao: ";
 	cin >> op;
 	switch(op)
@@ -129,6 +138,9 @@ int main(int argc, char *argv[])
 		break;
 		case '6':
 			testeConversao();
+		break;
+		case '7':
+			testePath();
 		break;
 	}
     return EXIT_SUCCESS;

@@ -17,19 +17,47 @@
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef MBSUTIL_H
-#define MBSUTIL_H
-
 #include "Arquivos.h"
-#include "Bufer.h"
-#include "Geometria.h"
-#include "Hash.h"
-#include "P2PProtocolo.h"
-#include "Parser.h"
-#include "Rede.h"
-#include "Tempo.h"
-#include "Thread.h"
-#include "glFonte.h"
-#include "glImagem.h"
+#include <windows.h>
 
-#endif
+using namespace std;
+
+list<string> Path::find(const string &nome, int restricoes)
+{
+	WIN32_FIND_DATA wfd;
+
+	HANDLE hnd=FindFirstFile(nome.c_str(), &wfd);
+	if(INVALID_HANDLE_VALUE!=hnd)
+	{
+		list<string> temp;
+		do
+		{
+			temp.push_back(wfd.cFileName);
+		} while(FindNextFile(hnd,&wfd));
+		FindClose(hnd);
+		return temp;
+	}
+}
+
+string Path::relativo()
+{
+    return relativo(path);
+}
+
+string Path::relativo(const string &nome)
+{
+/*
+    char *tmp=nome;
+    char *barra=NULL;
+
+    while(*tmp!=0)
+    {
+        if(*tmp=='\\')
+            barra=tmp;
+        ++tmp;
+    }
+    if(barra==NULL)
+        return nome;
+    return ++barra;
+*/
+}

@@ -17,19 +17,26 @@
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef MBSUTIL_H
-#define MBSUTIL_H
+#ifndef MBSUTIL_ARQUIVOS_H
+#define MBSUTIL_ARQUIVOS_H
 
-#include "Arquivos.h"
-#include "Bufer.h"
-#include "Geometria.h"
-#include "Hash.h"
-#include "P2PProtocolo.h"
-#include "Parser.h"
-#include "Rede.h"
-#include "Tempo.h"
-#include "Thread.h"
-#include "glFonte.h"
-#include "glImagem.h"
+#include <string>
+#include <list>
+
+class Path
+{
+public:
+	std::string path;
+
+	Path() : path("")
+		{}
+	Path(const std::string &p) : path(p)
+		{}
+
+	std::string relativo();
+	std::string relativo(const std::string &nome);
+
+	std::list<std::string> find(const std::string &nome, int restricoes=0);
+};
 
 #endif
