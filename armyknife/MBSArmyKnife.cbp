@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="5" />
+	<Project>
+		<Option title="MBSArmyKnife" />
+		<Option default_target="" />
+		<Option compiler="gcc" />
+		<Option virtualFolders="" />
+		<Build>
+			<Target title="Release">
+				<Option output="MBSArmyKnife.exe" prefix_auto="0" extension_auto="0" />
+				<Option object_output="c:\temp" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectResourceIncludeDirsRelation="0" />
+				<Compiler>
+					<Add option="-O3" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="Debug">
+				<Option output="MBSArmyKnife.exe" prefix_auto="0" extension_auto="0" />
+				<Option object_output="c:\temp" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectResourceIncludeDirsRelation="0" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-DDEBUG" />
+				</Compiler>
+			</Target>
+			<Environment>
+				<Variable name="WX_CFG" value="" />
+			</Environment>
+		</Build>
+		<Compiler>
+			<Add option="-pipe" />
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-D__GNUWIN32__" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add directory="$(#WX.include)" />
+			<Add directory="$(#WX.lib)\gcc_lib\msw" />
+			<Add directory="$(#WX.lib)\gcc_lib$(WX_CFG)\msw" />
+			<Add directory="$(#WX)\contrib\include" />
+			<Add directory="$(#mbsutil.include)" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WX.include)" />
+		</ResourceCompiler>
+		<Linker>
+			<Add library="wxmsw26" />
+			<Add library="mbsutil" />
+			<Add library="ole32" />
+			<Add library="comctl32" />
+			<Add library="shell32" />
+			<Add library="ctl3d32" />
+			<Add library="oleaut32" />
+			<Add library="winmm" />
+			<Add library="advapi32" />
+			<Add library="uuid" />
+			<Add directory="$(#WX.lib)\gcc_lib" />
+			<Add directory="$(#WX.lib)\gcc_lib\msw" />
+			<Add directory="$(#WX.lib)\gcc_lib$(WX_CFG)" />
+			<Add directory="$(#mbsutil.lib)" />
+		</Linker>
+		<Unit filename="app.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="app.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="mainframe.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="mainframe.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="wxsmith\MainFrame.wxs">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+			<Option target="Debug" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<wxsmith>
+				<frame wxs_file="MainFrame.wxs" class="MainFrame" src_file="mainframe.cpp" header_file="mainframe.h" xrc_file="" edit_mode="Source" />
+				<configuration app_src_file="app.cpp" main_resource="MainFrame" init_all_handlers="necessary" />
+			</wxsmith>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

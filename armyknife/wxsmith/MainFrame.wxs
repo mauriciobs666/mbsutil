@@ -1,0 +1,475 @@
+<resource>
+    <object class="wxFrame" name="MainFrame">
+        <title>MBS - Army Knife</title>
+        <centered>1</centered>
+        <style>wxCAPTION|wxTHICK_FRAME|wxSYSTEM_MENU|wxRESIZE_BOX|wxCLOSE_BOX|wxMINIMIZE_BOX</style>
+        <bg>wxSYS_COLOUR_BTNFACE</bg>
+        <object class="wxBoxSizer" variable="BoxSizer1" member="yes">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <option>1</option>
+                <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                <object class="wxNotebook" name="ID_NOTEBOOK1" variable="Notebook1" member="yes">
+                    <size>379,351</size>
+                    <style>wxNB_BOTTOM|wxNB_MULTILINE</style>
+                    <object class="notebookpage">
+                        <label>Calculator</label>
+                        <object class="wxPanel" name="ID_PANEL1" variable="Panel1" member="yes">
+                            <size>390,282</size>
+                            <style>wxTAB_TRAVERSAL</style>
+                            <object class="wxBoxSizer" variable="BoxSizer4" member="yes">
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <option>1</option>
+                                    <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                    <object class="wxBoxSizer" variable="BoxSizer3" member="yes">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <object class="sizeritem">
+                                            <option>1</option>
+                                            <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                            <object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="eval" member="yes">
+                                                <value></value>
+                                                <size>297,252</size>
+                                                <style>wxTE_MULTILINE|wxTE_READONLY</style>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                            <object class="wxBoxSizer" variable="BoxSizer13" member="yes">
+                                                <orient>wxVERTICAL</orient>
+                                                <object class="sizeritem">
+                                                    <flag>wxALL|wxALIGN_CENTER</flag>
+                                                    <object class="wxStaticBoxSizer" variable="StaticBoxSizer9" member="yes">
+                                                        <orient>wxHORIZONTAL</orient>
+                                                        <label>Output</label>
+                                                        <object class="sizeritem">
+                                                            <flag>wxALL|wxALIGN_CENTER</flag>
+                                                            <object class="wxStaticText" name="ID_STATICTEXT8" variable="StaticText8" member="yes">
+                                                                <label>Decimal places:</label>
+                                                            </object>
+                                                        </object>
+                                                        <object class="sizeritem">
+                                                            <flag>wxALL|wxALIGN_CENTER</flag>
+                                                            <object class="wxSpinCtrl" name="ID_SPINCTRL2" variable="CalculatorDecPlaces" member="yes">
+                                                                <value>2</value>
+                                                                <size>44,21</size>
+                                                            </object>
+                                                        </object>
+                                                    </object>
+                                                </object>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_BOTTOM|wxEXPAND</flag>
+                                    <object class="wxTextCtrl" name="ID_TEXTCTRL3" variable="command" member="yes">
+                                        <value></value>
+                                        <handler entry="EVT_TEXT_ENTER" function="OnTextCtrl3TextEnter" />
+                                        <style>wxTE_PROCESS_ENTER</style>
+                                        <focused>1</focused>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                    <object class="notebookpage">
+                        <label>Split</label>
+                        <object class="wxPanel" name="ID_PANEL4" variable="Panel4" member="yes">
+                            <style>wxTAB_TRAVERSAL</style>
+                            <object class="wxBoxSizer" variable="BoxSizer5" member="yes">
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <border>2</border>
+                                    <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                    <object class="wxBoxSizer" variable="BoxSizer7" member="yes">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <object class="sizeritem">
+                                            <flag>wxALL|wxALIGN_CENTER</flag>
+                                            <object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
+                                                <label>Input file:</label>
+                                                <size>48,13</size>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <option>1</option>
+                                            <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                            <object class="wxTextCtrl" name="ID_TEXTCTRL4" variable="SplitFilename" member="yes">
+                                                <value></value>
+                                                <size>180,21</size>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALL|wxALIGN_CENTER</flag>
+                                            <object class="wxButton" name="ID_BUTTON5" variable="SplitOpenFile" member="yes">
+                                                <label>...</label>
+                                                <handler entry="EVT_BUTTON" function="OnSplitOpenFileClick" />
+                                                <size>33,23</size>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <border>2</border>
+                                    <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                    <object class="wxBoxSizer" variable="BoxSizer8" member="yes">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <object class="sizeritem">
+                                            <flag>wxALL|wxALIGN_CENTER</flag>
+                                            <object class="wxStaticText" name="ID_STATICTEXT6" variable="StaticText6" member="yes">
+                                                <label>Part size:</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                            <object class="wxTextCtrl" name="ID_TEXTCTRL9" variable="SplitPartsize" member="yes">
+                                                <value></value>
+                                                <size>114,21</size>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALL|wxALIGN_CENTER</flag>
+                                            <object class="wxComboBox" name="ID_COMBOBOX1" variable="SplitPartsizeMult" member="yes">
+                                                <selection>1</selection>
+                                                <content>
+                                                    <item>kB</item>
+                                                    <item>MB</item>
+                                                </content>
+                                                <style>wxCB_READONLY</style>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALL|wxALIGN_CENTER</flag>
+                                            <object class="wxButton" name="ID_BUTTON6" variable="SplitGo" member="yes">
+                                                <label>Go</label>
+                                                <handler entry="EVT_BUTTON" function="OnSplitGoClick" />
+                                                <size>39,23</size>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <option>1</option>
+                                    <border>2</border>
+                                    <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                    <object class="wxTextCtrl" name="ID_TEXTCTRL8" variable="SplitLog" member="yes">
+                                        <value></value>
+                                        <style>wxTE_MULTILINE|wxTE_READONLY</style>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                    <object class="notebookpage">
+                        <label>Calendar</label>
+                        <object class="wxPanel" name="ID_PANEL6" variable="Panel6" member="yes">
+                            <object class="wxBoxSizer" variable="BoxSizer9" member="yes">
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                    <object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="yes">
+                                        <orient>wxVERTICAL</orient>
+                                        <label>Calendar</label>
+                                        <object class="sizeritem">
+                                            <border>5</border>
+                                            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                            <object class="wxCalendarCtrl" name="ID_CALENDARCTRL2" variable="CalendarCtrl2" member="yes">
+                                                <size>174,137</size>
+                                                <style>wxCAL_SHOW_HOLIDAYS|wxCAL_SHOW_SURROUNDING_WEEKS</style>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                            <object class="wxBoxSizer" variable="BoxSizer10" member="yes">
+                                                <orient>wxHORIZONTAL</orient>
+                                                <object class="sizeritem">
+                                                    <flag>wxALL|wxALIGN_CENTER</flag>
+                                                    <object class="wxStaticText" name="ID_STATICTEXT4" variable="StaticText4" member="yes">
+                                                        <label>Time:</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <option>1</option>
+                                                    <flag>wxALL|wxALIGN_CENTER</flag>
+                                                    <object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="CalendarTime" member="yes">
+                                                        <value>Not yet...</value>
+                                                        <style>wxTE_READONLY</style>
+                                                        <enabled>0</enabled>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALL|wxALIGN_CENTER</flag>
+                                                    <object class="wxButton" name="ID_BUTTON2" variable="CalendarCalcTimet" member="yes">
+                                                        <label>Calculate time_t</label>
+                                                        <handler entry="EVT_BUTTON" function="OnCalendarCalcTimetClick" />
+                                                        <size>84,23</size>
+                                                    </object>
+                                                </object>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                    <object class="wxStaticBoxSizer" variable="StaticBoxSizer2" member="yes">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <label>time_t</label>
+                                        <object class="sizeritem">
+                                            <option>1</option>
+                                            <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                            <object class="wxBoxSizer" variable="BoxSizer2" member="yes">
+                                                <orient>wxHORIZONTAL</orient>
+                                                <object class="sizeritem">
+                                                    <option>1</option>
+                                                    <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                                    <object class="wxTextCtrl" name="ID_TEXTCTRL7" variable="CalendarTimet" member="yes">
+                                                        <value></value>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                                    <object class="wxButton" name="ID_BUTTON3" variable="CalendarCalcDT" member="yes">
+                                                        <label>Calculate Date</label>
+                                                        <handler entry="EVT_BUTTON" function="OnCalendarCalcDTClick" />
+                                                        <size>82,23</size>
+                                                    </object>
+                                                </object>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                    <object class="notebookpage">
+                        <label>MD4</label>
+                        <object class="wxPanel" name="ID_PANEL2" variable="Panel2" member="yes">
+                            <object class="wxBoxSizer" variable="BoxSizer6" member="yes">
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                    <object class="wxStaticBoxSizer" variable="StaticBoxSizer3" member="yes">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <label>Input file</label>
+                                        <object class="sizeritem">
+                                            <flag>wxALL|wxALIGN_CENTER</flag>
+                                            <object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText2" member="yes">
+                                                <label>File:</label>
+                                            </object>
+                                        </object>
+                                        <object class="spacer">
+                                            <flag>wxALL|wxALIGN_CENTER</flag>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <option>1</option>
+                                            <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                            <object class="wxTextCtrl" name="ID_TEXTCTRL5" variable="MD4Filename" member="yes">
+                                                <value></value>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                            <object class="wxButton" name="ID_BUTTON1" variable="MD4OpenFile" member="yes">
+                                                <label>...</label>
+                                                <handler entry="EVT_BUTTON" function="OnMD4OpenFileClick" />
+                                                <size>32,23</size>
+                                                <focused>1</focused>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                            <object class="wxButton" name="ID_BUTTON4" variable="MD4Calc" member="yes">
+                                                <label>Go</label>
+                                                <handler entry="EVT_BUTTON" function="OnMD4CalcClick" />
+                                                <size>32,23</size>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <option>1</option>
+                                    <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                    <object class="wxStaticBoxSizer" variable="StaticBoxSizer4" member="yes">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <label>Log</label>
+                                        <object class="sizeritem">
+                                            <option>1</option>
+                                            <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                            <object class="wxTextCtrl" name="ID_TEXTCTRL6" variable="MD4Result" member="yes">
+                                                <value></value>
+                                                <size>169,21</size>
+                                                <style>wxTE_MULTILINE|wxTE_READONLY</style>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                    <object class="notebookpage">
+                        <label>Respawn</label>
+                        <object class="wxPanel" name="ID_PANEL3" variable="Panel3" member="yes">
+                            <object class="wxBoxSizer" variable="BoxSizer11" member="yes">
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                    <object class="wxStaticBoxSizer" variable="StaticBoxSizer5" member="yes">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <label>Process</label>
+                                        <object class="sizeritem">
+                                            <option>1</option>
+                                            <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                            <object class="wxBoxSizer" variable="BoxSizer12" member="yes">
+                                                <orient>wxHORIZONTAL</orient>
+                                                <object class="sizeritem">
+                                                    <flag>wxALL|wxALIGN_CENTER</flag>
+                                                    <object class="wxStaticText" name="ID_STATICTEXT3" variable="StaticText3" member="yes">
+                                                        <label>File:</label>
+                                                        <size>20,12</size>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <option>1</option>
+                                                    <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                                    <object class="wxTextCtrl" name="ID_TEXTCTRL10" variable="RespawnFileName" member="yes">
+                                                        <value></value>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                                    <object class="wxButton" name="ID_BUTTON7" variable="RespawnOpen" member="yes">
+                                                        <label>...</label>
+                                                        <handler entry="EVT_BUTTON" function="OnRespawnOpenClick" />
+                                                        <size>34,23</size>
+                                                    </object>
+                                                </object>
+                                                <object class="spacer">
+                                                    <size>16,20</size>
+                                                    <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALL|wxALIGN_CENTER</flag>
+                                                    <object class="wxStaticText" name="ID_STATICTEXT5" variable="StaticText5" member="yes">
+                                                        <label># of times:</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                                    <object class="wxSpinCtrl" name="ID_SPINCTRL1" variable="RespawnNumber" member="yes">
+                                                        <value>0</value>
+                                                        <size>51,23</size>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                                    <object class="wxButton" name="ID_BUTTON8" variable="RespawnGo" member="yes">
+                                                        <label>Go</label>
+                                                        <handler entry="EVT_BUTTON" function="OnRespawnGoClick" />
+                                                        <size>36,23</size>
+                                                    </object>
+                                                </object>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <option>1</option>
+                                    <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                    <object class="wxStaticBoxSizer" variable="StaticBoxSizer6" member="yes">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <label>Log</label>
+                                        <object class="sizeritem">
+                                            <option>1</option>
+                                            <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                            <object class="wxTextCtrl" name="ID_TEXTCTRL11" variable="RespawnLog" member="yes">
+                                                <value></value>
+                                                <style>wxTE_MULTILINE|wxTE_READONLY</style>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                    <object class="notebookpage">
+                        <label>Echo Server</label>
+                        <object class="wxPanel" name="ID_PANEL5" variable="Panel5" member="yes">
+                            <object class="wxBoxSizer" variable="BoxSizer14" member="yes">
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <option>1</option>
+                                    <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                    <object class="wxStaticBoxSizer" variable="StaticBoxSizer7" member="yes">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <label>Log</label>
+                                        <object class="sizeritem">
+                                            <option>1</option>
+                                            <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                            <object class="wxTextCtrl" name="ID_TEXTCTRL13" variable="TextCtrl13" member="yes">
+                                                <value>nao implementado ainda</value>
+                                                <style>wxTE_MULTILINE|wxTE_READONLY</style>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                    <object class="wxStaticBoxSizer" variable="StaticBoxSizer8" member="yes">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <label>Server</label>
+                                        <object class="sizeritem">
+                                            <flag>wxALL|wxALIGN_CENTER</flag>
+                                            <object class="wxStaticText" name="ID_STATICTEXT7" variable="StaticText7" member="yes">
+                                                <label>Port:</label>
+                                                <size>30,13</size>
+                                            </object>
+                                        </object>
+                                        <object class="spacer">
+                                            <flag>wxALL|wxALIGN_CENTER</flag>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                            <object class="wxTextCtrl" name="ID_TEXTCTRL12" variable="TextCtrl12" member="yes">
+                                                <value></value>
+                                                <size>85,23</size>
+                                            </object>
+                                        </object>
+                                        <object class="spacer">
+                                            <flag>wxALL|wxALIGN_CENTER</flag>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALL|wxALIGN_CENTER</flag>
+                                            <object class="wxButton" name="ID_BUTTON10" variable="Button10" member="yes">
+                                                <label>Go</label>
+                                            </object>
+                                        </object>
+                                        <object class="spacer">
+                                            <flag>wxALL|wxALIGN_CENTER</flag>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALL|wxALIGN_CENTER</flag>
+                                            <object class="wxComboBox" name="ID_COMBOBOX2" variable="ComboBox2" member="yes">
+                                                <content>
+                                                    <item>Echo</item>
+                                                    <item>Silent</item>
+                                                </content>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                    <object class="notebookpage">
+                        <label>TCP Connect</label>
+                        <object class="wxPanel" name="ID_PANEL7" variable="Panel7" member="yes" />
+                    </object>
+                    <object class="notebookpage">
+                        <label>Shutdown</label>
+                        <object class="wxPanel" name="ID_PANEL8" variable="Panel8" member="yes" />
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+</resource>
