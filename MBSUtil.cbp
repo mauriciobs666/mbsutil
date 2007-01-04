@@ -51,6 +51,7 @@
 		<Unit filename="Tempo.cpp" />
 		<Unit filename="Thread.cpp" />
 		<Unit filename="glFonte.cpp" />
+		<Unit filename="glGUI.cpp" />
 		<Unit filename="glImagem.cpp" />
 		<Unit filename="include\Arquivos.h" />
 		<Unit filename="include\Bufer.h" />
@@ -67,6 +68,7 @@
 		<Unit filename="include\Tempo.h" />
 		<Unit filename="include\Thread.h" />
 		<Unit filename="include\glFonte.h" />
+		<Unit filename="include\glGUI.h" />
 		<Unit filename="include\glImagem.h" />
 		<Extensions>
 			<code_completion />
