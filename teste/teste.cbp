@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="5" />
+	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="teste" />
 		<Option pch_mode="0" />
-		<Option default_target="" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="" />
 		<Build>
 			<Target title="default">
 				<Option output="teste.exe" prefix_auto="0" extension_auto="0" />
@@ -30,10 +28,7 @@
 			<Add library="libws2_32.a" />
 			<Add directory="$(#mbsutil.lib)" />
 		</Linker>
-		<Unit filename="main.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
+		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />
 		</Extensions>

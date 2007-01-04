@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="5" />
+	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="MBSUtil" />
-		<Option default_target="" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="" />
 		<Build>
 			<Target title="Release">
 				<Option output="lib\MBSUtil.a" prefix_auto="0" extension_auto="0" />
@@ -40,188 +38,36 @@
 		<Compiler>
 			<Add directory="include" />
 		</Compiler>
-		<Unit filename="Arquivos.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="Bufer.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="Geometria.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="Hash.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="P2PGerenciadorSlots.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="P2PProtocolo.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="P2PSlot.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="P2Ped.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="Parser.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="Rede.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="Tempo.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="Thread.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="glFonte.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="glImagem.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include\Arquivos.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include\Bufer.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include\Geometria.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include\Hash.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include\MBSUtil.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include\P2PGerenciadorSlots.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include\P2PProtocolo.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include\P2PSlot.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include\P2Pdefs.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include\P2Ped.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include\Parser.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include\Rede.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include\Tempo.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include\Thread.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include\glFonte.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include\glImagem.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Release" />
-			<Option target="Debug" />
-		</Unit>
+		<Unit filename="Arquivos.cpp" />
+		<Unit filename="Bufer.cpp" />
+		<Unit filename="Geometria.cpp" />
+		<Unit filename="Hash.cpp" />
+		<Unit filename="P2PGerenciadorSlots.cpp" />
+		<Unit filename="P2PProtocolo.cpp" />
+		<Unit filename="P2PSlot.cpp" />
+		<Unit filename="P2Ped.cpp" />
+		<Unit filename="Parser.cpp" />
+		<Unit filename="Rede.cpp" />
+		<Unit filename="Tempo.cpp" />
+		<Unit filename="Thread.cpp" />
+		<Unit filename="glFonte.cpp" />
+		<Unit filename="glImagem.cpp" />
+		<Unit filename="include\Arquivos.h" />
+		<Unit filename="include\Bufer.h" />
+		<Unit filename="include\Geometria.h" />
+		<Unit filename="include\Hash.h" />
+		<Unit filename="include\MBSUtil.h" />
+		<Unit filename="include\P2PGerenciadorSlots.h" />
+		<Unit filename="include\P2PProtocolo.h" />
+		<Unit filename="include\P2PSlot.h" />
+		<Unit filename="include\P2Pdefs.h" />
+		<Unit filename="include\P2Ped.h" />
+		<Unit filename="include\Parser.h" />
+		<Unit filename="include\Rede.h" />
+		<Unit filename="include\Tempo.h" />
+		<Unit filename="include\Thread.h" />
+		<Unit filename="include\glFonte.h" />
+		<Unit filename="include\glImagem.h" />
 		<Extensions>
 			<code_completion />
 		</Extensions>
