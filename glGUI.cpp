@@ -41,7 +41,7 @@ int glWidget::desenha()
 		{
 			glPushMatrix();						//entrando espaco do filho
 				glTranslatef(tmp->pos.x,tmp->pos.y,0);
-				glColor4ubv(tmp->cor.ubv());
+				glColor4ubv(tmp->cor.ubv());	//cor do filho
 				ret=tmp->desenha();				//desenha o filho
 				if(0==ret)						//se tudo OK
 					tmp->glWidget::desenha();	//desenha os netos
@@ -57,8 +57,6 @@ int glGUI::guiTrataEvento(guiEvento &e)
 {
 	if(foco)
 		foco->guiTrataEvento(e);
-	else
-		glWidget::guiTrataEvento(e);
 	return 0;
 }
 
@@ -79,7 +77,9 @@ int glGUI::desenha()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glShadeModel(GL_FLAT);
 
-	glWidget::desenha();			//chama funcao herdada de glWIdget
+	std::list<glWindow*>::iterator i;
+	for(i=janelas.begin();i!=janelas.end();i++)	//desenha todas as janelas
+		(*i)->desenha();						//chama funcao herdada de glWidget
 
 	glDisable(GL_BLEND);
 

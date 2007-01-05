@@ -79,27 +79,53 @@ class glWidget : public guiTratadorEvento
 };
 
 /**
+	\brief Container basico, menor unidade gerenciavel pelo glGUI
+*/
+class glWindow : public glWidget
+{
+	public:
+		std::string titulo;
+
+		glWindow() : id(0) {}
+		virtual ~glWindow() {}
+
+		int getId() { return id; }
+	private:
+		friend class glGUI;
+		int id;
+};
+
+/**
 	\brief Gerenciador de janelas
 */
-class glGUI : private glWidget
+class glGUI
 {
 	public:
 		GLFonte fonte;			//!<nao eh usada aqui, apenas pra fins de armazenagem
 
 		glGUI()
-			{ id=0; foco=NULL; }
+			{ contador=0; foco=NULL; }
 		virtual ~glGUI()
 			{}
-		void add(glWidget* w)
-			{ filhos.push_back(w); }
+		void add(glWindow* w)
+			{
+				w->id=contador++;
+				janelas.push_back(w);
+			}
 		int desenha();
+		glWindow* operator[](int id);
+
 		int guiTrataEvento(guiEvento &e);
-		glWidget *foco;
+		glWidget* foco;
 	protected:
 	private:
-		int id;					//!<ID unico e sequencial das janelas
+		int contador;			//!<ID unico e sequencial das janelas
+		std::list<glWindow*> janelas;
 };
 
+/**
+	\brief Texto simples
+*/
 class glLabel : public glWidget
 {
 	public:
@@ -110,9 +136,12 @@ class glLabel : public glWidget
 		glLabel(GLFonte& fon, std::string texto) : fonte(fon), caption(texto) {}
 		virtual int desenha();
 	private:
-		void attach(glWidget* w);
+		void add(glWidget* w);	//!<esteril
 };
 
+/**
+	\brief Container
+*/
 class glPanel : public glWidget
 {
 	public:
@@ -138,7 +167,7 @@ class glMemo : public glWidget
 		virtual int desenha();
 	private:
 		std::list<std::string> linhas;
-		void attach(glWidget* w);
+		void add(glWidget* w);	//!<esteril
 };
 
 /**
@@ -165,6 +194,6 @@ class glMenu : public glWidget
 			{ if(selecionado<(nItems()-1)) selecionado++; }
 	private:
 		std::vector<std::string> items;
-		void attach(glWidget* w);
+		void add(glWidget* w);	//!<esteril
 };
 #endif // GLGUI_H
