@@ -86,10 +86,13 @@ class glWindow : public glWidget
 	public:
 		std::string titulo;
 
-		glWindow() : id(0) {}
+		glWindow() : foco(NULL), id(0) {}
 		virtual ~glWindow() {}
 
 		int getId() { return id; }
+		int guiTrataEvento(guiEvento &e);
+	protected:
+		glWidget *foco;
 	private:
 		friend class glGUI;
 		int id;

@@ -53,6 +53,13 @@ int glWidget::desenha()
 	return ret;
 }
 
+int glWindow::guiTrataEvento(guiEvento &e)
+{
+	if(foco)
+		foco->guiTrataEvento(e);
+	return 0;
+}
+
 int glGUI::guiTrataEvento(guiEvento &e)
 {
 	if(foco)
