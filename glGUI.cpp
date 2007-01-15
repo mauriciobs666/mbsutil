@@ -136,6 +136,24 @@ int glMemo::desenha()
 	return 0;
 }
 
+// ============================================================================
+// GLMENU
+// ============================================================================
+
+void glMenu::selecionar(int i)
+{
+	sel=i;
+	if(sel>=nItems())
+		sel=nItems()-1;
+	if(sel<0)
+		sel=0;
+	if(topo>sel)
+		topo=sel;
+	int cabem=tam.y/fonte.altura;
+	if(topo<(sel-cabem))
+		topo=(sel-cabem);
+}
+
 int glMenu::desenha()
 {
 	glBegin(GL_POLYGON);
@@ -145,12 +163,13 @@ int glMenu::desenha()
 		glVertex2i(0,tam.y);
 	glEnd();
 
-	vector<string>::iterator i;
 	int y=0;
 	int n=0;
-	for(i=items.begin();i!=items.end();i++)
+	int cabem=tam.y/fonte.altura;
+
+	for(int i=topo;(i<nItems())&(i<(topo+cabem));i++)
 	{
-		if(n==selecionado)	//desenha seletor
+		if(n==sel)	//desenha seletor
 		{
 			glColor4ubv(corSeletor.ubv());
 			glBegin(GL_POLYGON);
@@ -163,7 +182,7 @@ int glMenu::desenha()
 
 		glColor4ubv(corFonte.ubv());
 		glRasterPos2f(1,y-fonte.altura/2);
-		fonte.printf((*i).c_str());
+		fonte.printf(items[i].c_str());
 
 		y-=fonte.altura;
 		n++;

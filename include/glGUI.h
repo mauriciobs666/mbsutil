@@ -180,22 +180,27 @@ class glMenu : public glWidget
 {
 	public:
 		GLFonte& fonte;			//!<referencia pra algum objeto de fonte
-		int selecionado;		//!<item selecionado
 		glCor corFonte;			//!<cor dos items
 		glCor corSeletor;		//!<cor de fundo do seletor
 
-		glMenu(GLFonte& fon) : fonte(fon), selecionado(0) {}
+		glMenu(GLFonte& fon) : fonte(fon), sel(0), topo(0)
+			{ }
 		int addItem(std::string item)
 			{ items.push_back(item); return items.size()-1; }
 		int nItems()
 			{ return items.size(); }
 		virtual int desenha();
 		virtual int guiTrataEvento(guiEvento &e);
+		void selecionar(int i);
+		int selecionado()
+			{ return sel; }
 		void sobe()
-			{ if(selecionado>0) selecionado--; }
+			{ selecionar(sel-1); }
 		void desce()
-			{ if(selecionado<(nItems()-1)) selecionado++; }
+			{ selecionar(sel+1); }
 	private:
+		int sel;				//!<item selecionado
+		int topo;				//!<indice do item mostrado no topo do componente
 		std::vector<std::string> items;
 		void add(glWidget* w);	//!<esteril
 };
