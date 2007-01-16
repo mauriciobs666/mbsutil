@@ -25,6 +25,7 @@ int GLFonte::load(HDC hDC, const char* nome, int size)
 {
 	HFONT	font;										// Windows Font ID
 	HFONT	oldfont;									// Used For Good House Keeping
+	altura=size;
 	size=-size;
 	font = CreateFont(	size,							// Height Of Font
 						0,								// Width Of Font
@@ -45,7 +46,6 @@ int GLFonte::load(HDC hDC, const char* nome, int size)
 	wglUseFontBitmaps(hDC, 31, 96, base);				// Builds 96 Characters Starting At Character 32
 	SelectObject(hDC, oldfont);							// Selects The Font We Want
 	DeleteObject(font);									// Delete The Font
-	altura=size;
 	return 0;
 }
 

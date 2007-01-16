@@ -99,7 +99,7 @@ int glGUI::desenha()
 
 int glLabel::desenha()
 {
-	glRasterPos2f(0,-fonte.altura/2);
+	glRasterPos2f(0,+fonte.altura/2);
 	fonte.printf(caption.c_str());
 	return 0;
 }
@@ -129,9 +129,9 @@ int glMemo::desenha()
 	int x=0;
 	for(i=linhas.begin();i!=linhas.end();i++)
 	{
-		glRasterPos2f(1,x-fonte.altura/2);
+		glRasterPos2f(1,x+fonte.altura/2);
 		fonte.printf((*i).c_str());
-		x-=fonte.altura;
+		x+=fonte.altura;
 	}
 	return 0;
 }
@@ -147,45 +147,49 @@ void glMenu::selecionar(int i)
 		sel=nItems()-1;
 	if(sel<0)
 		sel=0;
+
 	if(topo>sel)
 		topo=sel;
 	int cabem=tam.y/fonte.altura;
-	if(topo<(sel-cabem))
-		topo=(sel-cabem);
+	if(topo<(sel-(cabem-1)))
+		topo=(sel-(cabem-1));
 }
 
 int glMenu::desenha()
 {
+	//desenha o fundo (falta borda)
 	glBegin(GL_POLYGON);
-		glVertex2i(0,0);
+		glVertex2i(0	,0);
 		glVertex2i(tam.x,0);
 		glVertex2i(tam.x,tam.y);
-		glVertex2i(0,tam.y);
+		glVertex2i(0	,tam.y);
 	glEnd();
 
-	int y=0;
-	int n=0;
-	int cabem=tam.y/fonte.altura;
+	int y=0;								//lado superior da linha atual
+	const int cabem=tam.y/fonte.altura;		//qtas linhas cabem no widget
+	const int borda=2;
 
-	for(int i=topo;(i<nItems())&(i<(topo+cabem));i++)
+	//desenha menu com scroll
+	for(int i=topo;((i<nItems())&&(i<(topo+cabem)));i++)
 	{
-		if(n==sel)	//desenha seletor
+		if(i==sel)	//desenha seletor
 		{
 			glColor4ubv(corSeletor.ubv());
 			glBegin(GL_POLYGON);
-				glVertex2i(2,y-2);
-				glVertex2i(tam.x-2,y-2);
-				glVertex2i(tam.x-2,y-fonte.altura-2);
-				glVertex2i(2,y-fonte.altura-2);
+				glVertex2i(borda		, y-borda);
+				glVertex2i(tam.x-borda	, y-borda);
+				glVertex2i(tam.x-borda	, y+fonte.altura-borda);
+				glVertex2i(borda		, y+fonte.altura-borda);
 			glEnd();
 		}
 
+		//texto do item
 		glColor4ubv(corFonte.ubv());
-		glRasterPos2f(1,y-fonte.altura/2);
+		glRasterPos2f(1,y+fonte.altura/2);	//posiciona cursor no meio da linha
 		fonte.printf(items[i].c_str());
 
-		y-=fonte.altura;
-		n++;
+		//desce uma linha
+		y+=fonte.altura;
 	}
 	return 0;
 }
