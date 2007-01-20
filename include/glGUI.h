@@ -105,13 +105,13 @@ class glWindow : public glWidget
 	public:
 		struct BarraDeTitulo
 		{
-			BarraDeTitulo() : mostrar(false), altura(0), fonte(NULL) {}
-			bool mostrar;
+			BarraDeTitulo() : hide(false), altura(0), fonte(NULL) {}
+			bool hide;
 			std::string caption;
 			int altura;
-			GLFonte *fonte;
 			glCor cor;
-			glCor corFonte;
+			GLFonte *fonte;
+			glCor fonteCor;
 		} titulo;
 
 

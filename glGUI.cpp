@@ -23,6 +23,10 @@
 
 using namespace std;
 
+// ============================================================================
+// GLWIDGET
+// ============================================================================
+
 int glWidget::guiTrataEvento(guiEvento &e)
 {
 	return 0;
@@ -61,10 +65,16 @@ int glWidget::tema(glTema &t)
 	return 0;
 }
 
+// ============================================================================
+// GLWINDOW
+// ============================================================================
+
 int glWindow::desenha()
 {
 	glPushMatrix();
-			glTranslatef(pos.x,pos.y,0);
+		glTranslatef(pos.x,pos.y,0);
+		if(!titulo.hide&&titulo.altura>0)
+		{
 			glColor4ubv(titulo.cor.ubv());
 			glBegin(GL_POLYGON);
 				glVertex2i(0,0);
@@ -72,7 +82,15 @@ int glWindow::desenha()
 				glVertex2i(tam.x,titulo.altura);
 				glVertex2i(0,titulo.altura);
 			glEnd();
-			glWidget::desenha();
+			if(titulo.fonte)
+			{
+				glColor4ubv(titulo.fonteCor.ubv());
+				glRasterPos2f(0,((titulo.fonte->altura*3)/4));
+				titulo.fonte->printf(titulo.caption.c_str());
+			}
+			glTranslatef(0,titulo.altura,0);
+		}
+		glWidget::desenha();
 	glPopMatrix();
 	return 0;
 }
@@ -83,6 +101,10 @@ int glWindow::guiTrataEvento(guiEvento &e)
 		foco->guiTrataEvento(e);
 	return 0;
 }
+
+// ============================================================================
+// GLGUI
+// ============================================================================
 
 int glGUI::guiTrataEvento(guiEvento &e)
 {
@@ -111,7 +133,7 @@ int glGUI::desenha()
 	std::list<glWindow*>::iterator i;
 	for(i=janelas.begin();i!=janelas.end();i++)	//desenha todas as janelas
 		if(!(*i)->hide)
-			(*i)->desenha();					//chama funcao herdada de glWidget
+			(*i)->desenha();					//chama funcao sobrecarregada de glWindow
 
 	glDisable(GL_BLEND);
 
@@ -122,12 +144,19 @@ int glGUI::desenha()
 	return 0;
 }
 
+// ============================================================================
+// GLLABEL
+// ============================================================================
+
 int glLabel::desenha()
 {
-	glRasterPos2f(0,+fonte.altura/2);
 	fonte.printf(caption.c_str());
 	return 0;
 }
+
+// ============================================================================
+// GLPANEL
+// ============================================================================
 
 int glPanel::desenha()
 {
@@ -139,6 +168,10 @@ int glPanel::desenha()
 	glEnd();
 	return 0;
 }
+
+// ============================================================================
+// GLMEMO
+// ============================================================================
 
 int glMemo::desenha()
 {
@@ -154,7 +187,7 @@ int glMemo::desenha()
 	int x=0;
 	for(i=linhas.begin();i!=linhas.end();i++)
 	{
-		glRasterPos2f(1,x+fonte.altura/2);
+		glRasterPos2f(1,x+((fonte.altura*3)/4));
 		fonte.printf((*i).c_str());
 		x+=fonte.altura;
 	}
@@ -200,10 +233,10 @@ int glMenu::desenha()
 		{
 			glColor4ubv(corSeletor.ubv());
 			glBegin(GL_POLYGON);
-				glVertex2i(borda		, y-borda);
-				glVertex2i(tam.x-borda	, y-borda);
-				glVertex2i(tam.x-borda	, y+fonte.altura-borda);
-				glVertex2i(borda		, y+fonte.altura-borda);
+				glVertex2i(borda		, y+borda);
+				glVertex2i(tam.x-borda	, y+borda);
+				glVertex2i(tam.x-borda	, y+(fonte.altura-borda));
+				glVertex2i(borda		, y+(fonte.altura-borda));
 			glEnd();
 			glColor4ubv(cor.ubv());			//inverte cor da fonte
 		}
@@ -211,7 +244,7 @@ int glMenu::desenha()
 			glColor4ubv(fonteCor.ubv());
 
 		//texto do item
-		glRasterPos2f(1,y+fonte.altura/2);	//posiciona cursor no meio da linha
+		glRasterPos2f(borda+1,y+((fonte.altura*3)/4));
 		fonte.printf(items[i].c_str());
 
 		//desce uma linha
