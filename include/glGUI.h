@@ -35,7 +35,7 @@ class glTema
 	public:
 		glCor cor;			//!<cor de fundo
 
-		GLFonte fonte;		//!<referencia pra algum objeto de fonte
+		GLFonte fonte;		//!<fonte pra renderizar texto comum
 		glCor fonteCor;		//!<cor da fonte pra texto comum
 
 		int borda;			//!<tamanho da borda
@@ -73,15 +73,15 @@ class glWidget : public guiTratadorEvento
 	public:
 		Vetor2i pos;		//!<posicao do widget: sempre relativa ao pai
 		Vetor2i tam;		//!<tamanho do widget
-//		GLFonte& fonte;		//!<fonte pra texto comum
+		GLFonte& fonte;		//!<fonte pra texto comum
 		glCor fonteCor;		//!<cor da fonte pra texto comum
 		glCor cor;			//!<cor
 		int borda;			//!<tamanho da borda
+		glTema &temaAtual;	//!<referencia pro tema em uso (pra propriedades mais especificas)
 		bool hide;			//!<esconde o widget e todos os filhos
 
-		glWidget() : hide(false)
-//		glWidget(glTema &tema) : fonte(tema.fonte), hide(false)
-			{}
+		glWidget(glTema &tema) : fonte(tema.fonte), temaAtual(tema), hide(false)
+			{ aplicaTema(tema); }
 		virtual ~glWidget()	//!mata todos os filhos
 			{
 				std::list<glWidget*>::iterator i;
@@ -91,7 +91,7 @@ class glWidget : public guiTratadorEvento
 		void add(glWidget* w)		//!insere um filho na lista
 			{ filhos.push_back(w); }
 		virtual int desenha();		//!<interface pros filhos desenharem
-		virtual int tema(glTema &t);//!aplica tema
+		virtual int aplicaTema(glTema &t);//!aplica tema
 		virtual int guiTrataEvento(guiEvento &e);	//!<implementacao da interface herdada de guiTratadorEvento
 	protected:
 		std::list<glWidget*> filhos;//!<filhos
@@ -105,17 +105,17 @@ class glWindow : public glWidget
 	public:
 		struct BarraDeTitulo
 		{
-			BarraDeTitulo() : hide(false), altura(0), fonte(NULL) {}
+			BarraDeTitulo() : hide(false), altura(0) {}
 			bool hide;
 			std::string caption;
 			int altura;
 			glCor cor;
-			GLFonte *fonte;
 			glCor fonteCor;
 		} titulo;
 
 
-		glWindow() : foco(NULL), id(0) {}
+		glWindow(glTema &tema) : glWidget(tema), foco(NULL), id(0)
+			{}
 		virtual ~glWindow() {}
 
 		int desenha();
@@ -162,11 +162,12 @@ class glGUI
 class glLabel : public glWidget
 {
 	public:
-		GLFonte& fonte;			//!<referencia pra algum objeto de fonte
 		std::string caption;	//!<texto a ser mostrado
 
-		glLabel(GLFonte& fon) : fonte(fon) {}
-		glLabel(GLFonte& fon, std::string texto) : fonte(fon), caption(texto) {}
+		glLabel(glTema &tema) : glWidget(tema)
+			{}
+		glLabel(glTema &tema, std::string texto) : glWidget(tema), caption(texto)
+			{}
 		virtual int desenha();
 	private:
 		void add(glWidget* w);	//!<esteril
@@ -178,7 +179,7 @@ class glLabel : public glWidget
 class glPanel : public glWidget
 {
 	public:
-		glPanel(int largura=16, int altura=16, int posX=0, int posY=0)
+		glPanel(glTema &tema, int largura=16, int altura=16, int posX=0, int posY=0) : glWidget(tema)
 			{ tam.x=largura; tam.y=altura; pos.x=posX; pos.y=posY; }
 		virtual int desenha();
 };
@@ -189,12 +190,8 @@ class glPanel : public glWidget
 class glMemo : public glWidget
 {
 	public:
-		GLFonte& fonte;			//!<referencia pra algum objeto de fonte
-
-		glMemo(glTema &tema) : fonte(tema.fonte)
-			{
-				glWidget::tema(tema);
-			}
+		glMemo(glTema &tema) : glWidget(tema)
+			{ }
 		int clear()
 			{ linhas.clear(); return 0; }
 		int println(std::string linha)
@@ -211,13 +208,10 @@ class glMemo : public glWidget
 class glMenu : public glWidget
 {
 	public:
-		GLFonte& fonte;			//!<referencia pra algum objeto de fonte
 		glCor corSeletor;		//!<cor de fundo do seletor
 
-		glMenu(glTema &tema) : fonte(tema.fonte), sel(0), topo(0)
-			{
-				glWidget::tema(tema);
-			}
+		glMenu(glTema &tema) : glWidget(tema), sel(0), topo(0)
+			{ }
 		int addItem(std::string item)
 			{ items.push_back(item); return items.size()-1; }
 		int nItems()

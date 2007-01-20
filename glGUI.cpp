@@ -57,11 +57,12 @@ int glWidget::desenha()
 	return ret;
 }
 
-int glWidget::tema(glTema &t)
+int glWidget::aplicaTema(glTema &t)
 {
 	cor=t.cor;
 	fonteCor=t.fonteCor;
 	borda=t.borda;
+	fonte=t.fonte;
 	return 0;
 }
 
@@ -82,12 +83,9 @@ int glWindow::desenha()
 				glVertex2i(tam.x,titulo.altura);
 				glVertex2i(0,titulo.altura);
 			glEnd();
-			if(titulo.fonte)
-			{
-				glColor4ubv(titulo.fonteCor.ubv());
-				glRasterPos2f(0,((titulo.fonte->altura*3)/4));
-				titulo.fonte->printf(titulo.caption.c_str());
-			}
+			glColor4ubv(titulo.fonteCor.ubv());
+			glRasterPos2f(borda,((fonte.altura*3)/4));
+			fonte.printf(titulo.caption.c_str());
 			glTranslatef(0,titulo.altura,0);
 		}
 		glWidget::desenha();
@@ -187,7 +185,7 @@ int glMemo::desenha()
 	int x=0;
 	for(i=linhas.begin();i!=linhas.end();i++)
 	{
-		glRasterPos2f(1,x+((fonte.altura*3)/4));
+		glRasterPos2f(borda,x+((fonte.altura*3)/4));
 		fonte.printf((*i).c_str());
 		x+=fonte.altura;
 	}
