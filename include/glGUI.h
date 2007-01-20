@@ -28,6 +28,20 @@
 #include "glimagem.h"
 
 /**
+	\brief Tema padrao pros componentes e janelas
+*/
+class glTema
+{
+	public:
+		glCor cor;			//!<cor de fundo
+
+		GLFonte fonte;		//!<referencia pra algum objeto de fonte
+		glCor fonteCor;		//!<cor da fonte pra texto comum
+
+		int borda;			//!<tamanho da borda
+};
+
+/**
 	\brief Eventinho meia-boca, soh pra testes
 */
 class guiEvento
@@ -59,10 +73,14 @@ class glWidget : public guiTratadorEvento
 	public:
 		Vetor2i pos;		//!<posicao do widget: sempre relativa ao pai
 		Vetor2i tam;		//!<tamanho do widget
+//		GLFonte& fonte;		//!<fonte pra texto comum
+		glCor fonteCor;		//!<cor da fonte pra texto comum
 		glCor cor;			//!<cor
+		int borda;			//!<tamanho da borda
 		bool hide;			//!<esconde o widget e todos os filhos
 
 		glWidget() : hide(false)
+//		glWidget(glTema &tema) : fonte(tema.fonte), hide(false)
 			{}
 		virtual ~glWidget()	//!mata todos os filhos
 			{
@@ -72,8 +90,9 @@ class glWidget : public guiTratadorEvento
 			}
 		void add(glWidget* w)		//!insere um filho na lista
 			{ filhos.push_back(w); }
-		virtual int desenha();
-		virtual int guiTrataEvento(guiEvento &e);
+		virtual int desenha();		//!<interface pros filhos desenharem
+		virtual int tema(glTema &t);//!aplica tema
+		virtual int guiTrataEvento(guiEvento &e);	//!<implementacao da interface herdada de guiTratadorEvento
 	protected:
 		std::list<glWidget*> filhos;//!<filhos
 };
@@ -115,7 +134,7 @@ class glWindow : public glWidget
 class glGUI
 {
 	public:
-		GLFonte fonte;			//!<nao eh usada aqui, apenas pra fins de armazenagem
+		glTema temaPadrao;
 
 		glGUI()
 			{ contador=0; foco=NULL; }
@@ -171,9 +190,11 @@ class glMemo : public glWidget
 {
 	public:
 		GLFonte& fonte;			//!<referencia pra algum objeto de fonte
-		glCor corFonte;			//!<cor do texto
 
-		glMemo(GLFonte& fon) : fonte(fon) {}
+		glMemo(glTema &tema) : fonte(tema.fonte)
+			{
+				glWidget::tema(tema);
+			}
 		int clear()
 			{ linhas.clear(); return 0; }
 		int println(std::string linha)
@@ -191,11 +212,12 @@ class glMenu : public glWidget
 {
 	public:
 		GLFonte& fonte;			//!<referencia pra algum objeto de fonte
-		glCor corFonte;			//!<cor dos items
 		glCor corSeletor;		//!<cor de fundo do seletor
 
-		glMenu(GLFonte& fon) : fonte(fon), sel(0), topo(0)
-			{ }
+		glMenu(glTema &tema) : fonte(tema.fonte), sel(0), topo(0)
+			{
+				glWidget::tema(tema);
+			}
 		int addItem(std::string item)
 			{ items.push_back(item); return items.size()-1; }
 		int nItems()

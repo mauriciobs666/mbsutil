@@ -53,6 +53,14 @@ int glWidget::desenha()
 	return ret;
 }
 
+int glWidget::tema(glTema &t)
+{
+	cor=t.cor;
+	fonteCor=t.fonteCor;
+	borda=t.borda;
+	return 0;
+}
+
 int glWindow::desenha()
 {
 	glPushMatrix();
@@ -102,7 +110,8 @@ int glGUI::desenha()
 
 	std::list<glWindow*>::iterator i;
 	for(i=janelas.begin();i!=janelas.end();i++)	//desenha todas as janelas
-		(*i)->desenha();						//chama funcao herdada de glWidget
+		if(!(*i)->hide)
+			(*i)->desenha();					//chama funcao herdada de glWidget
 
 	glDisable(GL_BLEND);
 
@@ -140,7 +149,7 @@ int glMemo::desenha()
 		glVertex2i(0,tam.y);
 	glEnd();
 
-	glColor4ubv(corFonte.ubv());
+	glColor4ubv(fonteCor.ubv());
 	list<string>::iterator i;
 	int x=0;
 	for(i=linhas.begin();i!=linhas.end();i++)
@@ -183,7 +192,6 @@ int glMenu::desenha()
 
 	int y=0;								//lado superior da linha atual
 	const int cabem=tam.y/fonte.altura;		//qtas linhas cabem no widget
-	const int borda=2;
 
 	//desenha menu com scroll
 	for(int i=topo;((i<nItems())&&(i<(topo+cabem)));i++)
@@ -197,10 +205,12 @@ int glMenu::desenha()
 				glVertex2i(tam.x-borda	, y+fonte.altura-borda);
 				glVertex2i(borda		, y+fonte.altura-borda);
 			glEnd();
+			glColor4ubv(cor.ubv());			//inverte cor da fonte
 		}
+		else
+			glColor4ubv(fonteCor.ubv());
 
 		//texto do item
-		glColor4ubv(corFonte.ubv());
 		glRasterPos2f(1,y+fonte.altura/2);	//posiciona cursor no meio da linha
 		fonte.printf(items[i].c_str());
 
