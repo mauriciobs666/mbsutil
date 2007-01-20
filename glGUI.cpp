@@ -53,6 +53,22 @@ int glWidget::desenha()
 	return ret;
 }
 
+int glWindow::desenha()
+{
+	glPushMatrix();
+			glTranslatef(pos.x,pos.y,0);
+			glColor4ubv(titulo.cor.ubv());
+			glBegin(GL_POLYGON);
+				glVertex2i(0,0);
+				glVertex2i(tam.x,0);
+				glVertex2i(tam.x,titulo.altura);
+				glVertex2i(0,titulo.altura);
+			glEnd();
+			glWidget::desenha();
+	glPopMatrix();
+	return 0;
+}
+
 int glWindow::guiTrataEvento(guiEvento &e)
 {
 	if(foco)

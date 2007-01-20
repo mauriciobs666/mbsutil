@@ -84,11 +84,22 @@ class glWidget : public guiTratadorEvento
 class glWindow : public glWidget
 {
 	public:
-		std::string titulo;
+		struct BarraDeTitulo
+		{
+			BarraDeTitulo() : mostrar(false), altura(0), fonte(NULL) {}
+			bool mostrar;
+			std::string caption;
+			int altura;
+			GLFonte *fonte;
+			glCor cor;
+			glCor corFonte;
+		} titulo;
+
 
 		glWindow() : foco(NULL), id(0) {}
 		virtual ~glWindow() {}
 
+		int desenha();
 		int getId() { return id; }
 		int guiTrataEvento(guiEvento &e);
 	protected:
