@@ -25,11 +25,12 @@ using namespace std;
 list<string> Path::find(const string &nome, int restricoes)
 {
 	WIN32_FIND_DATA wfd;
+	list<string> temp;
 
 	HANDLE hnd=FindFirstFile(nome.c_str(), &wfd);
 	if(INVALID_HANDLE_VALUE!=hnd)
 	{
-		list<string> temp;
+
 		do
 		{
 			string str=string(wfd.cFileName);
@@ -37,8 +38,8 @@ list<string> Path::find(const string &nome, int restricoes)
 				temp.push_back(str);
 		} while(FindNextFile(hnd,&wfd));
 		FindClose(hnd);
-		return temp;
 	}
+	return temp;
 }
 
 string Path::relativo()
@@ -48,6 +49,7 @@ string Path::relativo()
 
 string Path::relativo(const string &nome)
 {
+	return "TO-DO...";
 /*
     char *tmp=nome;
     char *barra=NULL;
