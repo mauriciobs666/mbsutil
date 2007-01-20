@@ -219,8 +219,8 @@ class glMenu : public glWidget
 		virtual int desenha();
 		virtual int guiTrataEvento(guiEvento &e);
 		void selecionar(int i);
-		int selecionado()
-			{ return sel; }
+		std::string selecionado()
+			{ return items[sel]; }
 		void sobe()
 			{ selecionar(sel-1); }
 		void desce()
