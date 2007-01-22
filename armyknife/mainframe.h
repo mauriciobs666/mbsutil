@@ -8,10 +8,8 @@
 #include <wx/calctrl.h>
 #include <wx/combobox.h>
 #include <wx/frame.h>
-#include <wx/intl.h>
 #include <wx/notebook.h>
 #include <wx/panel.h>
-#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
 #include <wx/stattext.h>
@@ -27,53 +25,50 @@ class MainFrame: public wxFrame
 
 
 		//(*Identifiers(MainFrame)
-		enum Identifiers
-		{
-			ID_NOTEBOOK1 = 0x1000,
-			ID_PANEL1,
-			ID_TEXTCTRL2,
-			ID_STATICTEXT8,
-			ID_SPINCTRL2,
-			ID_TEXTCTRL3,
-			ID_PANEL4,
-			ID_STATICTEXT1,
-			ID_TEXTCTRL4,
-			ID_BUTTON5,
-			ID_STATICTEXT6,
-			ID_TEXTCTRL9,
-			ID_COMBOBOX1,
-			ID_BUTTON6,
-			ID_TEXTCTRL8,
-			ID_PANEL6,
-			ID_CALENDARCTRL2,
-			ID_STATICTEXT4,
-			ID_TEXTCTRL1,
-			ID_BUTTON2,
-			ID_TEXTCTRL7,
-			ID_BUTTON3,
-			ID_PANEL2,
-			ID_STATICTEXT2,
-			ID_TEXTCTRL5,
-			ID_BUTTON1,
-			ID_BUTTON4,
-			ID_TEXTCTRL6,
-			ID_PANEL3,
-			ID_STATICTEXT3,
-			ID_TEXTCTRL10,
-			ID_BUTTON7,
-			ID_STATICTEXT5,
-			ID_SPINCTRL1,
-			ID_BUTTON8,
-			ID_TEXTCTRL11,
-			ID_PANEL5,
-			ID_TEXTCTRL13,
-			ID_STATICTEXT7,
-			ID_TEXTCTRL12,
-			ID_BUTTON10,
-			ID_COMBOBOX2,
-			ID_PANEL7,
-			ID_PANEL8
-		};
+		static const long ID_NOTEBOOK1;
+		static const long ID_PANEL1;
+		static const long ID_TEXTCTRL2;
+		static const long ID_STATICTEXT8;
+		static const long ID_SPINCTRL2;
+		static const long ID_TEXTCTRL3;
+		static const long ID_PANEL4;
+		static const long ID_STATICTEXT1;
+		static const long ID_TEXTCTRL4;
+		static const long ID_BUTTON5;
+		static const long ID_STATICTEXT6;
+		static const long ID_TEXTCTRL9;
+		static const long ID_COMBOBOX1;
+		static const long ID_BUTTON6;
+		static const long ID_TEXTCTRL8;
+		static const long ID_PANEL6;
+		static const long ID_CALENDARCTRL2;
+		static const long ID_STATICTEXT4;
+		static const long ID_TEXTCTRL1;
+		static const long ID_BUTTON2;
+		static const long ID_TEXTCTRL7;
+		static const long ID_BUTTON3;
+		static const long ID_PANEL2;
+		static const long ID_STATICTEXT2;
+		static const long ID_TEXTCTRL5;
+		static const long ID_BUTTON1;
+		static const long ID_BUTTON4;
+		static const long ID_TEXTCTRL6;
+		static const long ID_PANEL3;
+		static const long ID_STATICTEXT3;
+		static const long ID_TEXTCTRL10;
+		static const long ID_BUTTON7;
+		static const long ID_STATICTEXT5;
+		static const long ID_SPINCTRL1;
+		static const long ID_BUTTON8;
+		static const long ID_TEXTCTRL11;
+		static const long ID_PANEL5;
+		static const long ID_TEXTCTRL13;
+		static const long ID_STATICTEXT7;
+		static const long ID_TEXTCTRL12;
+		static const long ID_BUTTON10;
+		static const long ID_COMBOBOX2;
+		static const long ID_PANEL7;
+		static const long ID_PANEL8;
 		//*)
 
 	protected:

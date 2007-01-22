@@ -74,9 +74,11 @@
 		<Unit filename="wxsmith\MainFrame.wxs" />
 		<Extensions>
 			<code_completion />
-			<wxsmith>
-				<frame wxs_file="MainFrame.wxs" class="MainFrame" src_file="mainframe.cpp" header_file="mainframe.h" xrc_file="" edit_mode="Source" />
-				<configuration app_src_file="app.cpp" main_resource="MainFrame" init_all_handlers="necessary" />
+			<wxsmith version="1">
+				<gui name="wxWidgets" src="app.cpp" main="MainFrame" init_handlers="necessary" language="CPP" />
+				<resources>
+					<wxFrame wxs="wxsmith/MainFrame.wxs" src="mainframe.cpp" hdr="mainframe.h" name="MainFrame" language="CPP" />
+				</resources>
 			</wxsmith>
 		</Extensions>
 	</Project>

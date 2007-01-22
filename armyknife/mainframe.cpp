@@ -9,12 +9,67 @@
 
 #include "mainframe.h"
 
-#include <wx/settings.h>
 #include <wx/menu.h>
 #include <wx/statusbr.h>
 #include <wx/msgdlg.h>
 #include <wx/filedlg.h>
 
+//(*InternalHeaders(MainFrame)
+#include <wx/bitmap.h>
+#include <wx/font.h>
+#include <wx/fontenum.h>
+#include <wx/fontmap.h>
+#include <wx/image.h>
+#include <wx/intl.h>
+#include <wx/settings.h>
+//*)
+
+//(*IdInit(MainFrame)
+const long MainFrame::ID_NOTEBOOK1 = wxNewId();
+const long MainFrame::ID_PANEL1 = wxNewId();
+const long MainFrame::ID_TEXTCTRL2 = wxNewId();
+const long MainFrame::ID_STATICTEXT8 = wxNewId();
+const long MainFrame::ID_SPINCTRL2 = wxNewId();
+const long MainFrame::ID_TEXTCTRL3 = wxNewId();
+const long MainFrame::ID_PANEL4 = wxNewId();
+const long MainFrame::ID_STATICTEXT1 = wxNewId();
+const long MainFrame::ID_TEXTCTRL4 = wxNewId();
+const long MainFrame::ID_BUTTON5 = wxNewId();
+const long MainFrame::ID_STATICTEXT6 = wxNewId();
+const long MainFrame::ID_TEXTCTRL9 = wxNewId();
+const long MainFrame::ID_COMBOBOX1 = wxNewId();
+const long MainFrame::ID_BUTTON6 = wxNewId();
+const long MainFrame::ID_TEXTCTRL8 = wxNewId();
+const long MainFrame::ID_PANEL6 = wxNewId();
+const long MainFrame::ID_CALENDARCTRL2 = wxNewId();
+const long MainFrame::ID_STATICTEXT4 = wxNewId();
+const long MainFrame::ID_TEXTCTRL1 = wxNewId();
+const long MainFrame::ID_BUTTON2 = wxNewId();
+const long MainFrame::ID_TEXTCTRL7 = wxNewId();
+const long MainFrame::ID_BUTTON3 = wxNewId();
+const long MainFrame::ID_PANEL2 = wxNewId();
+const long MainFrame::ID_STATICTEXT2 = wxNewId();
+const long MainFrame::ID_TEXTCTRL5 = wxNewId();
+const long MainFrame::ID_BUTTON1 = wxNewId();
+const long MainFrame::ID_BUTTON4 = wxNewId();
+const long MainFrame::ID_TEXTCTRL6 = wxNewId();
+const long MainFrame::ID_PANEL3 = wxNewId();
+const long MainFrame::ID_STATICTEXT3 = wxNewId();
+const long MainFrame::ID_TEXTCTRL10 = wxNewId();
+const long MainFrame::ID_BUTTON7 = wxNewId();
+const long MainFrame::ID_STATICTEXT5 = wxNewId();
+const long MainFrame::ID_SPINCTRL1 = wxNewId();
+const long MainFrame::ID_BUTTON8 = wxNewId();
+const long MainFrame::ID_TEXTCTRL11 = wxNewId();
+const long MainFrame::ID_PANEL5 = wxNewId();
+const long MainFrame::ID_TEXTCTRL13 = wxNewId();
+const long MainFrame::ID_STATICTEXT7 = wxNewId();
+const long MainFrame::ID_TEXTCTRL12 = wxNewId();
+const long MainFrame::ID_BUTTON10 = wxNewId();
+const long MainFrame::ID_COMBOBOX2 = wxNewId();
+const long MainFrame::ID_PANEL7 = wxNewId();
+const long MainFrame::ID_PANEL8 = wxNewId();
+//*)
 
 using namespace std;
 
@@ -479,3 +534,4 @@ void MainFrame::OnRespawnOpenClick(wxCommandEvent& event)
 	if(wxID_OK==fdlg->ShowModal())
 		RespawnFileName->SetValue(fdlg->GetPath());
 }
+
