@@ -142,6 +142,21 @@ int glGUI::desenha()
 	return 0;
 }
 
+void glGUI::setFoco(glWindow *glw)
+{
+	if(glw)
+		glw->hide=false;
+	foco=glw;
+}
+
+void glGUI::hideAll()
+{
+	std::list<glWindow*>::iterator i;
+	for(i=janelas.begin();i!=janelas.end();i++)	//esconde todas as janelas
+		(*i)->hide=true;
+	foco=NULL;
+}
+
 // ============================================================================
 // GLLABEL
 // ============================================================================

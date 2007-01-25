@@ -146,6 +146,8 @@ class glGUI
 				janelas.push_back(w);
 			}
 		int desenha();
+		void setFoco(glWindow *glw);
+		void hideAll();
 		glWindow* operator[](int id);
 
 		int guiTrataEvento(guiEvento &e);
