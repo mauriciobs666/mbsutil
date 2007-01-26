@@ -48,7 +48,22 @@ class Vetor2D
 {
 public:
 	Real x, y;
+
 	Vetor2D(Real xx=0, Real yy=0) : x(xx), y(yy) {}
+	Vetor2D(Vetor2i &v) { x=v.x; y=v.y; }
+
+	Vetor2D operator+(const Vetor2D& v) const;
+	Vetor2D operator-(const Vetor2D& v) const;
+	Vetor2D operator*(int i) const;
+	Vetor2D operator/(int i) const;
+
+	Vetor2D& operator+=(const Vetor2D& v);
+	Vetor2D& operator-=(const Vetor2D& v);
+	Vetor2D& operator*=(int i);
+	Vetor2D& operator/=(int i);
+
+	bool operator==(const Vetor2D& v) const { return ((x==v.x)&(y==v.y)); }
+	bool operator!=(const Vetor2D& v) const { return ((x!=v.x)|(y!=v.y)); }
 };
 
 class Vetor3D

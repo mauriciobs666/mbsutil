@@ -87,6 +87,70 @@ Vetor2i& Vetor2i::operator/=(int i)
 }
 
 /*
+	Vetor2i
+*/
+
+Vetor2D Vetor2D::operator+(const Vetor2D& v) const
+{
+	Vetor2D n=*this;
+	n.x+=v.x;
+	n.y+=v.y;
+	return n;
+}
+
+Vetor2D Vetor2D::operator-(const Vetor2D& v) const
+{
+	Vetor2D n=*this;
+	n.x-=v.x;
+	n.y-=v.y;
+	return n;
+}
+
+Vetor2D Vetor2D::operator*(int i) const
+{
+	Vetor2D n=*this;
+	n.x*=i;
+	n.y*=i;
+	return n;
+}
+
+Vetor2D Vetor2D::operator/(int i) const
+{
+	Vetor2D n=*this;
+	n.x/=i;
+	n.y/=i;
+	return n;
+}
+
+Vetor2D& Vetor2D::operator+=(const Vetor2D& v)
+{
+	x+=v.x;
+	y+=v.y;
+	return *this;
+}
+
+Vetor2D& Vetor2D::operator-=(const Vetor2D& v)
+{
+	x-=v.x;
+	y-=v.y;
+	return *this;
+}
+
+Vetor2D& Vetor2D::operator*=(int i)
+{
+	x*=i;
+	y*=i;
+	return *this;
+}
+
+Vetor2D& Vetor2D::operator/=(int i)
+{
+	x/=i;
+	y/=i;
+	return *this;
+}
+
+/*
 	Vetor3D
 */
 
