@@ -251,7 +251,7 @@ int glMenu::desenha()
 				glVertex2i(tam.x-borda	, y+(fonte.altura-borda));
 				glVertex2i(borda		, y+(fonte.altura-borda));
 			glEnd();
-			glColor4ubv(cor.ubv());			//inverte cor da fonte
+			glColor4ubv(corFonteSeletor.ubv());		//inverte cor da fonte
 		}
 		else
 			glColor4ubv(fonteCor.ubv());

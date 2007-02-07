@@ -211,6 +211,7 @@ class glMenu : public glWidget
 {
 	public:
 		glCor corSeletor;		//!<cor de fundo do seletor
+		glCor corFonteSeletor;	//!<cor da fonte do seletor
 
 		glMenu(glTema &tema) : glWidget(tema), sel(0), topo(0)
 			{ }
