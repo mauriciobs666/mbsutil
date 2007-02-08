@@ -215,9 +215,9 @@ void glMenu::selecionar(int i)
 {
 	sel=i;
 	if(sel>=nItems())
-		sel=nItems()-1;
-	if(sel<0)
 		sel=0;
+	if(sel<0)
+		sel=nItems()-1;
 
 	if(topo>sel)
 		topo=sel;
