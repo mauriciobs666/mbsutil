@@ -146,37 +146,51 @@ int GerenciadorSlots::IFH_tratar(Buffer *frame, Slot *slot)
 			#ifdef LOGAR_COMANDOS
 				logar("CMD_PING");
 			#endif
-			unsigned long timestamp=frame->readLong();
-			Buffer *pong=new Buffer(sizeof(COMANDO)+sizeof(timestamp));
-			pong->writeByte((COMANDO)PONG);
-			pong->writeLong(timestamp);
-			slot->enviar(pong);
+			{
+				unsigned long timestamp=frame->readLong();
+				Buffer *pong=new Buffer(sizeof(COMANDO)+sizeof(timestamp));
+				pong->writeByte((COMANDO)PONG);
+				pong->writeLong(timestamp);
+				slot->enviar(pong);
+			}
 		break;
 		case PONG:
 			#ifdef LOGAR_COMANDOS
 				logar("CMD_PONG");
 			#endif
-			unsigned long base=frame->readLong();
-			unsigned long agora=(clock()/(CLOCKS_PER_SEC/1000));
-			slot->iC.ping=agora-base;
+			{
+				unsigned long base=frame->readLong();
+				unsigned long agora=(clock()/(CLOCKS_PER_SEC/1000));
+				slot->iC.ping=agora-base;
+			}
 		break;
 		case ID_ASK:
-			logar("CMD_ID_ASK");
-			Buffer *id_ask=new Buffer(sizeof(COMANDO)+sizeof(Noh));
-			if(idAlta(slot->iC))
-				id_ask->writeByte((COMANDO)ID_RET);
-			else
-				id_ask->writeByte((COMANDO)ID_ND);
-			slot->enviar(id_ask);
+			#ifdef LOGAR_COMANDOS
+				logar("CMD_ID_ASK");
+			#endif
+			{
+				Buffer *id_ask=new Buffer(sizeof(COMANDO)+sizeof(Noh));
+				if(idAlta(slot->iC))
+					id_ask->writeByte((COMANDO)ID_RET);
+				else
+					id_ask->writeByte((COMANDO)ID_ND);
+				slot->enviar(id_ask);
+			}
 		break;
 		case ID_RET:
-			logar("CMD_ID_RET");
+			#ifdef LOGAR_COMANDOS
+				logar("CMD_ID_RET");
+			#endif
 		break;
 		case ID_ND:
-			logar("CMD_ID_ND");
+			#ifdef LOGAR_COMANDOS
+				logar("CMD_ID_ND");
+			#endif
 		break;
 		default:
-			logar("CAMADA1_COMANDO_INVALIDO:");
+			#ifdef LOGAR_COMANDOS
+				logar("CAMADA1_COMANDO_INVALIDO:");
+			#endif
 		break;
     }
     delete frame;

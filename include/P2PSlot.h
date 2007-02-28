@@ -31,6 +31,7 @@ public:
 	virtual int IFH_tratar(Buffer *frame, class Slot *slot) = 0;
 	virtual int IFH_conectado(Slot *slot) = 0;
 	virtual int IFH_desconectado(Slot *slot) = 0;
+	virtual ~iFrameHandler() {}
 };
 
 /**

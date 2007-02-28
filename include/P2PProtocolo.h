@@ -35,6 +35,7 @@ public:
 		{ std::cerr << mensagem << std::endl; }
 	virtual void mostraMensagemChat(const Hash128* remetente, const std::string& mensagem)
 		{ std::cerr << remetente->toString() << ":" << mensagem << std::endl; }
+	virtual ~ClienteP2PUI() {}
 };
 
 //!Principal

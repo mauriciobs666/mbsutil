@@ -29,6 +29,7 @@ public:
 	virtual int IPH_tratar(Buffer *pacote, const Noh& n) = 0;
 	virtual int IPH_conectado(const Noh& n) = 0;
 	virtual int IPH_desconectado(const Noh& n) = 0;
+	virtual ~iPacketHandler() {}
 };
 
 /**

@@ -63,6 +63,8 @@ class guiTratadorEvento
 	public:
 		virtual int guiTrataEvento(guiEvento &e)
 			{ return 0; }
+		virtual ~guiTratadorEvento()
+			{}
 };
 
 /**

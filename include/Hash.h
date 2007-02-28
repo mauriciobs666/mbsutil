@@ -26,6 +26,7 @@
 class Hash128
 {
 public:
+	virtual ~Hash128() {}
 	union hash
 	{
 		unsigned char b[16];
@@ -69,6 +70,7 @@ class MD4 : public Hash128
 {
 public:
 	MD4();
+	virtual ~MD4() {}
 	int arquivo(const char *arq);
 	virtual int calc(const unsigned char *pnt, unsigned long tam);
 	virtual int calc(std::istream& is, unsigned long tam=0);

@@ -99,6 +99,7 @@ public:
 class Usuario : public Hash128
 {
 public:
+	virtual ~Usuario() {}
 	char nick[Protocolo::TAMNICK];	//TODO: nick deveria ser string...
 	unsigned long rx;				//volume de dados recebidos
 	unsigned long tx;				//volume de dados enviados
