@@ -42,7 +42,7 @@ public:
 class ClienteP2P : public iPacketHandler
 {
 public:
-	GerenciadorSlots slots;
+	P2PGerenciadorSlots slots;
 	Usuario iU;
 
 	ListaUsuarios usuarios;				//!<arvore com todos usuarios conhecidos

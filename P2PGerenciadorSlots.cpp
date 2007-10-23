@@ -117,10 +117,10 @@ using namespace Protocolo;
 void logar(string frase);
 
 //------------------------------------------------------------------------------
-//      GerenciadorSlots
+//      P2PGerenciadorSlots
 //------------------------------------------------------------------------------
 
-GerenciadorSlots::GerenciadorSlots(int num)
+P2PGerenciadorSlots::P2PGerenciadorSlots(int num)
 {
 	slots=NULL;
 	numSlots=0;
@@ -129,13 +129,13 @@ GerenciadorSlots::GerenciadorSlots(int num)
     serverSock.registraCallback(tratarServer);
 }
 
-GerenciadorSlots::~GerenciadorSlots()
+P2PGerenciadorSlots::~P2PGerenciadorSlots()
 {
     if((slots!=NULL)&&(numSlots>0))
         delete[] slots;
 }
 
-int GerenciadorSlots::IFH_tratar(Buffer *frame, Slot *slot)
+int P2PGerenciadorSlots::IFH_tratar(Buffer *frame, Slot *slot)
 {
 	COMANDO comando=frame->readByte();
 	switch(comando)
@@ -197,7 +197,7 @@ int GerenciadorSlots::IFH_tratar(Buffer *frame, Slot *slot)
 	return 0;
 }
 
-int GerenciadorSlots::IFH_conectado(Slot *slot)
+int P2PGerenciadorSlots::IFH_conectado(Slot *slot)
 {
 	Buffer *id_ask=new Buffer(sizeof(COMANDO));//+sizeof(Noh));
 	id_ask->writeByte((COMANDO)ID_ASK);
@@ -208,13 +208,13 @@ int GerenciadorSlots::IFH_conectado(Slot *slot)
 	return 0;
 }
 
-int GerenciadorSlots::IFH_desconectado(Slot *slot)
+int P2PGerenciadorSlots::IFH_desconectado(Slot *slot)
 {
 	ph->IPH_desconectado(slot->iC);
 	return 0;
 }
 
-int GerenciadorSlots::mudaNumSlots(int num)
+int P2PGerenciadorSlots::mudaNumSlots(int num)
 {
 	if(num>0)
 	{
@@ -236,14 +236,14 @@ int GerenciadorSlots::mudaNumSlots(int num)
 	return 0;
 }
 
-Slot* GerenciadorSlots::at(int num) const
+Slot* P2PGerenciadorSlots::at(int num) const
 {
     if((num>=0)&(num<numSlots))
         return &slots[num];
     return NULL;
 }
 
-Slot* GerenciadorSlots::operator[](const Noh& n) const
+Slot* P2PGerenciadorSlots::operator[](const Noh& n) const
 {
     for(int x=0;x<numSlots;x++)
     	if(n==slots[x].iC)
@@ -251,7 +251,7 @@ Slot* GerenciadorSlots::operator[](const Noh& n) const
     return NULL;
 }
 
-int GerenciadorSlots::aloca()
+int P2PGerenciadorSlots::aloca()
 // busca e aloca (estado 0->1) slot livre
 // retorna num do slot ou -1 caso todos estejam ocupados
 {
@@ -273,7 +273,7 @@ int GerenciadorSlots::aloca()
     return -1;
 }
 
-int GerenciadorSlots::enviar(Buffer *pkt, const Noh& n)
+int P2PGerenciadorSlots::enviar(Buffer *pkt, const Noh& n)
 {
 	Slot *s=operator[](n);
 	if(s==NULL)
@@ -287,7 +287,7 @@ int GerenciadorSlots::enviar(Buffer *pkt, const Noh& n)
 	return s->enviar(frame);
 }
 
-int GerenciadorSlots::ouvir(unsigned short porta)
+int P2PGerenciadorSlots::ouvir(unsigned short porta)
 {
 	int retorno=0;
 	serverSock.desconectar();
@@ -303,7 +303,7 @@ int GerenciadorSlots::ouvir(unsigned short porta)
 	return retorno;
 }
 
-int GerenciadorSlots::conectar(const Noh& n)
+int P2PGerenciadorSlots::conectar(const Noh& n)
 {
     int ns=aloca();
     if(ns<0)
@@ -316,7 +316,7 @@ int GerenciadorSlots::conectar(const Noh& n)
 	return ret;
 }
 
-int GerenciadorSlots::conectar(const char *ip, const unsigned short porta)
+int P2PGerenciadorSlots::conectar(const char *ip, const unsigned short porta)
 {
     int ns=aloca();
     if(ns<0)
@@ -329,12 +329,12 @@ int GerenciadorSlots::conectar(const char *ip, const unsigned short porta)
 	return ret;
 }
 
-int GerenciadorSlots::conectar(std::string ip, const unsigned short porta)
+int P2PGerenciadorSlots::conectar(std::string ip, const unsigned short porta)
 {
 	return conectar(ip.c_str(),porta);
 }
 
-int GerenciadorSlots::desconectar(int nslot)
+int P2PGerenciadorSlots::desconectar(int nslot)
 {
 	if(nslot<0)
 		for(int x=0;x<numSlots;x++)
@@ -346,7 +346,7 @@ int GerenciadorSlots::desconectar(int nslot)
     return 0;
 }
 
-void GerenciadorSlots::ping()
+void P2PGerenciadorSlots::ping()
 {
 	Buffer *ping;
 	unsigned long timestamp=(clock()/(CLOCKS_PER_SEC/1000));
@@ -360,10 +360,10 @@ void GerenciadorSlots::ping()
 	}
 }
 
-int GerenciadorSlots::tratarServer(Conexao *con, long codeve, long coderro[])
+int P2PGerenciadorSlots::tratarServer(Conexao *con, long codeve, long coderro[])
 {
-	GerenciadorSlots *pai;
-	if((pai=(GerenciadorSlots*)con->pai)==NULL)
+	P2PGerenciadorSlots *pai;
+	if((pai=(P2PGerenciadorSlots*)con->pai)==NULL)
 		return -1;
 
 	if(codeve & FD_ACCEPT)
@@ -385,7 +385,7 @@ int GerenciadorSlots::tratarServer(Conexao *con, long codeve, long coderro[])
 	return 0;
 }
 
-bool GerenciadorSlots::idAlta(const Noh &n)
+bool P2PGerenciadorSlots::idAlta(const Noh &n)
 {
 	Conexao ct;
 	if(ct.conectar(n.ip,n.porta)==0)

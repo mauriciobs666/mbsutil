@@ -51,15 +51,15 @@ public:
 			COMANDO = typedef = enum Protocolo::CmdCamada1
 			dados = depende do COMANDO
 */
-class GerenciadorSlots : public iFrameHandler
+class P2PGerenciadorSlots : public iFrameHandler
 {
 public:
 	Cliente iC;
 	ListaNohs nohs;
 //TODO:	ListaNohs roteadores;	//lista de roteadores disponiveis
 
-	GerenciadorSlots(int num=10);
-	virtual ~GerenciadorSlots();
+	P2PGerenciadorSlots(int num=10);
+	virtual ~P2PGerenciadorSlots();
 
 	void registraPacketHandler(iPacketHandler *pai)
 		{ ph=pai; }
