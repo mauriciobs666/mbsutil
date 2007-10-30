@@ -41,6 +41,7 @@
 		<Unit filename="Arquivos.cpp" />
 		<Unit filename="Bufer.cpp" />
 		<Unit filename="Geometria.cpp" />
+		<Unit filename="GerenciadorSlots.cpp" />
 		<Unit filename="Hash.cpp" />
 		<Unit filename="P2PGerenciadorSlots.cpp" />
 		<Unit filename="P2PProtocolo.cpp" />
@@ -48,6 +49,7 @@
 		<Unit filename="P2Ped.cpp" />
 		<Unit filename="Parser.cpp" />
 		<Unit filename="Rede.cpp" />
+		<Unit filename="Slot.cpp" />
 		<Unit filename="Tempo.cpp" />
 		<Unit filename="Thread.cpp" />
 		<Unit filename="glFonte.cpp" />
@@ -56,6 +58,7 @@
 		<Unit filename="include\Arquivos.h" />
 		<Unit filename="include\Bufer.h" />
 		<Unit filename="include\Geometria.h" />
+		<Unit filename="include\GerenciadorSlots.h" />
 		<Unit filename="include\Hash.h" />
 		<Unit filename="include\MBSUtil.h" />
 		<Unit filename="include\P2PGerenciadorSlots.h" />
@@ -65,6 +68,7 @@
 		<Unit filename="include\P2Ped.h" />
 		<Unit filename="include\Parser.h" />
 		<Unit filename="include\Rede.h" />
+		<Unit filename="include\Slot.h" />
 		<Unit filename="include\Tempo.h" />
 		<Unit filename="include\Thread.h" />
 		<Unit filename="include\glFonte.h" />
