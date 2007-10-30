@@ -66,7 +66,7 @@ public:
     std::string id;
 	unsigned long ip;
 	unsigned short porta;
-	unsigned long ping;
+//	unsigned long ping;
 	time_t timestamp;	//!<time-out rx
 
 	Slot(iFrameHandler *pai=NULL) : gerenciador(pai), c(NULL), temp(500), recebendo(NULL)

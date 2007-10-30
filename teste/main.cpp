@@ -34,7 +34,7 @@ int testeSoquete()
 {
 	char dados[20];
 	Soquete cli;
-	int retorno=cli.conectar("127.0.0.1",80);
+	int retorno=cli.conectar("127.0.0.1",6661);
 	if(retorno==0)
 	{
 		cout << "Conectado" << endl;
@@ -50,7 +50,7 @@ int testeSoqueteServer()
 {
 	SoqueteServer ss;
 	char temp[50];
-	cout << "Soquete::ouvir(80)=" << ss.ouvir(80) << endl;
+	cout << "Soquete::ouvir(80)=" << ss.ouvir(6661) << endl;
 	Soquete *s=ss.aceitar();
 	if(s==NULL)
 		cout << "Erro" << endl;

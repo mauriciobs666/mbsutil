@@ -36,6 +36,7 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-DLOGAR_SOCKET" />
 			<Add directory="include" />
 		</Compiler>
 		<Unit filename="Arquivos.cpp" />

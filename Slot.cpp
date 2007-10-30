@@ -232,8 +232,9 @@ int Slot::tratar(Conexao *con, long codeve, long coderro[])
 		else
 		{
 			Buffer *f;
-			while((f=s->receber())!=NULL)
-				s->gerenciador->IFH_tratar(f,s);
+			if(s->gerenciador)
+                while((f=s->receber())!=NULL)
+                    s->gerenciador->IFH_tratar(f,s);
 		}
 	}
 	if(codeve & FD_WRITE)
@@ -243,7 +244,8 @@ int Slot::tratar(Conexao *con, long codeve, long coderro[])
 		#endif
 		if(coderro[FD_WRITE_BIT]!=0)
 			return 1;
-		s->gerenciador->IFH_conectado(s);
+        if(s->gerenciador)
+            s->gerenciador->IFH_conectado(s);
 	}
 	if(codeve & FD_CLOSE)
 	{

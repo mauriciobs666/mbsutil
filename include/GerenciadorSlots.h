@@ -64,6 +64,7 @@ public:
 
 	Slot* at(int num) const;
 	Slot* operator[](int i) const { return &slots[i]; }
+	Slot* operator[](std::string id) const;
 
 	int aloca();
 

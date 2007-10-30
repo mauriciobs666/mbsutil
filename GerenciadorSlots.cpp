@@ -137,11 +137,14 @@ GerenciadorSlots::~GerenciadorSlots()
 
 int GerenciadorSlots::IFH_tratar(Buffer *frame, Slot *slot)
 {
+    /*
 	COMANDO comando=frame->readByte();
 	switch(comando)
     {
     	case DIRETA:
+    */
 			return ph->IPH_tratar(frame,slot->id);	//repassa pra camada superior
+    /*
 		case PING:
 			#ifdef LOGAR_COMANDOS
 				logar("CMD_PING");
@@ -173,16 +176,18 @@ int GerenciadorSlots::IFH_tratar(Buffer *frame, Slot *slot)
 			#endif
 		break;
     }
+    */
     delete frame;
 	return 0;
 }
 
 int GerenciadorSlots::IFH_conectado(Slot *slot)
 {
+/*
 	Buffer *id_ask=new Buffer(sizeof(COMANDO));//+sizeof(Noh));
 	id_ask->writeByte((COMANDO)ID_ASK);
 	slot->enviar(id_ask);
-
+*/
 	ph->IPH_conectado(slot->id);
 	return 0;
 }
@@ -221,15 +226,15 @@ Slot* GerenciadorSlots::at(int num) const
         return &slots[num];
     return NULL;
 }
-/*
-Slot* GerenciadorSlots::operator[](const Noh& n) const
+
+Slot* GerenciadorSlots::operator[](std::string id) const
 {
     for(int x=0;x<numSlots;x++)
-    	if(n==slots[x].iC)
+    	if(id==slots[x].id)
 			return &slots[x];
     return NULL;
 }
-*/
+
 int GerenciadorSlots::aloca()
 // busca e aloca (estado 0->1) slot livre
 // retorna num do slot ou -1 caso todos estejam ocupados
