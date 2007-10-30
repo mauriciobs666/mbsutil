@@ -97,7 +97,7 @@ public:
 
 protected:
 	iFrameHandler *gerenciador;	//!<gerenciador de slots
-	Mutex m;
+	SessaoCritica cs;
 	Conexao *c;
 	EstadoSlot estado;
 

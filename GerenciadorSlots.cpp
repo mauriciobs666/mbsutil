@@ -239,7 +239,7 @@ int GerenciadorSlots::aloca()
 // busca e aloca (estado 0->1) slot livre
 // retorna num do slot ou -1 caso todos estejam ocupados
 {
-    m.trava();
+    cs.trava();
     {
         for(int x=0;x<numSlots;x++)
         {
@@ -247,19 +247,19 @@ int GerenciadorSlots::aloca()
             {
                 if(slots[x].setaEstado(Slot::RESERVADO)==0)
                 {
-                    m.destrava();
+                    cs.destrava();
                     return x;
                 }
             }
         }
     }
-    m.destrava();
+    cs.destrava();
     return -1;
 }
-/*
-int GerenciadorSlots::enviar(Buffer *pkt, const Noh& n)
+
+int GerenciadorSlots::enviar(Buffer *pkt, std::string id)
 {
-	Slot *s=operator[](n);
+	Slot *s=operator[](id);
 	if(s==NULL)
 		return -1;
 
@@ -270,7 +270,7 @@ int GerenciadorSlots::enviar(Buffer *pkt, const Noh& n)
 
 	return s->enviar(frame);
 }
-*/
+
 int GerenciadorSlots::ouvir(unsigned short porta)
 {
 	int retorno=0;

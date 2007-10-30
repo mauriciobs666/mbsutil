@@ -63,32 +63,32 @@ int Slot::conectar(const char *ip, const unsigned short porta)
 
 int Slot::desconectar()
 {
-	m.trava();
+	cs.trava();
 	_reset();
-	m.destrava();
+	cs.trava();
     return 0;
 }
 
 Slot::EstadoSlot Slot::pegaEstado()
 {
-    m.trava();
+    cs.trava();
    	_conectado();
-    m.destrava();
+    cs.destrava();
     return estado;
 }
 
 int Slot::setaEstado(EstadoSlot novo)
 {
-    m.trava();
+    cs.trava();
 	estado=novo;
-    m.destrava();
+    cs.destrava();
     return 0;
 }
 
 int Slot::enviar(Buffer *pkt)
 {
 	int retorno=-1;
-	m.trava();
+	cs.trava();
 	_conectado();
     if(estado>RESERVADO)
     {
@@ -98,14 +98,14 @@ int Slot::enviar(Buffer *pkt)
                 retorno=0;                                  		//tudo ok
     }
     delete pkt;
-    m.destrava();
+    cs.destrava();
     return retorno;
 }
 
 Buffer* Slot::receber()
 {
 	int qtd;
-	m.trava();
+	cs.trava();
 	do
 	{
         temp.reset();
@@ -156,7 +156,7 @@ Buffer* Slot::receber()
 		retorno=recebidos.front();
 		recebidos.pop();
 	}
-	m.destrava();
+	cs.destrava();
 	return retorno;
 }
 

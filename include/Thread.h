@@ -85,6 +85,27 @@ private:
 	#endif
 };
 
+class SessaoCritica
+{
+public:
+    SessaoCritica()
+    {
+        InitializeCriticalSection( &cs );
+    }
+    unsigned long trava()
+    {
+        EnterCriticalSection( &cs );
+        return 0;
+    }
+    unsigned long destrava()
+    {
+        LeaveCriticalSection( &cs );
+        return 0;
+    }
+private:
+    CRITICAL_SECTION cs;
+};
+
 class Thread
 {
 public:

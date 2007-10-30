@@ -68,11 +68,11 @@ public:
 
 	int aloca();
 
-//	int enviar(Buffer *pkt, const Noh& n);
+	int enviar(Buffer *pkt, std::string id);
 	int ouvir(unsigned short porta);
 	int desconectar(int nslot=-1);	    //-1 = todos
 private:
-	Mutex m;
+	SessaoCritica cs;
 	int numSlots;
 	Slot *slots;
 	iPacketHandler *ph;
