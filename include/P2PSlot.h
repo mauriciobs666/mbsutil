@@ -28,9 +28,9 @@
 class iFrameHandler
 {
 public:
-	virtual int IFH_tratar(Buffer *frame, class Slot *slot) = 0;
-	virtual int IFH_conectado(Slot *slot) = 0;
-	virtual int IFH_desconectado(Slot *slot) = 0;
+	virtual int IFH_tratar(Buffer *frame, class P2PSlot *slot) = 0;
+	virtual int IFH_conectado(P2PSlot *slot) = 0;
+	virtual int IFH_desconectado(P2PSlot *slot) = 0;
 	virtual ~iFrameHandler() {}
 };
 
@@ -50,15 +50,15 @@ public:
 			TAMANHO = typedef = tamanho total da area de dados
 			dados  = TAMANHO * bytes = pacote camada 1
 */
-class Slot
+class P2PSlot
 {
 public:
 	Cliente iC;
 	time_t timestamp;	//!<time-out rx
 
-	Slot(iFrameHandler *pai=NULL) : gerenciador(pai), c(NULL), temp(500), recebendo(NULL)
+	P2PSlot(iFrameHandler *pai=NULL) : gerenciador(pai), c(NULL), temp(500), recebendo(NULL)
 		{ _reset();	}
-	~Slot()
+	~P2PSlot()
 		{ _reset(); }
 	void registraFrameHandler(iFrameHandler *pai)
 		{ gerenciador=pai; }
@@ -68,7 +68,7 @@ public:
 	int conectar(Conexao *con);
 	int desconectar();
 
-	//!Estado do Slot
+	//!Estado do P2PSlot
 	typedef enum
 	{
 		LIVRE = 0,		//!<desconectado

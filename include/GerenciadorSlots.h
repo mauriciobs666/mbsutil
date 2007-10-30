@@ -20,7 +20,7 @@
 #ifndef GERENCIADORSLOTS_H_INCLUDED
 #define GERENCIADORSLOTS_H_INCLUDED
 
-#include "P2PSlot.h"
+#include "Slot.h"
 
 //!Interface do tratador de pacotes
 class iPacketHandler

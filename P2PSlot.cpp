@@ -32,10 +32,10 @@ using namespace Protocolo;
 void logar(string frase);
 
 //------------------------------------------------------------------------------
-//      Slot
+//      P2PSlot
 //------------------------------------------------------------------------------
 
-int Slot::conectar(Conexao *con)
+int P2PSlot::conectar(Conexao *con)
 {
 	if(estado!=RESERVADO)
 	{
@@ -53,7 +53,7 @@ int Slot::conectar(Conexao *con)
 	return 0;
 }
 
-int Slot::conectar(const char *ip, const unsigned short porta)
+int P2PSlot::conectar(const char *ip, const unsigned short porta)
 {
 	if(c==NULL)
 		c=new Conexao();
@@ -63,7 +63,7 @@ int Slot::conectar(const char *ip, const unsigned short porta)
 	return c->conectar(ip,porta);
 }
 
-int Slot::conectar(const Noh& n)
+int P2PSlot::conectar(const Noh& n)
 {
 	if(c==NULL)
 		c=new Conexao();
@@ -73,7 +73,7 @@ int Slot::conectar(const Noh& n)
 	return c->conectar(n.ip,n.porta);
 }
 
-int Slot::desconectar()
+int P2PSlot::desconectar()
 {
 	m.trava();
 	_reset();
@@ -81,7 +81,7 @@ int Slot::desconectar()
     return 0;
 }
 
-Slot::EstadoSlot Slot::pegaEstado()
+P2PSlot::EstadoSlot P2PSlot::pegaEstado()
 {
     m.trava();
    	_conectado();
@@ -89,7 +89,7 @@ Slot::EstadoSlot Slot::pegaEstado()
     return estado;
 }
 
-int Slot::setaEstado(EstadoSlot novo)
+int P2PSlot::setaEstado(EstadoSlot novo)
 {
     m.trava();
 	estado=novo;
@@ -97,7 +97,7 @@ int Slot::setaEstado(EstadoSlot novo)
     return 0;
 }
 
-int Slot::enviar(Buffer *pkt)
+int P2PSlot::enviar(Buffer *pkt)
 {
 	int retorno=-1;
 	m.trava();
@@ -114,7 +114,7 @@ int Slot::enviar(Buffer *pkt)
     return retorno;
 }
 
-Buffer* Slot::receber()
+Buffer* P2PSlot::receber()
 {
 	int qtd;
 	m.trava();
@@ -172,7 +172,7 @@ Buffer* Slot::receber()
 	return retorno;
 }
 
-int Slot::_reset()
+int P2PSlot::_reset()
 {
 	estado=LIVRE;
 	estadoRX=NOVO;
@@ -194,7 +194,7 @@ int Slot::_reset()
     return 0;
 }
 
-bool Slot::_conectado()
+bool P2PSlot::_conectado()
 {
 	if(c!=NULL)
 	{
@@ -214,12 +214,12 @@ bool Slot::_conectado()
 	return false;
 }
 
-int Slot::tratar(Conexao *con, long codeve, long coderro[])
+int P2PSlot::tratar(Conexao *con, long codeve, long coderro[])
 {
 	if(con==NULL)
 		return -1;
 
-	Slot *s=(Slot*)con->pai;
+	P2PSlot *s=(P2PSlot*)con->pai;
 	if(s==NULL)
 		return -1;
 

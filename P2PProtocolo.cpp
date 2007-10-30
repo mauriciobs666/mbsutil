@@ -256,7 +256,7 @@ int ClienteP2P::enviaLogin(const Noh& n)
 
 int ClienteP2P::IPH_tratar(Buffer *pacote, const Noh& n)
 {
-	Slot *slot=slots[n];
+	P2PSlot *slot=slots[n];
 	COMANDO comando=pacote->readByte();
     switch(comando)
     {
@@ -269,7 +269,7 @@ int ClienteP2P::IPH_tratar(Buffer *pacote, const Noh& n)
 //			Cliente c;
 //			c.read(pacote->pntL);
 			u.read(pacote->pntL);
-			slot->setaEstado(Slot::CONECTADO);
+			slot->setaEstado(P2PSlot::CONECTADO);
 			Usuario *tmp=usuarios.busca(u);
 			if(tmp==NULL)
 				usuarios.insere(u,new Usuario(u));

@@ -135,7 +135,7 @@ P2PGerenciadorSlots::~P2PGerenciadorSlots()
         delete[] slots;
 }
 
-int P2PGerenciadorSlots::IFH_tratar(Buffer *frame, Slot *slot)
+int P2PGerenciadorSlots::IFH_tratar(Buffer *frame, P2PSlot *slot)
 {
 	COMANDO comando=frame->readByte();
 	switch(comando)
@@ -197,7 +197,7 @@ int P2PGerenciadorSlots::IFH_tratar(Buffer *frame, Slot *slot)
 	return 0;
 }
 
-int P2PGerenciadorSlots::IFH_conectado(Slot *slot)
+int P2PGerenciadorSlots::IFH_conectado(P2PSlot *slot)
 {
 	Buffer *id_ask=new Buffer(sizeof(COMANDO));//+sizeof(Noh));
 	id_ask->writeByte((COMANDO)ID_ASK);
@@ -208,7 +208,7 @@ int P2PGerenciadorSlots::IFH_conectado(Slot *slot)
 	return 0;
 }
 
-int P2PGerenciadorSlots::IFH_desconectado(Slot *slot)
+int P2PGerenciadorSlots::IFH_desconectado(P2PSlot *slot)
 {
 	ph->IPH_desconectado(slot->iC);
 	return 0;
@@ -218,7 +218,7 @@ int P2PGerenciadorSlots::mudaNumSlots(int num)
 {
 	if(num>0)
 	{
-		Slot *temp=new Slot[num];
+		P2PSlot *temp=new P2PSlot[num];
 		if(temp==NULL)
 			return -1;		//erro de alocacao
 		if((slots!=NULL)&&(numSlots>0))
@@ -236,14 +236,14 @@ int P2PGerenciadorSlots::mudaNumSlots(int num)
 	return 0;
 }
 
-Slot* P2PGerenciadorSlots::at(int num) const
+P2PSlot* P2PGerenciadorSlots::at(int num) const
 {
     if((num>=0)&(num<numSlots))
         return &slots[num];
     return NULL;
 }
 
-Slot* P2PGerenciadorSlots::operator[](const Noh& n) const
+P2PSlot* P2PGerenciadorSlots::operator[](const Noh& n) const
 {
     for(int x=0;x<numSlots;x++)
     	if(n==slots[x].iC)
@@ -259,9 +259,9 @@ int P2PGerenciadorSlots::aloca()
     {
         for(int x=0;x<numSlots;x++)
         {
-            if(slots[x].pegaEstado()==Slot::LIVRE)
+            if(slots[x].pegaEstado()==P2PSlot::LIVRE)
             {
-                if(slots[x].setaEstado(Slot::RESERVADO)==0)
+                if(slots[x].setaEstado(P2PSlot::RESERVADO)==0)
                 {
                     m.destrava();
                     return x;
@@ -275,7 +275,7 @@ int P2PGerenciadorSlots::aloca()
 
 int P2PGerenciadorSlots::enviar(Buffer *pkt, const Noh& n)
 {
-	Slot *s=operator[](n);
+	P2PSlot *s=operator[](n);
 	if(s==NULL)
 		return -1;
 
@@ -310,9 +310,9 @@ int P2PGerenciadorSlots::conectar(const Noh& n)
         return ns;  //nenhum slot disponivel
 	int ret=slots[ns].conectar(n);
 	if(ret==0)
-		slots[ns].setaEstado(Slot::LOGIN);
+		slots[ns].setaEstado(P2PSlot::LOGIN);
 	else
-		slots[ns].setaEstado(Slot::LIVRE);
+		slots[ns].setaEstado(P2PSlot::LIVRE);
 	return ret;
 }
 
@@ -323,9 +323,9 @@ int P2PGerenciadorSlots::conectar(const char *ip, const unsigned short porta)
         return ns;  //nenhum slot disponivel
 	int ret=slots[ns].conectar(ip,porta);
 	if(ret==0)
-		slots[ns].setaEstado(Slot::LOGIN);
+		slots[ns].setaEstado(P2PSlot::LOGIN);
 	else
-		slots[ns].setaEstado(Slot::LIVRE);
+		slots[ns].setaEstado(P2PSlot::LIVRE);
 	return ret;
 }
 

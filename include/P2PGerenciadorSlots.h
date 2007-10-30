@@ -67,13 +67,13 @@ public:
 	int pegaNumSlots() const { return numSlots; }
 	int mudaNumSlots(int num);
 
-	virtual int IFH_tratar(Buffer *frame, Slot *slot);
-	virtual int IFH_conectado(Slot *slot);
-	virtual int IFH_desconectado(Slot *slot);
+	virtual int IFH_tratar(Buffer *frame, P2PSlot *slot);
+	virtual int IFH_conectado(P2PSlot *slot);
+	virtual int IFH_desconectado(P2PSlot *slot);
 
-	Slot* at(int num) const;
-	Slot* operator[](int i) const { return &slots[i]; }
-	Slot* operator[](const Noh& n) const;			//busca
+	P2PSlot* at(int num) const;
+	P2PSlot* operator[](int i) const { return &slots[i]; }
+	P2PSlot* operator[](const Noh& n) const;			//busca
 
 	int aloca();
 	//TODO:	int libera();	//mata slot com a classificacao mais baixa e aloca
@@ -88,7 +88,7 @@ public:
 private:
 	Mutex m;
 	int numSlots;
-	Slot *slots;
+	P2PSlot *slots;
 	iPacketHandler *ph;
 	//friend class ClienteP2P;
 	Conexao serverSock;
