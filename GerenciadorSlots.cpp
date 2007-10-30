@@ -22,6 +22,7 @@
 
 namespace
 {
+    typedef unsigned char COMANDO;
 	typedef enum CmdCamada1
 	{
 		DIRETA,
@@ -112,7 +113,6 @@ namespace
 */
 
 using namespace std;
-using namespace Protocolo;
 
 void logar(string frase);
 
@@ -141,7 +141,7 @@ int GerenciadorSlots::IFH_tratar(Buffer *frame, Slot *slot)
 	switch(comando)
     {
     	case DIRETA:
-			return ph->IPH_tratar(frame,slot->iC);	//repassa pra camada superior
+			return ph->IPH_tratar(frame,slot->id);	//repassa pra camada superior
 		case PING:
 			#ifdef LOGAR_COMANDOS
 				logar("CMD_PING");
@@ -161,7 +161,7 @@ int GerenciadorSlots::IFH_tratar(Buffer *frame, Slot *slot)
 			{
 				unsigned long base=frame->readLong();
 				unsigned long agora=(clock()/(CLOCKS_PER_SEC/1000));
-				slot->iC.ping=agora-base;
+				slot->ping=agora-base;
 			}
 		break;
 		case ID_ASK:
@@ -183,13 +183,13 @@ int GerenciadorSlots::IFH_conectado(Slot *slot)
 	id_ask->writeByte((COMANDO)ID_ASK);
 	slot->enviar(id_ask);
 
-	ph->IPH_conectado(slot->iC);
+	ph->IPH_conectado(slot->id);
 	return 0;
 }
 
 int GerenciadorSlots::IFH_desconectado(Slot *slot)
 {
-	ph->IPH_desconectado(slot->iC);
+	ph->IPH_desconectado(slot->id);
 	return 0;
 }
 

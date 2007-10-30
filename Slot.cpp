@@ -18,7 +18,6 @@
 */
 
 #include "Slot.h"
-#include "P2Pdefs.h"
 
 namespace
 {
@@ -27,7 +26,6 @@ namespace
 };
 
 using namespace std;
-using namespace Protocolo;
 
 void logar(string frase);
 
@@ -61,16 +59,6 @@ int Slot::conectar(const char *ip, const unsigned short porta)
 	c->registraCallback(tratar);
 	timestamp=time(NULL);
 	return c->conectar(ip,porta);
-}
-
-int Slot::conectar(const Noh& n)
-{
-	if(c==NULL)
-		c=new Conexao();
-	c->pai=this;
-	c->registraCallback(tratar);
-	timestamp=time(NULL);
-	return c->conectar(n.ip,n.porta);
 }
 
 int Slot::desconectar()
@@ -223,8 +211,8 @@ int Slot::tratar(Conexao *con, long codeve, long coderro[])
 	if(s==NULL)
 		return -1;
 
-	s->iC.ip=con->pegaInfo()->sin_addr.s_addr;
-	s->iC.porta=con->pegaInfo()->sin_port;
+	s->ip=con->pegaInfo()->sin_addr.s_addr;
+	s->porta=con->pegaInfo()->sin_port;
 
 	if(codeve & FD_CONNECT)
 	{

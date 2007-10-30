@@ -26,9 +26,9 @@
 class iPacketHandler
 {
 public:
-	virtual int IPH_tratar(Buffer *pacote, const Noh& n) = 0;
-	virtual int IPH_conectado(const Noh& n) = 0;
-	virtual int IPH_desconectado(const Noh& n) = 0;
+	virtual int IPH_tratar(Buffer *pacote, std::string id) = 0;
+	virtual int IPH_conectado(std::string id) = 0;
+	virtual int IPH_desconectado(std::string id) = 0;
 	virtual ~iPacketHandler() {}
 };
 

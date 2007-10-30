@@ -17,12 +17,19 @@
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef MBSUTIL_P2PSLOT_H
-#define MBSUTIL_P2PSLOT_H
+#ifndef MBSUTIL_SLOT_H
+#define MBSUTIL_SLOT_H
+
+#include <iostream>
+#include <map>
+#include <list>
+#include <queue>
+#include <set>
+#include <cstdio>
+#include <string>
 
 #include "Bufer.h"
 #include "Rede.h"
-#include "P2Ped.h"
 
 //!Interface do tratador de frames
 class iFrameHandler
@@ -50,10 +57,16 @@ public:
 			TAMANHO = typedef = tamanho total da area de dados
 			dados  = TAMANHO * bytes = pacote camada 1
 */
+
+typedef unsigned short TAMANHO;
+
 class Slot
 {
 public:
-	Cliente iC;
+    std::string id;
+	unsigned long ip;
+	unsigned short porta;
+	unsigned long ping;
 	time_t timestamp;	//!<time-out rx
 
 	Slot(iFrameHandler *pai=NULL) : gerenciador(pai), c(NULL), temp(500), recebendo(NULL)
@@ -64,7 +77,6 @@ public:
 		{ gerenciador=pai; }
 
 	int conectar(const char *ip, unsigned short porta);
-	int conectar(const Noh& n);
 	int conectar(Conexao *con);
 	int desconectar();
 
@@ -93,7 +105,7 @@ protected:
 	bool _conectado();	//desprotegida
 
 	Buffer temp;					//usado na recepcao de Conexao
-	Protocolo::TAMANHO tamRecebendo;//tamanho temporario do frame "*recebendo"
+	TAMANHO tamRecebendo;           //tamanho temporario do frame "*recebendo"
 	Buffer *recebendo;				//frame sendo recebido
 	std::queue<Buffer*> recebidos;	//fila de frames prontos pra serem tratados
 
