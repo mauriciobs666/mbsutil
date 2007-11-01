@@ -143,7 +143,7 @@ int GerenciadorSlots::IFH_tratar(Buffer *frame, Slot *slot)
     {
     	case DIRETA:
     */
-			return ph->IPH_tratar(frame,slot->id);	//repassa pra camada superior
+			return ph->IPH_tratar(frame,slot);	//repassa pra camada superior
     /*
 		case PING:
 			#ifdef LOGAR_COMANDOS
@@ -188,13 +188,13 @@ int GerenciadorSlots::IFH_conectado(Slot *slot)
 	id_ask->writeByte((COMANDO)ID_ASK);
 	slot->enviar(id_ask);
 */
-	ph->IPH_conectado(slot->id);
+	ph->IPH_conectado(slot);
 	return 0;
 }
 
 int GerenciadorSlots::IFH_desconectado(Slot *slot)
 {
-	ph->IPH_desconectado(slot->id);
+	ph->IPH_desconectado(slot);
 	return 0;
 }
 
