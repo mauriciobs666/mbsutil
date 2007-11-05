@@ -22,16 +22,6 @@
 
 #include "Slot.h"
 
-//!Interface do tratador de pacotes
-class iPacketHandler
-{
-public:
-	virtual int IPH_tratar(Buffer *pacote, Slot *slot) = 0;
-	virtual int IPH_conectado(Slot *slot) = 0;
-	virtual int IPH_desconectado(Slot *slot) = 0;
-	virtual ~iPacketHandler() {}
-};
-
 /**
 	\brief Camada 1 do protocolo (rede):
 
@@ -52,15 +42,12 @@ public:
 	GerenciadorSlots(int num=10);
 	virtual ~GerenciadorSlots();
 
-	void registraPacketHandler(iPacketHandler *pai)
-		{ ph=pai; }
-
 	int pegaNumSlots() const { return numSlots; }
 	int mudaNumSlots(int num);
 
-	virtual int IFH_tratar(Buffer *frame, Slot *slot);
-	virtual int IFH_conectado(Slot *slot);
-	virtual int IFH_desconectado(Slot *slot);
+	virtual int IFH_tratar(Buffer *frame, Slot *slot) = 0;
+	virtual int IFH_conectado(Slot *slot) = 0;
+	virtual int IFH_desconectado(Slot *slot) = 0;
 
 	Slot* at(int num) const;
 	Slot* operator[](int i) const { return &slots[i]; }
@@ -68,14 +55,12 @@ public:
 
 	int aloca();
 
-	int enviar(Buffer *pkt, std::string id);
 	int ouvir(unsigned short porta);
 	int desconectar(int nslot=-1);	    //-1 = todos
-private:
+protected:
 	SessaoCritica cs;
 	int numSlots;
 	Slot *slots;
-	iPacketHandler *ph;
 
 	Conexao serverSock;
 	static int tratarServer(Conexao *con, long codeve, long coderro[]);
