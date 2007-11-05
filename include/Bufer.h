@@ -38,14 +38,14 @@ public:
 		//anexa qtd bytes de b->pntL em pntE
 		//se qtd==0, anexa disponiveis() bytes de b->pntL em pntE
 
-	unsigned char readByte();
-	unsigned long writeByte(unsigned char uc);
-	unsigned short readShort();
-	unsigned long writeShort(unsigned short us);
-	unsigned long readLong();
-	unsigned long writeLong(unsigned long ul);
-	int readString(unsigned char *dest);
-	int writeString(unsigned char *orig);
+	int readByte(unsigned char *uc);
+	int writeByte(unsigned char uc);
+	int readShort(unsigned short *us);
+	int writeShort(unsigned short us);
+	int readLong(unsigned long *ul);
+	int writeLong(unsigned long ul);
+	int readString(char *dest, int max);
+	int writeString(char *orig);
 protected:
 	unsigned long tamanho;
 };

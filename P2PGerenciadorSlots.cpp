@@ -137,7 +137,9 @@ P2PGerenciadorSlots::~P2PGerenciadorSlots()
 
 int P2PGerenciadorSlots::IFH_tratar(Buffer *frame, P2PSlot *slot)
 {
-	COMANDO comando=frame->readByte();
+	unsigned char tmp;
+	frame->readByte(&tmp);
+	COMANDO comando=tmp;
 	switch(comando)
     {
     	case DIRETA:
@@ -147,7 +149,8 @@ int P2PGerenciadorSlots::IFH_tratar(Buffer *frame, P2PSlot *slot)
 				logar("CMD_PING");
 			#endif
 			{
-				unsigned long timestamp=frame->readLong();
+				unsigned long timestamp;
+				frame->readLong(&timestamp);
 				Buffer *pong=new Buffer(sizeof(COMANDO)+sizeof(timestamp));
 				pong->writeByte((COMANDO)PONG);
 				pong->writeLong(timestamp);
@@ -159,7 +162,8 @@ int P2PGerenciadorSlots::IFH_tratar(Buffer *frame, P2PSlot *slot)
 				logar("CMD_PONG");
 			#endif
 			{
-				unsigned long base=frame->readLong();
+				unsigned long base;
+				frame->readLong(&base);
 				unsigned long agora=(clock()/(CLOCKS_PER_SEC/1000));
 				slot->iC.ping=agora-base;
 			}

@@ -257,7 +257,9 @@ int ClienteP2P::enviaLogin(const Noh& n)
 int ClienteP2P::IPH_tratar(Buffer *pacote, const Noh& n)
 {
 	P2PSlot *slot=slots[n];
-	COMANDO comando=pacote->readByte();
+	unsigned char tmp;
+	pacote->readByte(&tmp);
+	COMANDO comando=tmp;
     switch(comando)
     {
 		case LOGIN:

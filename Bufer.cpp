@@ -96,70 +96,87 @@ unsigned long Buffer::append(Buffer& b, unsigned long qtd)
     return qtd;
 }
 
-unsigned char Buffer::readByte()
+int Buffer::readByte(unsigned char *uc)
 {
 	if(disponiveis()<1)
-		return 0;
-	return *pntL++;
+		return -1;
+	*uc=*pntL++;
+	return 0;
 }
 
-unsigned long Buffer::writeByte(unsigned char uc)
+int Buffer::writeByte(unsigned char uc)
 {
 	unsigned long novotam=ocupados()+1;
 	if(novotam>tamanho)
 		if(mudaTamanho(novotam))
-			return 0;
+			return -1;
 	*pntE=uc;
 	pntE++;
-	return 1;
+	return 0;
 }
 
-unsigned short Buffer::readShort()
+int Buffer::readShort(unsigned short *us)
 {
-	unsigned short us;
-	if(disponiveis()<sizeof(us))
-		return 0;
-	us=*((unsigned short*)pntL);
-	pntL+=sizeof(us);
-	return us;
+	if(disponiveis()<sizeof(unsigned short))
+		return -1;
+	*us=*((unsigned short*)pntL);
+	pntL+=sizeof(unsigned short);
+	return 0;
 }
 
-unsigned long Buffer::writeShort(unsigned short us)
+int Buffer::writeShort(unsigned short us)
 {
-	unsigned long novotam=ocupados()+sizeof(us);
+	unsigned long novotam=ocupados()+sizeof(unsigned short);
 	if(novotam>tamanho)
 		if(mudaTamanho(novotam))
-			return 0;
+			return -1;
 	*((unsigned short*)pntE)=us;
-	pntE+=sizeof(us);
-	return sizeof(us);
+	pntE+=sizeof(unsigned short);
+	return 0;
 }
 
-unsigned long Buffer::readLong()
+int Buffer::readLong(unsigned long *ul)
 {
-	unsigned long ul;
-	if(disponiveis()<sizeof(ul))
-		return 0;
-	ul=*((unsigned long*)pntL);
-	pntL+=sizeof(ul);
-	return ul;
+	if(disponiveis()<sizeof(unsigned long))
+		return -1;
+	*ul=*((unsigned long*)pntL);
+	pntL+=sizeof(unsigned long);
+	return 0;
 }
 
-unsigned long Buffer::writeLong(unsigned long ul)
+int Buffer::writeLong(unsigned long ul)
 {
-	unsigned long novotam=ocupados()+sizeof(ul);
+	unsigned long novotam=ocupados()+sizeof(unsigned long);
 	if(novotam>tamanho)
 		if(mudaTamanho(novotam))
-			return 0;
+			return -1;
 	*((unsigned long*)pntE)=ul;
-	pntE+=sizeof(ul);
-	return sizeof(ul);
+	pntE+=sizeof(unsigned long);
+	return 0;
 }
 
-int Buffer::readString(unsigned char *dest)
+int Buffer::readString(char *dest, int max)
 {
+	int tamstr=strlen((char*)pntL)+1;
+	if(disponiveis()<tamstr)
+		return -1;
+	if(max<tamstr)
+		return -2;
+	memcpy(dest,pntL,tamstr);
+	pntL+=tamstr;
+	return 0;
 }
 
-int Buffer::writeString(unsigned char *orig)
+int Buffer::writeString(char *orig)
 {
+	int tamstr=strlen(orig)+1;
+	unsigned long novotam=ocupados()+tamstr;
+	if(novotam>tamanho)
+		if(mudaTamanho(novotam))
+			return -1;
+
+	memcpy(pntE,orig,tamstr);
+    pntE+=tamstr;
+
+    return 0;
 }
