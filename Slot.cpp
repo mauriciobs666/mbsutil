@@ -110,6 +110,7 @@ Buffer* Slot::receber()
 	{
         temp.reset();
 		qtd=c->receber((char*)temp.pntE, temp.livres());
+//		cout << "qtd=" << qtd << endl;
 		if(qtd>0)
 			temp.pntE+=qtd;
 		while(temp.disponiveis()>0)
@@ -119,20 +120,26 @@ Buffer* Slot::receber()
 				case NOVO:
 					//esperando primeiro byte de tam do novo pacote
 					*((char*)&tamRecebendo)=*temp.pntL;
+//					cout << " tamB1 =" << (int)*temp.pntL;
 					temp.pntL++;
 					estadoRX=ESPERA_TAMANHO;
+//					cout << " NOVO ";
 				break;
 				case ESPERA_TAMANHO:
 					//esperando segundo byte de tamanho
-					*((char*)(&tamRecebendo+1))=*temp.pntL;
+					*(((char*)(&tamRecebendo))+1)=*temp.pntL;
+//					cout << " tamB1 =" << (int)*temp.pntL;
 					temp.pntL++;
 					//tamanho recebido, agora o pacote em si
 					recebendo=new Buffer(tamRecebendo);
 					estadoRX=DADOS;
+//					cout << " ESPERA_TAMANHO tamRecebendo=" << tamRecebendo;
 				break;
 				case DADOS:
 					//receber comando e dados
+//					cout << " DADOS ";
 					recebendo->append(temp,recebendo->livres());
+//					cout << " livres = " << recebendo->livres();
 					if(recebendo->livres()==0)	//aceitacao
 					{
 						#ifdef LOGAR_SOCKET
@@ -224,17 +231,33 @@ int Slot::tratar(Conexao *con, long codeve, long coderro[])
 	}
 	if(codeve & FD_READ)
 	{
-		#ifdef LOGAR_SOCKET
-			logar("FD_READ");
-		#endif
 		if(coderro[FD_READ_BIT]!=0)
+		{
+			#ifdef LOGAR_SOCKET
+				logar("FD_READ ERRO");
+			#endif
 			return 1;
+		}
 		else
 		{
 			Buffer *f;
 			if(s->gerenciador)
+			{
+				#ifdef LOGAR_SOCKET
+					logar("FD_READ");
+				#endif
                 while((f=s->receber())!=NULL)
+                {
+                	#ifdef LOGAR_SOCKET
+						logar("IFH_tratar");
+					#endif
                     s->gerenciador->IFH_tratar(f,s);
+                }
+			}
+			#ifdef LOGAR_SOCKET
+			else
+				logar("Pacote descartado");
+			#endif
 		}
 	}
 	if(codeve & FD_WRITE)

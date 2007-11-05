@@ -155,3 +155,11 @@ unsigned long Buffer::writeLong(unsigned long ul)
 	pntE+=sizeof(ul);
 	return sizeof(ul);
 }
+
+int Buffer::readString(unsigned char *dest)
+{
+}
+
+int Buffer::writeString(unsigned char *orig)
+{
+}
