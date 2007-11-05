@@ -275,6 +275,8 @@ int Slot::tratar(Conexao *con, long codeve, long coderro[])
 		#ifdef LOGAR_SOCKET
 			logar("FD_CLOSE");
 		#endif
+		if(s->gerenciador)
+            s->gerenciador->IFH_desconectado(s);
 		return 1;	//matar thread...
 	}
 	return 0;

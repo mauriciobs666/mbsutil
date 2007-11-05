@@ -32,7 +32,7 @@ namespace {
 	void iniciaRede()
 	{
 		WSADATA wsad;
-		if(WSAStartup(MAKEWORD(1,1),&wsad)==0)
+		if(WSAStartup(MAKEWORD(2,2),&wsad)==0)
 		{
 			inicializado=true;
 			atexit(&fimRede);
