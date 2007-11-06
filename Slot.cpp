@@ -97,7 +97,7 @@ int Slot::enviar(Buffer *pkt)
             if(c->enviar((char*)pkt->dados,tam)==tam)       		//envia pacote
                 retorno=0;                                  		//tudo ok
     }
-    delete pkt;
+//    delete pkt;
     cs.destrava();
     return retorno;
 }

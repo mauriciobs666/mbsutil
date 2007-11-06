@@ -167,7 +167,7 @@ int Buffer::readString(char *dest, int max)
 	return 0;
 }
 
-int Buffer::writeString(char *orig)
+int Buffer::writeString(const char *orig)
 {
 	int tamstr=strlen(orig)+1;
 	unsigned long novotam=ocupados()+tamstr;
