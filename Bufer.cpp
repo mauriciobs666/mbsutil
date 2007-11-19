@@ -155,7 +155,7 @@ int Buffer::writeLong(unsigned long ul)
 	return 0;
 }
 
-int Buffer::readString(char *dest, int max)
+int Buffer::readString(char *dest, unsigned long max)
 {
 	unsigned long tamstr=strlen((char*)pntL)+1;
 	if(disponiveis()<tamstr)

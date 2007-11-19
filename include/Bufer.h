@@ -44,7 +44,7 @@ public:
 	int writeShort(unsigned short us);
 	int readLong(unsigned long *ul);
 	int writeLong(unsigned long ul);
-	int readString(char *dest, int max);
+	int readString(char *dest, unsigned long max);
 	int writeString(const char *orig);
 protected:
 	unsigned long tamanho;
