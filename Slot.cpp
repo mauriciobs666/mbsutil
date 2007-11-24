@@ -53,6 +53,7 @@ int Slot::conectar(Conexao *con)
 
 int Slot::conectar(const char *ip, const unsigned short porta)
 {
+	estado=RESERVADO;
 	if(c==NULL)
 		c=new Conexao();
 	c->pai=this;
@@ -201,7 +202,11 @@ bool Slot::_conectado()
 			if((agora-timestamp)>TIMEOUT_RX)
 				_reset();
 			else
+			{
+				if(estado<HANDSHAKE)
+					estado=HANDSHAKE;
 				return true;
+			}
 		}
 	}
 	else
@@ -267,6 +272,8 @@ int Slot::tratar(Conexao *con, long codeve, long coderro[])
 		#endif
 		if(coderro[FD_WRITE_BIT]!=0)
 			return 1;
+		if(s->estado<HANDSHAKE)
+			s->estado=HANDSHAKE;
         if(s->gerenciador)
             s->gerenciador->IFH_conectado(s);
 	}
