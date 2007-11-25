@@ -76,19 +76,19 @@ public:
 	void registraFrameHandler(iFrameHandler *pai)
 		{ gerenciador=pai; }
 
-	int conectar(const char *ip, unsigned short porta);
+	int conectar(const char *ip, const unsigned short porta);
 	int conectar(Conexao *con);
 	int desconectar();
 
 	//!Estado do Slot
-	typedef enum
+	typedef enum EstadoSlot
 	{
 		LIVRE = 0,		//!<desconectado
 		RESERVADO,		//!<desconectado, mas reservado pelo gerenciador
 		HANDSHAKE,		//!<conectado, descobrindo ip, id etc
 		LOGIN,			//!<conectado, esperando login
 		CONECTADO		//!<conectado, normal
-	} EstadoSlot;
+	};
 	EstadoSlot pegaEstado();
 	int setaEstado(EstadoSlot estado);
 

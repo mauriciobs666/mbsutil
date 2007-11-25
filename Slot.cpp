@@ -202,11 +202,7 @@ bool Slot::_conectado()
 			if((agora-timestamp)>TIMEOUT_RX)
 				_reset();
 			else
-			{
-				if(estado<HANDSHAKE)
-					estado=HANDSHAKE;
 				return true;
-			}
 		}
 	}
 	else
@@ -245,12 +241,12 @@ int Slot::tratar(Conexao *con, long codeve, long coderro[])
 		}
 		else
 		{
+			#ifdef LOGAR_SOCKET
+				logar("FD_READ");
+			#endif
 			Buffer *f;
 			if(s->gerenciador)
 			{
-				#ifdef LOGAR_SOCKET
-					logar("FD_READ");
-				#endif
                 while((f=s->receber())!=NULL)
                 {
                 	#ifdef LOGAR_SOCKET
@@ -272,10 +268,11 @@ int Slot::tratar(Conexao *con, long codeve, long coderro[])
 		#endif
 		if(coderro[FD_WRITE_BIT]!=0)
 			return 1;
-		if(s->estado<HANDSHAKE)
-			s->estado=HANDSHAKE;
         if(s->gerenciador)
             s->gerenciador->IFH_conectado(s);
+		else
+			if(s->estado<HANDSHAKE)
+				s->estado=HANDSHAKE;
 	}
 	if(codeve & FD_CLOSE)
 	{
