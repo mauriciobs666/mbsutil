@@ -50,7 +50,7 @@ int testeSoqueteServer()
 {
 	SoqueteServer ss;
 	char temp[50];
-	cout << "Soquete::ouvir(80)=" << ss.ouvir(6661) << endl;
+	cout << "Soquete::ouvir(6661)=" << ss.ouvir(6661) << endl;
 	Soquete *s=ss.aceitar();
 	if(s==NULL)
 		cout << "Erro" << endl;
@@ -58,7 +58,8 @@ int testeSoqueteServer()
 	{
 		int rec;
 		cout << "Conectado" << endl;
-		while(s->conectado())
+//		while(s->conectado())
+		while(s->valido())
 		{
 			rec=s->receber(temp,50);
 			if (rec>0)

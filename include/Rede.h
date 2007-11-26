@@ -25,42 +25,44 @@
 #include <winsock2.h>
 #include "Thread.h"
 
-//using namespace std;
-
 class Soquete
 {
 public:
-    Soquete();
-    Soquete(int winfd);
-    virtual ~Soquete();
+    Soquete(int winfd=INVALID_SOCKET, sockaddr_in *sadr=NULL);
+    virtual ~Soquete()
+		{ fechaSocket(); }
+	bool valido()
+		{ return (fd!=(int)INVALID_SOCKET); }
+    int conectar(std::string ip, unsigned short porta);
+    void desconectar()
+		{ fechaSocket(); }
+    int enviar(char *dados, int len);
+    int receber(char *dest, int max);
 
-	virtual bool conectado();
-    virtual int conectar(std::string ip, unsigned short porta);
-    virtual void desconectar();
-    virtual int enviar(char *dados, int len);
-    virtual int receber(char *dest, int max);
-
-	std::string IPRemoto();
-	std::string IPLocal();
-    unsigned short PortaRemoto();
-	unsigned short PortaLocal();
-    sockaddr_in* pegaInfo();
+	std::string IPRemoto()
+		{ return toString(dest.sin_addr.s_addr); }
+	unsigned short PortaRemoto()
+		{ return ntohs(dest.sin_port); }
+    sockaddr_in* pegaInfo()
+		{ return &dest; }
     unsigned long dns(std::string end);
-	std::string toString(unsigned long ip);
+	std::string toString(unsigned long ip)
+		{ return std::string(inet_ntoa(*((in_addr*)&ip))); }
 protected:
     //win32 socket
-    unsigned fd;
+    int fd;
 	sockaddr_in dest;
-    unsigned criaSocket();
-    unsigned fechaSocket();
+    int criaSocket()
+		{ return fd=socket(PF_INET,SOCK_STREAM,0); }
+    int fechaSocket();
 };
 
 class SoqueteServer : protected Soquete
 {
 public:
-    virtual int ouvir(unsigned short porta, int backlog=10);
-    virtual Soquete* aceitar();
-    virtual void recusar();
+    int ouvir(unsigned short porta, int backlog=10);
+    Soquete* aceitar();
+    void recusar();
 };
 
 /*

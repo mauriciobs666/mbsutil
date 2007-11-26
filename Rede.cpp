@@ -46,21 +46,13 @@ using namespace std;
 //      Soquete
 //------------------------------------------------------------------------------
 
-Soquete::Soquete()
+Soquete::Soquete(int winfd, sockaddr_in *sadr)
 {
 	if(!inicializado)
 		iniciaRede();
-	fd=INVALID_SOCKET;
-}
-
-Soquete::Soquete(int winfd)
-{
 	fd=winfd;
-}
-
-Soquete::~Soquete()
-{
-    desconectar();
+	if(sadr)
+		memcpy(&dest,sadr,sin_size);
 }
 
 int Soquete::conectar(string ip, unsigned short porta)
@@ -68,8 +60,7 @@ int Soquete::conectar(string ip, unsigned short porta)
 // -1: erro generico de conexao
 // -2: erro de dns, host naum encontrado
 {
-	if(conectado())
-		return -1;
+	fechaSocket();
 
 	struct hostent *he;
     if((he=gethostbyname(ip.c_str()))==NULL)
@@ -80,25 +71,17 @@ int Soquete::conectar(string ip, unsigned short porta)
     dest.sin_family=AF_INET;
     memset(&(dest.sin_zero),0,8);
 
-    if(INVALID_SOCKET==criaSocket())
+    if((int)INVALID_SOCKET==criaSocket())
     	return -1;
 
 	if(connect(fd,(sockaddr*)&dest,sizeof(sockaddr))==-1)
         if(WSAGetLastError()!=WSAEWOULDBLOCK)
+        {
+        	fechaSocket();
             return -1;
+        }
 
     return 0;
-}
-
-bool Soquete::conectado()
-{
-    return (fd==INVALID_SOCKET) ? false : true;
-}
-
-void Soquete::desconectar()
-{
-    if(conectado())
-		fechaSocket();
 }
 
 int Soquete::enviar(char *dados, int len)
@@ -112,36 +95,10 @@ int Soquete::enviar(char *dados, int len)
 int Soquete::receber(char *dest, int max)
 {
 	int rc=recv(fd,dest,max,0);
+	// 0 = disconnect
 	if(rc<=0)
 		fechaSocket();
     return rc;
-}
-
-string Soquete::IPRemoto()
-{
-	return toString(dest.sin_addr.s_addr);
-}
-
-string Soquete::IPLocal()
-{
-	//TODO: IPLocal()
-    return "";
-}
-
-unsigned short Soquete::PortaRemoto()
-{
-	return ntohs(dest.sin_port);
-}
-
-unsigned short Soquete::PortaLocal()
-{
-	//TODO: PortaLocal()
-    return 0;
-}
-
-sockaddr_in* Soquete::pegaInfo()
-{
-	return &dest;
 }
 
 unsigned long Soquete::dns(string end)
@@ -158,19 +115,10 @@ unsigned long Soquete::dns(string end)
     return *(he->h_addr);
 }
 
-string Soquete::toString(unsigned long ip)
+int Soquete::fechaSocket()
 {
-	return string(inet_ntoa(*((in_addr*)&ip)));
-}
-
-unsigned Soquete::criaSocket()
-{
-	return fd=socket(AF_INET,SOCK_STREAM,0);
-}
-
-unsigned Soquete::fechaSocket()
-{
-	closesocket(fd);
+	if(valido())
+		closesocket(fd);
     fd=INVALID_SOCKET;
     return fd;
 }
@@ -183,10 +131,9 @@ int SoqueteServer::ouvir(unsigned short porta, int backlog)
 //	-1 : erro generico de conexao
 //	-2 : erro de bind, porta em uso
 {
-	if(conectado())
-		return -1;
+	fechaSocket();
 
-    if(INVALID_SOCKET==criaSocket())
+    if((int)INVALID_SOCKET==criaSocket())
     	return -1;
 
 	dest.sin_family=AF_INET;
@@ -209,13 +156,11 @@ int SoqueteServer::ouvir(unsigned short porta, int backlog)
 
 Soquete* SoqueteServer::aceitar()
 {
-	Soquete *novo;
-    sockaddr_in adn;
-    unsigned fdn=accept(fd,(sockaddr*)&adn,&sin_size);
-    if(fdn==INVALID_SOCKET)
+	sockaddr_in adn;
+    int fdn=accept(fd,(sockaddr*)&adn,&sin_size);
+    if(fdn==(int)INVALID_SOCKET)
         return NULL;
-    novo=new Soquete(fdn);
-    return novo;
+    return new Soquete(fdn,&adn);
 }
 
 void SoqueteServer::recusar()
