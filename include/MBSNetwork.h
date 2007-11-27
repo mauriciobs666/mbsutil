@@ -30,6 +30,8 @@
 class MBSSocket
 {
 public:
+	int fd;
+
     MBSSocket(int winfd=INVALID_SOCKET, sockaddr_in *sadr=NULL);
     virtual ~MBSSocket()
 		{ closeSocket(); }
@@ -39,7 +41,8 @@ public:
     void disconnect()
 		{ closeSocket(); }
     int enviar(char *data, int len);
-    int receive(char *data, int max);
+    int receive(char *data, int max)
+		{ recv(fd,data,max,0); }
 
 	std::string remoteIP()
 		{ return toString(dest.sin_addr.s_addr); }
@@ -52,7 +55,6 @@ public:
 		{ return std::string(inet_ntoa(*((in_addr*)&ip))); }
 protected:
     //win32 socket
-    int fd;
 	sockaddr_in dest;
     int createSocket()
 		{ return fd=socket(PF_INET,SOCK_STREAM,0); }
@@ -72,12 +74,46 @@ public:
 class MBSSocketSelector
 {
 public:
+	fd_set read;
+	fd_set write;
+	fd_set exception;
+	timeval timeout;
+
+	MBSSocketSelector()
+		{
+			clear();
+			timeout.tv_sec=0;
+			timeout.tv_usec=0;
+		}
 	int add(int fd)
-		{}
+		{
+			FD_SET(fd,&read);
+			FD_SET(fd,&write);
+			FD_SET(fd,&exception);
+			if(fd>max_fd) max_fd=fd;
+		}
 	int remove(int fd)
-		{}
+		{
+			FD_CLR(fd,&read);
+			FD_CLR(fd,&write);
+			FD_CLR(fd,&exception);
+		}
 	void clear()
-		{}
+		{
+			FD_ZERO(&read);
+			FD_ZERO(&write);
+			FD_ZERO(&exception);
+		}
+	int Select()
+		{ return select(max_fd+1,&read,&write,&exception,&timeout); }
+	bool isRead(int fd)
+		{ return FD_ISSET(fd,&read); }
+	bool isWrite(int fd)
+		{ return FD_ISSET(fd,&write); }
+	bool isException(int fd)
+		{ return FD_ISSET(fd,&exception); }
+private:
+	int max_fd;
 };
 
 #endif // MBSNETWORK_H_INCLUDED

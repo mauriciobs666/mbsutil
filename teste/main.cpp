@@ -39,7 +39,7 @@ int testeSoquete()
 	{
 		cout << "Conectado" << endl;
 		cli.enviar("oi mundo",strlen("oi mundo")+1);
-		cli.receber(dados,20);
+		cli.receive(dados,20);
 		cout << "Recebido: " << dados << endl;
 	}
 	else
@@ -58,10 +58,10 @@ int testeSoqueteServer()
 	{
 		int rec;
 		cout << "Conectado" << endl;
-//		while(s->conectado())
-		while(s->valido())
+		while(s->valid())
 		{
-			rec=s->receber(temp,50);
+			rec=s->receive(temp,50);
+			cout << "rec=" << rec << endl;
 			if (rec>0)
 			{
 				cout << "Recebido: " << temp << endl;
@@ -107,6 +107,35 @@ int testePath()
 		cout << *i << endl;
 }
 
+int testeChat()
+{
+	char dados[20];
+	MBSSocket cli;
+	MBSSocketSelector sel;
+	int retorno=cli.conectar("localhost",6661);
+	if(retorno==0)
+	{
+		cout << "Conectado" << endl;
+		cout << "cli.enviar=" << cli.enviar("oi mundo",strlen("oi mundo")+1) << endl;
+		sel.add(cli.fd);
+		while(true)
+		{
+			sel.Select();
+//			if(sel.isWrite(cli.fd))
+//				cout << "cli.enviar=" << cli.enviar("oi mundo",strlen("oi mundo")+1) << endl;
+			if(sel.isRead(cli.fd))
+			{
+				cout << "cli.receive=" << cli.receive(dados,20) << endl;
+				cout << "Recebido: " << dados << endl;
+			}
+			if(sel.isException(cli.fd))
+				cout << "Exception" << endl;
+		}
+	}
+	else
+		cout << "Nao conectou" << endl;
+}
+
 int main(int argc, char *argv[])
 {
 	char op;
@@ -118,6 +147,8 @@ int main(int argc, char *argv[])
 	cout << "5 - testeHash()" << endl;
 	cout << "6 - testeConversao()" << endl;
 	cout << "7 - testePath()" << endl;
+	cout << "8 - testeChat()" << endl;
+	cout << "9 - testeChatServer()" << endl;
 	cout << endl << "Escolha uma opcao: ";
 	cin >> op;
 	switch(op)
@@ -142,6 +173,12 @@ int main(int argc, char *argv[])
 		break;
 		case '7':
 			testePath();
+		break;
+		case '8':
+			testeChat();
+		break;
+		case '9':
+			testeChat();
 		break;
 	}
     return EXIT_SUCCESS;

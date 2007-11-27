@@ -110,15 +110,6 @@ int MBSSocket::enviar(char *data, int len)
     return rc;
 }
 
-int MBSSocket::receive(char *data, int max)
-{
-	int rc=recv(fd,data,max,0);
-	// 0 = disconnect
-	if(rc<=0)
-		closeSocket();
-    return rc;
-}
-
 unsigned long MBSSocket::dns(string end)
 {
 	//TODO: arrumar dns()
