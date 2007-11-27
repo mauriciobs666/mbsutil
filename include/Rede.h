@@ -25,65 +25,6 @@
 #include <winsock2.h>
 #include "Thread.h"
 
-class Soquete
-{
-public:
-    Soquete(int winfd=INVALID_SOCKET, sockaddr_in *sadr=NULL);
-    virtual ~Soquete()
-		{ fechaSocket(); }
-	bool valido()
-		{ return (fd!=(int)INVALID_SOCKET); }
-    int conectar(std::string ip, unsigned short porta);
-    void desconectar()
-		{ fechaSocket(); }
-    int enviar(char *dados, int len);
-    int receber(char *dest, int max);
-
-	std::string IPRemoto()
-		{ return toString(dest.sin_addr.s_addr); }
-	unsigned short PortaRemoto()
-		{ return ntohs(dest.sin_port); }
-    sockaddr_in* pegaInfo()
-		{ return &dest; }
-    unsigned long dns(std::string end);
-	std::string toString(unsigned long ip)
-		{ return std::string(inet_ntoa(*((in_addr*)&ip))); }
-protected:
-    //win32 socket
-    int fd;
-	sockaddr_in dest;
-    int criaSocket()
-		{ return fd=socket(PF_INET,SOCK_STREAM,0); }
-    int fechaSocket();
-};
-
-class SoqueteServer : protected Soquete
-{
-public:
-    int ouvir(unsigned short porta, int backlog=10);
-    Soquete* aceitar();
-    void recusar();
-};
-
-/*
-    ------------------------
-    Estruturas de winsock2.h
-    ------------------------
-
-    struct sockaddr_in
-    {
-        short int sin_family;           // sempre AF_INET
-        unsigned short int sin_port;    // Porta
-        struct in_addr sin_addr;        // IP (ver abaixo)
-        unsigned char sin_zero[8];      // Padding
-    };
-
-    struct in_addr
-    {
-        unsigned long s_addr;           // Endereço IP (4 bytes)
-    };
-*/
-
 class Conexao
 {
 public:

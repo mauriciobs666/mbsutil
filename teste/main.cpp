@@ -33,7 +33,7 @@ int testeThread()
 int testeSoquete()
 {
 	char dados[20];
-	Soquete cli;
+	MBSSocket cli;
 	int retorno=cli.conectar("127.0.0.1",6661);
 	if(retorno==0)
 	{
@@ -48,10 +48,10 @@ int testeSoquete()
 
 int testeSoqueteServer()
 {
-	SoqueteServer ss;
+	MBSSocketServer ss;
 	char temp[50];
 	cout << "Soquete::ouvir(6661)=" << ss.ouvir(6661) << endl;
-	Soquete *s=ss.aceitar();
+	MBSSocket *s=ss.aceitar();
 	if(s==NULL)
 		cout << "Erro" << endl;
 	else

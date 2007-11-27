@@ -26,7 +26,7 @@
 #include "Hash.h"
 #include "P2PProtocolo.h"
 #include "Parser.h"
-#include "Rede.h"
+#include "MBSNetwork.h"
 #include "Tempo.h"
 #include "Thread.h"
 #include "glFonte.h"
