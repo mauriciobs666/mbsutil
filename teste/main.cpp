@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <conio.h>
 #include <cstdlib>
 #include <iostream>
 #include "mbsutil.h"
@@ -32,15 +33,17 @@ int testeThread()
 
 int testeSoquete()
 {
-	char dados[20];
+	char dados[50];
 	MBSSocket cli;
-	int retorno=cli.conectar("127.0.0.1",6661);
+	int retorno=cli.conectar("localhost",6661);
 	if(retorno==0)
 	{
 		cout << "Conectado" << endl;
 		cli.enviar("oi mundo",strlen("oi mundo")+1);
-		cli.receive(dados,20);
-		cout << "Recebido: " << dados << endl;
+		if(cli.receive(dados,20)==0)
+			cout << "Desconectado normalmente";
+		else
+			cout << "Recebido: " << dados << endl;
 	}
 	else
 		cout << "Nao conectou" << endl;
@@ -61,11 +64,15 @@ int testeSoqueteServer()
 		while(s->valid())
 		{
 			rec=s->receive(temp,50);
-			cout << "rec=" << rec << endl;
 			if (rec>0)
 			{
 				cout << "Recebido: " << temp << endl;
 				s->enviar(temp,rec);
+			}
+			else if(rec==0)
+			{
+				cout << "desconectando" << endl;
+				s->disconnect();
 			}
 		}
 	}
@@ -122,6 +129,7 @@ int testeChat()
 		{
 			sel.Select();
 //			if(sel.isWrite(cli.fd))
+//				cout << "evento isWrite()" << endl;
 //				cout << "cli.enviar=" << cli.enviar("oi mundo",strlen("oi mundo")+1) << endl;
 			if(sel.isRead(cli.fd))
 			{
@@ -134,6 +142,69 @@ int testeChat()
 	}
 	else
 		cout << "Nao conectou" << endl;
+}
+
+int testeChatServer()
+{
+	char temp[50];
+	MBSSocketServer ss;
+	MBSSocketSelector sel;
+	MBSSocket *cli=NULL;
+
+	cout << "Soquete::ouvir(6661)=" << ss.ouvir(6661) << endl;
+	if(!ss.valid())
+	{
+		cout << "Error listening" << endl;
+		return -1;
+	}
+	sel.add(ss.fd);
+
+	for(;;)
+	{
+		sel.Select();
+		if(sel.isRead(ss.fd))
+		{
+			if(cli==NULL)
+			{
+				cli=ss.aceitar();
+				if(cli==NULL)
+					cout << "Erro" << endl;
+				else
+				{
+					cout << "Conectado" << endl;
+					sel.add(cli->fd);
+				}
+			}
+			else
+			{
+				cout << "Recusado" << endl;
+				ss.refuse();
+			}
+		}
+		if(sel.isException(ss.fd))
+			cout << "Exception ss" << endl;
+		if(cli!=NULL)
+		{
+			if(sel.isRead(cli->fd))
+			{
+				int rec=cli->receive(temp,50);
+				if(rec>0)
+				{
+					cout << "Recebido: " << temp << endl;
+					cli->enviar(temp,rec);
+				}
+				else if(rec==0)
+				{
+					cout << "desconectando" << endl;
+					cli->disconnect();
+				}
+				else
+					cout << "rec=" << rec << endl;
+			}
+			if(sel.isException(cli->fd))
+				cout << "Exception cli" << endl;
+		}
+	}
 }
 
 int main(int argc, char *argv[])
@@ -178,8 +249,9 @@ int main(int argc, char *argv[])
 			testeChat();
 		break;
 		case '9':
-			testeChat();
+			testeChatServer();
 		break;
 	}
+	getch();
     return EXIT_SUCCESS;
 }

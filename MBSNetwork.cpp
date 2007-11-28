@@ -64,7 +64,7 @@ using namespace std;
 //      MBSSocket
 //------------------------------------------------------------------------------
 
-MBSSocket::MBSSocket(int winfd, sockaddr_in *sadr)
+MBSSocket::MBSSocket(SOCKET winfd, sockaddr_in *sadr)
 {
 	if(!inicializado)
 		iniciaRede();
@@ -89,25 +89,16 @@ int MBSSocket::conectar(string ip, unsigned short port)
     dest.sin_family=AF_INET;
     memset(&(dest.sin_zero),0,8);
 
-    if((int)INVALID_SOCKET==createSocket())
+    if(INVALID_SOCKET==createSocket())
     	return -1;
 
 	if(connect(fd,(sockaddr*)&dest,sizeof(sockaddr))==-1)
-        if(WSAGetLastError()!=WSAEWOULDBLOCK)
-        {
-        	closeSocket();
-            return -1;
-        }
-
-    return 0;
-}
-
-int MBSSocket::enviar(char *data, int len)
-{
-	int rc=send(fd,data,len,0);
-	if(rc<=0)
-		closeSocket();
-    return rc;
+		if(WSAGetLastError()!=WSAEWOULDBLOCK)
+		{
+			closeSocket();
+			return -1;
+		}
+	return 0;
 }
 
 unsigned long MBSSocket::dns(string end)
@@ -124,7 +115,7 @@ unsigned long MBSSocket::dns(string end)
     return *(he->h_addr);
 }
 
-int MBSSocket::closeSocket()
+SOCKET MBSSocket::closeSocket()
 {
 	if(valid())
 		closesocket(fd);
@@ -142,7 +133,7 @@ int MBSSocketServer::ouvir(unsigned short port, int backlog)
 {
 	closeSocket();
 
-    if((int)INVALID_SOCKET==createSocket())
+    if(INVALID_SOCKET==createSocket())
     	return -1;
 
 	dest.sin_family=AF_INET;
@@ -166,8 +157,8 @@ int MBSSocketServer::ouvir(unsigned short port, int backlog)
 MBSSocket* MBSSocketServer::aceitar()
 {
 	sockaddr_in adn;
-    int fdn=accept(fd,(sockaddr*)&adn,&sin_size);
-    if(fdn==(int)INVALID_SOCKET)
+    SOCKET fdn=accept(fd,(sockaddr*)&adn,&sin_size);
+    if(fdn==INVALID_SOCKET)
         return NULL;
     return new MBSSocket(fdn,&adn);
 }
