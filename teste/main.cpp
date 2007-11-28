@@ -114,7 +114,7 @@ int testePath()
 		cout << *i << endl;
 }
 
-int testeChat()
+int testeSocket()
 {
 	char dados[20];
 	MBSSocket cli;
@@ -138,12 +138,16 @@ int testeChat()
 					cout << "Recebido: " << dados << endl;
 				else if(rc==0)
 				{
-					cout << "desconectando" << endl;
+					cout << "desconectando normalmente" << endl;
 					cli.disconnect();
 					break;
 				}
 				else
+				{
 					cout << "cli.receive=" << rc << endl;
+					cli.disconnect();
+					break;
+				}
 			}
 			if(sel.isException(cli.fd))
 			{
@@ -157,7 +161,7 @@ int testeChat()
 		cout << "Nao conectou" << endl;
 }
 
-int testeChatServer()
+int testeSocketServer()
 {
 	char temp[50];
 	MBSSocketServer ss;
@@ -199,33 +203,36 @@ int testeChatServer()
 		}
 		if(sel.isException(ss.fd))
 			cout << "Exception ss" << endl;
-		if(cli!=NULL)
+
+		if((cli!=NULL) && sel.isRead(cli->fd))
 		{
-			if(sel.isRead(cli->fd))
+			int rec=cli->receive(temp,50);
+			if(rec>0)
 			{
-				int rec=cli->receive(temp,50);
-				if(rec>0)
-				{
-					cout << "Recebido: " << temp << endl;
-					cli->enviar(temp,rec);
-				}
-				else if(rec==0)
-				{
-					cout << "desconectando" << endl;
-					sel.remove(cli->fd);
-					cli->disconnect();
-					cli=NULL;
-				}
-				else
-					cout << "rec=" << rec << endl;
+				cout << "Recebido: " << temp << endl;
+				cli->enviar(temp,rec);
 			}
-			if(sel.isException(cli->fd))
+			else if(rec==0)
 			{
-				cout << "Exception cli" << endl;
+				cout << "desconectando" << endl;
 				sel.remove(cli->fd);
 				cli->disconnect();
 				cli=NULL;
 			}
+			else
+			{
+				cout << "rec=" << rec << endl;
+				sel.remove(cli->fd);
+				cli->disconnect();
+				cli=NULL;
+			}
+		}
+		if((cli!=NULL) && sel.isException(cli->fd))
+		{
+			cout << "Exception cli" << endl;
+			sel.remove(cli->fd);
+			cli->disconnect();
+			cli=NULL;
 		}
 	}
 }
@@ -269,10 +276,10 @@ int main(int argc, char *argv[])
 			testePath();
 		break;
 		case '8':
-			testeChat();
+			testeSocket();
 		break;
 		case '9':
-			testeChatServer();
+			testeSocketServer();
 		break;
 	}
 	getch();
