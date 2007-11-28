@@ -64,51 +64,68 @@ protected:
 class MBSSocketServer : public MBSSocket
 {
 public:
-	MBSSocketServer();
     int ouvir(unsigned short port, int backlog=10);
     MBSSocket* aceitar();
     void refuse();
-    void disconnect()
-		{ closeSocket(); }
 };
 
 class MBSSocketSelector
 {
 public:
-	fd_set set_read;
-	fd_set set_write;
-	fd_set set_exception;
+	fd_set master_set_read;
+	fd_set master_set_write;
+	fd_set master_set_exception;
+
+	fd_set result_set_read;
+	fd_set result_set_write;
+	fd_set result_set_exception;
+
 	timeval timeout;
 
-	MBSSocketSelector();
-
+	MBSSocketSelector()
+		{
+			clear();
+			timeout.tv_sec=0;
+			timeout.tv_usec=0;
+		}
 	void add(SOCKET fd)
 		{
-			FD_SET(fd,&set_read);
-			FD_SET(fd,&set_write);
-			FD_SET(fd,&set_exception);
+			FD_SET(fd,&master_set_read);
+			FD_SET(fd,&master_set_write);
+			FD_SET(fd,&master_set_exception);
 			if(fd>max_fd) max_fd=fd;
 		}
 	void remove(SOCKET fd)
 		{
-			FD_CLR(fd,&set_read);
-			FD_CLR(fd,&set_write);
-			FD_CLR(fd,&set_exception);
+			FD_CLR(fd,&master_set_read);
+			FD_CLR(fd,&master_set_write);
+			FD_CLR(fd,&master_set_exception);
 		}
 	void clear()
 		{
-			FD_ZERO(&set_read);
-			FD_ZERO(&set_write);
-			FD_ZERO(&set_exception);
+			FD_ZERO(&master_set_read);
+			FD_ZERO(&master_set_write);
+			FD_ZERO(&master_set_exception);
 		}
 	int Select()
-		{ return select(max_fd+1,&set_read,&set_write,&set_exception,&timeout); }
+		{
+			result_set_read=master_set_read;
+			result_set_write=master_set_write;
+			result_set_exception=master_set_exception;
+			return select(max_fd+1,&result_set_read,&result_set_write,&result_set_exception,&timeout);
+		}
 	bool isRead(SOCKET fd)
-		{ return FD_ISSET(fd,&set_read); }
+		{
+			return FD_ISSET(fd,&result_set_read);
+		}
 	bool isWrite(SOCKET fd)
-		{ return FD_ISSET(fd,&set_write); }
+		{
+			return FD_ISSET(fd,&result_set_write);
+		}
 	bool isException(SOCKET fd)
-		{ return FD_ISSET(fd,&set_exception); }
+		{
+			return FD_ISSET(fd,&result_set_exception);
+		}
 private:
 	SOCKET max_fd;
 };

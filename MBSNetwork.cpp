@@ -66,20 +66,24 @@ using namespace std;
 
 MBSSocket::MBSSocket(SOCKET winfd, sockaddr_in *sadr)
 {
+#ifdef _WIN32
 	if(!inicializado)
 		iniciaRede();
+#endif
 	fd=winfd;
 	if(sadr)
 		memcpy(&dest,sadr,sin_size);
 }
 
 int MBSSocket::conectar(string ip, unsigned short port)
-//  0: tudo ok, conectado
-// -1: erro generico de conexao
-// -2: erro de dns, host naum encontrado
+//  On return:
+//  	 0: ok till now, connecting or connected
+// 		-1: generic socket error
+// 		-2: dns "error", host not found
 {
 	closeSocket();
 
+	//solve addres using dns if necessary
 	struct hostent *he;
     if((he=gethostbyname(ip.c_str()))==NULL)
         return -2;
@@ -118,7 +122,11 @@ unsigned long MBSSocket::dns(string end)
 SOCKET MBSSocket::closeSocket()
 {
 	if(valid())
+#ifdef _WIN32
 		closesocket(fd);
+#else
+		close(fd);
+#endif
     fd=INVALID_SOCKET;
     return fd;
 }
@@ -127,21 +135,24 @@ SOCKET MBSSocket::closeSocket()
 //      MBSSocketServer
 //------------------------------------------------------------------------------
 
-MBSSocketServer::MBSSocketServer()
-{
-	if(!inicializado)
-		iniciaRede();
-}
-
 int MBSSocketServer::ouvir(unsigned short port, int backlog)
-//	-1 : erro generico de conexao
-//	-2 : erro de bind, porta em uso
+//  On return:
+//  	 0: ok, listenning
+// 		-1: generic socket error
+// 		-2: bind error, port may be already in use
 {
 	closeSocket();
 
     if(INVALID_SOCKET==createSocket())
     	return -1;
-
+/*
+	int yes=1;
+	if(setsockopt(fd,SOL_SOCKET,SO_REUSEADDR,&yes,sizeof(int)) == -1)
+	{
+		closeSocket();
+		return -1;
+	}
+*/
 	dest.sin_family=AF_INET;
 	dest.sin_port=htons(port);
 	dest.sin_addr.s_addr=INADDR_ANY;
@@ -155,7 +166,7 @@ int MBSSocketServer::ouvir(unsigned short port, int backlog)
 	if(listen(fd,backlog)==-1)
 	{
 		closeSocket();
-		return -2;
+		return -1;
 	}
     return 0;
 }
@@ -174,12 +185,3 @@ void MBSSocketServer::refuse()
     sockaddr adn;
     closesocket(accept(fd,&adn,&sin_size));
 }
-
-MBSSocketSelector::MBSSocketSelector()
-		{
-			if(!inicializado)
-				iniciaRede();
-			clear();
-			timeout.tv_sec=0;
-			timeout.tv_usec=0;
-		}

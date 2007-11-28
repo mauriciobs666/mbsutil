@@ -122,19 +122,15 @@ int testeChat()
 	int retorno=cli.conectar("localhost",6661);
 	if(retorno==0)
 	{
+		sel.add(cli.fd);
+
 		cout << "Conectado" << endl;
 		cout << "cli.enviar=" << cli.enviar("oi mundo",strlen("oi mundo")+1) << endl;
 		while(true)
 		{
-			sel.clear();
-			sel.add(cli.fd);
-			sel.Select();
 			int rc=sel.Select();
 			if(rc<0)
 				cout << "sel error=" << rc << endl;
-//			if(sel.isWrite(cli.fd))
-//				cout << "evento isWrite()" << endl;
-//				cout << "cli.enviar=" << cli.enviar("oi mundo",strlen("oi mundo")+1) << endl;
 			if(sel.isRead(cli.fd))
 			{
 				rc=cli.receive(dados,50);
@@ -174,14 +170,11 @@ int testeChatServer()
 		cout << "Error listening" << endl;
 		return -1;
 	}
+	sel.add(ss.fd);
 
 	int rc;
 	for(;;)
 	{
-		sel.clear();
-		sel.add(ss.fd);
-		if(cli)
-			sel.add(cli->fd);
 		rc=sel.Select();
 		if(rc<0)
 			cout << "sel error=" << rc << " wsa=" << WSAGetLastError() << endl;
@@ -219,6 +212,7 @@ int testeChatServer()
 				else if(rec==0)
 				{
 					cout << "desconectando" << endl;
+					sel.remove(cli->fd);
 					cli->disconnect();
 					cli=NULL;
 				}
@@ -228,6 +222,7 @@ int testeChatServer()
 			if(sel.isException(cli->fd))
 			{
 				cout << "Exception cli" << endl;
+				sel.remove(cli->fd);
 				cli->disconnect();
 				cli=NULL;
 			}
@@ -246,8 +241,8 @@ int main(int argc, char *argv[])
 	cout << "5 - testeHash()" << endl;
 	cout << "6 - testeConversao()" << endl;
 	cout << "7 - testePath()" << endl;
-	cout << "8 - testeChat()" << endl;
-	cout << "9 - testeChatServer()" << endl;
+	cout << "8 - testeMBSSocket()" << endl;
+	cout << "9 - testeMBSSocketServer()" << endl;
 	cout << endl << "Escolha uma opcao: ";
 	cin >> op;
 	switch(op)
