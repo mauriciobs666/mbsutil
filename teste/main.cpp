@@ -124,20 +124,37 @@ int testeChat()
 	{
 		cout << "Conectado" << endl;
 		cout << "cli.enviar=" << cli.enviar("oi mundo",strlen("oi mundo")+1) << endl;
-		sel.add(cli.fd);
 		while(true)
 		{
+			sel.clear();
+			sel.add(cli.fd);
 			sel.Select();
+			int rc=sel.Select();
+			if(rc<0)
+				cout << "sel error=" << rc << endl;
 //			if(sel.isWrite(cli.fd))
 //				cout << "evento isWrite()" << endl;
 //				cout << "cli.enviar=" << cli.enviar("oi mundo",strlen("oi mundo")+1) << endl;
 			if(sel.isRead(cli.fd))
 			{
-				cout << "cli.receive=" << cli.receive(dados,20) << endl;
-				cout << "Recebido: " << dados << endl;
+				rc=cli.receive(dados,50);
+				if(rc>0)
+					cout << "Recebido: " << dados << endl;
+				else if(rc==0)
+				{
+					cout << "desconectando" << endl;
+					cli.disconnect();
+					break;
+				}
+				else
+					cout << "cli.receive=" << rc << endl;
 			}
 			if(sel.isException(cli.fd))
-				cout << "Exception" << endl;
+			{
+				cout << "Exception cli" << endl;
+				cli.disconnect();
+				break;
+			}
 		}
 	}
 	else
@@ -157,11 +174,17 @@ int testeChatServer()
 		cout << "Error listening" << endl;
 		return -1;
 	}
-	sel.add(ss.fd);
 
+	int rc;
 	for(;;)
 	{
-		sel.Select();
+		sel.clear();
+		sel.add(ss.fd);
+		if(cli)
+			sel.add(cli->fd);
+		rc=sel.Select();
+		if(rc<0)
+			cout << "sel error=" << rc << " wsa=" << WSAGetLastError() << endl;
 		if(sel.isRead(ss.fd))
 		{
 			if(cli==NULL)
@@ -197,12 +220,17 @@ int testeChatServer()
 				{
 					cout << "desconectando" << endl;
 					cli->disconnect();
+					cli=NULL;
 				}
 				else
 					cout << "rec=" << rec << endl;
 			}
 			if(sel.isException(cli->fd))
+			{
 				cout << "Exception cli" << endl;
+				cli->disconnect();
+				cli=NULL;
+			}
 		}
 	}
 }

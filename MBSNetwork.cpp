@@ -127,6 +127,12 @@ SOCKET MBSSocket::closeSocket()
 //      MBSSocketServer
 //------------------------------------------------------------------------------
 
+MBSSocketServer::MBSSocketServer()
+{
+	if(!inicializado)
+		iniciaRede();
+}
+
 int MBSSocketServer::ouvir(unsigned short port, int backlog)
 //	-1 : erro generico de conexao
 //	-2 : erro de bind, porta em uso
@@ -168,3 +174,12 @@ void MBSSocketServer::refuse()
     sockaddr adn;
     closesocket(accept(fd,&adn,&sin_size));
 }
+
+MBSSocketSelector::MBSSocketSelector()
+		{
+			if(!inicializado)
+				iniciaRede();
+			clear();
+			timeout.tv_sec=0;
+			timeout.tv_usec=0;
+		}

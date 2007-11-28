@@ -64,6 +64,7 @@ protected:
 class MBSSocketServer : public MBSSocket
 {
 public:
+	MBSSocketServer();
     int ouvir(unsigned short port, int backlog=10);
     MBSSocket* aceitar();
     void refuse();
@@ -74,44 +75,40 @@ public:
 class MBSSocketSelector
 {
 public:
-	fd_set read;
-	fd_set write;
-	fd_set exception;
+	fd_set set_read;
+	fd_set set_write;
+	fd_set set_exception;
 	timeval timeout;
 
-	MBSSocketSelector()
-		{
-			clear();
-			timeout.tv_sec=0;
-			timeout.tv_usec=0;
-		}
+	MBSSocketSelector();
+
 	void add(SOCKET fd)
 		{
-			FD_SET(fd,&read);
-			FD_SET(fd,&write);
-			FD_SET(fd,&exception);
+			FD_SET(fd,&set_read);
+			FD_SET(fd,&set_write);
+			FD_SET(fd,&set_exception);
 			if(fd>max_fd) max_fd=fd;
 		}
 	void remove(SOCKET fd)
 		{
-			FD_CLR(fd,&read);
-			FD_CLR(fd,&write);
-			FD_CLR(fd,&exception);
+			FD_CLR(fd,&set_read);
+			FD_CLR(fd,&set_write);
+			FD_CLR(fd,&set_exception);
 		}
 	void clear()
 		{
-			FD_ZERO(&read);
-			FD_ZERO(&write);
-			FD_ZERO(&exception);
+			FD_ZERO(&set_read);
+			FD_ZERO(&set_write);
+			FD_ZERO(&set_exception);
 		}
 	int Select()
-		{ return select(max_fd+1,&read,&write,&exception,&timeout); }
+		{ return select(max_fd+1,&set_read,&set_write,&set_exception,&timeout); }
 	bool isRead(SOCKET fd)
-		{ return FD_ISSET(fd,&read); }
+		{ return FD_ISSET(fd,&set_read); }
 	bool isWrite(SOCKET fd)
-		{ return FD_ISSET(fd,&write); }
+		{ return FD_ISSET(fd,&set_write); }
 	bool isException(SOCKET fd)
-		{ return FD_ISSET(fd,&exception); }
+		{ return FD_ISSET(fd,&set_exception); }
 private:
 	SOCKET max_fd;
 };
