@@ -119,7 +119,8 @@ int testeSocket()
 	char dados[20];
 	MBSSocket cli;
 	MBSSocketSelector sel;
-	int retorno=cli.conectar("localhost",6661);
+	int retorno=cli.conectar("mauriciobs.no-ip.org",6661);
+//	int retorno=cli.conectar("192.168.0.123",6661);
 	if(retorno==0)
 	{
 		sel.add(cli.fd);
