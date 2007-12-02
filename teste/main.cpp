@@ -119,7 +119,15 @@ int testeSocket()
 	char dados[20];
 	MBSSocket cli;
 	MBSSocketSelector sel;
-	int retorno=cli.conectar("mauriciobs.no-ip.org",6661);
+	std::string host;
+	unsigned short port;
+
+	cout << "host: ";
+	cin >> host;
+	cout << "port: ";
+	cin >> port;
+
+	int retorno=cli.conectar(host.c_str(),port);
 //	int retorno=cli.conectar("192.168.0.123",6661);
 	if(retorno==0)
 	{
@@ -168,8 +176,12 @@ int testeSocketServer()
 	MBSSocketServer ss;
 	MBSSocketSelector sel;
 	MBSSocket *cli=NULL;
+	unsigned short port;
 
-	cout << "Soquete::ouvir(6661)=" << ss.ouvir(6661) << endl;
+	cout << "port: ";
+	cin >> port;
+
+	cout << "Soquete::ouvir(" << port << ")=" << ss.ouvir(port) << endl;
 	if(!ss.valid())
 	{
 		cout << "Error listening" << endl;
