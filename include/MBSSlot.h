@@ -57,6 +57,9 @@ class MBSSlot
 		int enviar(Buffer *pkt);
 		Buffer* receber();
 
+		SOCKET getFD()
+			{ return (sock==NULL) ? INVALID_SOCKET : sock->fd; }
+
 	private:
 		MBSSocket *sock;
 		EstadoSlot estado;
