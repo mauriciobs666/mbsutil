@@ -72,9 +72,7 @@ public:
 class MBSSocketSelector
 {
 public:
-	fd_set master_set_read;
-	fd_set master_set_write;
-	fd_set master_set_exception;
+	fd_set master_set;
 
 	fd_set result_set_read;
 	fd_set result_set_write;
@@ -90,29 +88,23 @@ public:
 		}
 	void add(SOCKET fd)
 		{
-			FD_SET(fd,&master_set_read);
-			FD_SET(fd,&master_set_write);
-			FD_SET(fd,&master_set_exception);
+			FD_SET(fd,&master_set);
 			if(fd>max_fd) max_fd=fd;
 		}
 	void remove(SOCKET fd)
 		{
-			FD_CLR(fd,&master_set_read);
-			FD_CLR(fd,&master_set_write);
-			FD_CLR(fd,&master_set_exception);
+			FD_CLR(fd,&master_set);
 		}
 	void clear()
 		{
-			FD_ZERO(&master_set_read);
-			FD_ZERO(&master_set_write);
-			FD_ZERO(&master_set_exception);
+			FD_ZERO(&master_set);
 			max_fd=0;
 		}
 	int Select()
 		{
-			result_set_read=master_set_read;
-			result_set_write=master_set_write;
-			result_set_exception=master_set_exception;
+			result_set_read=master_set;
+			result_set_write=master_set;
+			result_set_exception=master_set;
 			return select(max_fd+1,&result_set_read,&result_set_write,&result_set_exception,&timeout);
 		}
 	bool isRead(SOCKET fd)

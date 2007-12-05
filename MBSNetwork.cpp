@@ -96,7 +96,7 @@ int MBSSocket::conectar(string ip, unsigned short port)
     if(INVALID_SOCKET==createSocket())
     	return -1;
 
-	if(connect(fd,(sockaddr*)&dest,sizeof(sockaddr))==-1)
+	if(connect(fd,(sockaddr*)&dest,sizeof(sockaddr))==SOCKET_ERROR)
 		if(WSAGetLastError()!=WSAEWOULDBLOCK)
 		{
 			closeSocket();
@@ -145,20 +145,20 @@ int MBSSocketServer::ouvir(unsigned short port, int backlog)
 
     if(INVALID_SOCKET==createSocket())
     	return -1;
-/*
-	int yes=1;
-	if(setsockopt(fd,SOL_SOCKET,SO_REUSEADDR,&yes,sizeof(int)) == -1)
+
+	BOOL yes=TRUE;
+	if(setsockopt(fd,SOL_SOCKET,SO_REUSEADDR,(char*)&yes,sizeof(BOOL))==SOCKET_ERROR)
 	{
 		closeSocket();
 		return -1;
 	}
-*/
+
 	dest.sin_family=AF_INET;
 	dest.sin_port=htons(port);
 	dest.sin_addr.s_addr=INADDR_ANY;
 	memset(&(dest.sin_zero),0,8);
 
-	if(bind(fd,(sockaddr*)&dest,sizeof(sockaddr))==-1)
+	if(bind(fd,(sockaddr*)&dest,sizeof(sockaddr))==SOCKET_ERROR)
 	{
 		closeSocket();
 		return -2;

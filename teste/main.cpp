@@ -128,7 +128,7 @@ int testeSocket()
 	cin >> port;
 
 	int retorno=cli.conectar(host.c_str(),port);
-//	int retorno=cli.conectar("192.168.0.123",6661);
+
 	if(retorno==0)
 	{
 		sel.add(cli.fd);
@@ -144,7 +144,10 @@ int testeSocket()
 			{
 				rc=cli.receive(dados,50);
 				if(rc>0)
+				{
 					cout << "Recebido: " << dados << endl;
+					break;
+				}
 				else if(rc==0)
 				{
 					cout << "desconectando normalmente" << endl;
@@ -295,6 +298,7 @@ int main(int argc, char *argv[])
 			testeSocketServer();
 		break;
 	}
+	cout << "Finished! Press any key to exit...";
 	getch();
     return EXIT_SUCCESS;
 }
