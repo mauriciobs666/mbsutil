@@ -40,7 +40,10 @@ class MBSSlot
 		int conectar(const char *ip, const unsigned short porta);
 		int conectar(MBSSocket *s);
 		int desconectar()
-			{ reset(); }
+			{
+				reset();
+				return 0;
+			}
 
 		//!Estado do Slot
 		typedef enum EstadoSlot
@@ -52,7 +55,7 @@ class MBSSlot
 			CONECTADO		//!<conectado, normal
 		};
 		EstadoSlot pegaEstado();
-		int setaEstado(EstadoSlot estado);
+		EstadoSlot setaEstado(EstadoSlot estado);
 
 		int enviar(Buffer *pkt);
 		Buffer* receber();

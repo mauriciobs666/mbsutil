@@ -106,6 +106,7 @@ public:
 			FD_ZERO(&master_set_read);
 			FD_ZERO(&master_set_write);
 			FD_ZERO(&master_set_exception);
+			max_fd=0;
 		}
 	int Select()
 		{

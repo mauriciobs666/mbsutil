@@ -18,6 +18,7 @@
 */
 
 #include "MBSSlot.h"
+#include <iostream>
 
 namespace
 {
@@ -77,10 +78,9 @@ MBSSlot::EstadoSlot MBSSlot::pegaEstado()
 	return estado;
 }
 
-int MBSSlot::setaEstado(EstadoSlot novo)
+MBSSlot::EstadoSlot MBSSlot::setaEstado(EstadoSlot novo)
 {
-	estado=novo;
-    return 0;
+    return estado=novo;
 }
 
 int MBSSlot::enviar(Buffer *pkt)
@@ -96,15 +96,21 @@ int MBSSlot::enviar(Buffer *pkt)
     }
     return retorno;
 }
-/*
+
 Buffer* MBSSlot::receber()
 {
 	int qtd;
 	do
 	{
         temp.reset();
-		qtd=sock->receber((char*)temp.pntE, temp.livres());
+		qtd=sock->receive((char*)temp.pntE, temp.livres());
 //		cout << "qtd=" << qtd << endl;
+		if(qtd==0)
+		{
+			reset();
+			return NULL;
+		}
+		//TODO: check for qtd<0
 		if(qtd>0)
 			temp.pntE+=qtd;
 		while(temp.disponiveis()>0)
@@ -146,7 +152,7 @@ Buffer* MBSSlot::receber()
 					}
 				break;
 				default:
-					logar("__FILE__:__LINE__:IMPOSSIVEL");
+					cout << __FILE__ << ":" << __LINE__ << ":IMPOSSIVEL" << endl;
 				break;
 			}
 		}
