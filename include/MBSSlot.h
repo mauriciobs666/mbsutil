@@ -58,7 +58,9 @@ class MBSSlot
 		EstadoSlot setaEstado(EstadoSlot estado);
 
 		int enviar(Buffer *pkt);
-		Buffer* receber();
+
+		Buffer* receive();
+		int receiveLoop();
 
 		SOCKET getFD()
 			{ return (sock==NULL) ? INVALID_SOCKET : sock->fd; }

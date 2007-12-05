@@ -97,66 +97,8 @@ int MBSSlot::enviar(Buffer *pkt)
     return retorno;
 }
 
-Buffer* MBSSlot::receber()
+Buffer* MBSSlot::receive()
 {
-	int qtd;
-	do
-	{
-        temp.reset();
-		qtd=sock->receive((char*)temp.pntE, temp.livres());
-//		cout << "qtd=" << qtd << endl;
-		if(qtd==0)
-		{
-			reset();
-			return NULL;
-		}
-		//TODO: check for qtd<0
-		if(qtd>0)
-			temp.pntE+=qtd;
-		while(temp.disponiveis()>0)
-		{
-			switch(estadoRX)
-			{
-				case NOVO:
-					//esperando primeiro byte de tam do novo pacote
-					*((char*)&tamRecebendo)=*temp.pntL;
-//					cout << " tamB1 =" << (int)*temp.pntL;
-					temp.pntL++;
-					estadoRX=ESPERA_TAMANHO;
-//					cout << " NOVO ";
-				break;
-				case ESPERA_TAMANHO:
-					//esperando segundo byte de tamanho
-					*(((char*)(&tamRecebendo))+1)=*temp.pntL;
-//					cout << " tamB1 =" << (int)*temp.pntL;
-					temp.pntL++;
-					//tamanho recebido, agora o pacote em si
-					recebendo=new Buffer(tamRecebendo);
-					estadoRX=DADOS;
-//					cout << " ESPERA_TAMANHO tamRecebendo=" << tamRecebendo;
-				break;
-				case DADOS:
-					//receber comando e dados
-//					cout << " DADOS ";
-					recebendo->append(temp,recebendo->livres());
-//					cout << " livres = " << recebendo->livres();
-					if(recebendo->livres()==0)	//aceitacao
-					{
-						#ifdef LOGAR_SOCKET
-							logar("pacote completo recebido");
-						#endif
-						recebidos.push(recebendo);
-						recebendo=NULL;
-						estadoRX=NOVO;
-						timestamp=time(NULL);
-					}
-				break;
-				default:
-					cout << __FILE__ << ":" << __LINE__ << ":IMPOSSIVEL" << endl;
-				break;
-			}
-		}
-	} while(qtd>0);
 	Buffer *retorno=NULL;
 	if(!recebidos.empty())
 	{
@@ -164,6 +106,62 @@ Buffer* MBSSlot::receber()
 		recebidos.pop();
 	}
 	return retorno;
+}
+
+int MBSSlot::receiveLoop()
+{
+	temp.reset();
+	int qtd=sock->receive((char*)temp.pntE, temp.livres());
+//	cout << "MBSSlot::receiveLoop qtd=" << qtd << endl;
+
+	if(qtd<=0)
+		return qtd;
+	else // if(qtd>0)
+		temp.pntE+=qtd;
+	while(temp.disponiveis()>0)
+	{
+		switch(estadoRX)
+		{
+			case NOVO:
+			//esperando primeiro byte de tam do novo pacote
+				*((char*)&tamRecebendo)=*temp.pntL;
+//				cout << " tamB1 =" << (int)*temp.pntL;
+				temp.pntL++;
+				estadoRX=ESPERA_TAMANHO;
+//				cout << " NOVO ";
+			break;
+			case ESPERA_TAMANHO:
+			//esperando segundo byte de tamanho
+				*(((char*)(&tamRecebendo))+1)=*temp.pntL;
+//				cout << " tamB1 =" << (int)*temp.pntL;
+				temp.pntL++;
+				//tamanho recebido, agora o pacote em si
+				recebendo=new Buffer(tamRecebendo);
+				estadoRX=DADOS;
+//				cout << " ESPERA_TAMANHO tamRecebendo=" << tamRecebendo;
+			break;
+			case DADOS:
+			//receber comando e dados
+//				cout << " DADOS ";
+				recebendo->append(temp,recebendo->livres());
+//				cout << " livres = " << recebendo->livres();
+				if(recebendo->livres()==0)	//aceitacao
+				{
+					#ifdef LOGAR_SOCKET
+						cout << "complete packet received" << endl;
+					#endif
+					recebidos.push(recebendo);
+					recebendo=NULL;
+					estadoRX=NOVO;
+					timestamp=time(NULL);
+				}
+			break;
+			default:
+				cout << __FILE__ << ":" << __LINE__ << ":IMPOSSIVEL" << endl;
+			break;
+		}
+	}
+	return qtd;
 }
 /*
 bool MBSSlot::_conectado()
