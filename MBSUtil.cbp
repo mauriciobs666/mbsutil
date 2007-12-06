@@ -46,6 +46,7 @@
 		<Unit filename="Hash.cpp" />
 		<Unit filename="MBSNetwork.cpp" />
 		<Unit filename="MBSSlot.cpp" />
+		<Unit filename="MBSTrace.cpp" />
 		<Unit filename="P2PGerenciadorSlots.cpp" />
 		<Unit filename="P2PProtocolo.cpp" />
 		<Unit filename="P2PSlot.cpp" />
@@ -65,6 +66,7 @@
 		<Unit filename="include\Hash.h" />
 		<Unit filename="include\MBSNetwork.h" />
 		<Unit filename="include\MBSSlot.h" />
+		<Unit filename="include\MBSTrace.h" />
 		<Unit filename="include\MBSUtil.h" />
 		<Unit filename="include\P2PGerenciadorSlots.h" />
 		<Unit filename="include\P2PProtocolo.h" />
