@@ -85,4 +85,34 @@ class MBSSlot
 		} estadoRX;
 };
 
+class MBSSlotManager
+{
+	public:
+		MBSSlotManager(int num=10);
+		virtual ~MBSSlotManager();
+
+		MBSSlot* at(int num) const;
+		MBSSlot* operator[](int i) const { return &slots[i]; }
+
+		int select();
+		bool isRead(int nslot)
+			{ return (at(nslot)==NULL) ? false : sockSel.isRead(slots[nslot].getFD()); }
+		bool isWrite(int nslot)
+			{ return (at(nslot)==NULL) ? false : sockSel.isWrite(slots[nslot].getFD()); }
+		bool isException(int nslot)
+			{ return (at(nslot)==NULL) ? false : sockSel.isException(slots[nslot].getFD()); }
+
+		int reserve();
+		int ouvir(unsigned short porta);
+		int desconectar(int nslot=-1);	    //-1 = todos
+
+		int pegaNumSlots() const { return numSlots; }
+		int mudaNumSlots(int num);
+	protected:
+		int numSlots;
+		MBSSlot *slots;
+		MBSSocketServer sockServer;
+		MBSSocketSelector sockSel;
+};
+
 #endif // MBSSLOT_H

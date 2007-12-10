@@ -184,3 +184,134 @@ bool MBSSlot::_conectado()
 	return false;
 }
 */
+
+//------------------------------------------------------------------------------
+//      MBSSlotManager
+//------------------------------------------------------------------------------
+
+MBSSlotManager::MBSSlotManager(int num)
+{
+	slots=NULL;
+	numSlots=0;
+	mudaNumSlots(num);
+}
+
+MBSSlotManager::~MBSSlotManager()
+{
+    if((slots!=NULL)&&(numSlots>0))
+        delete[] slots;
+}
+
+int MBSSlotManager::mudaNumSlots(int num)
+{
+	int rc=0;
+	MBSSlot *temp=NULL;
+
+	if(num>64)
+	{
+		cout << "WARNING: Hit hard-coded limit of 64 sockets." << endl;
+		num=64;
+	}
+	if(num>0)
+	{
+		temp=new MBSSlot[num];
+		if(temp==NULL)
+			rc=-1;		//erro de alocacao
+	}
+	if((slots!=NULL)&&(numSlots>0))
+		delete[] slots;
+
+	slots=temp;
+	numSlots=num;
+	sockSel.clear();
+
+	return 0;
+}
+
+
+MBSSlot* MBSSlotManager::at(int num) const
+{
+    if((num>=0)&(num<numSlots))
+        return &slots[num];
+    return NULL;
+}
+
+int MBSSlotManager::reserve()
+// busca e aloca (estado 0->1) slot livre
+// retorna num do slot ou -1 caso todos estejam ocupados
+{
+	for(int x=0;x<numSlots;x++)
+	{
+		if(slots[x].pegaEstado()==MBSSlot::LIVRE)
+		{
+			if(slots[x].setaEstado(MBSSlot::RESERVADO)==0)
+				return x;
+		}
+	}
+    return -1;
+}
+
+int MBSSlotManager::ouvir(unsigned short porta)
+{
+	int retorno=0;
+
+	sockSel.remove(sockServer.fd);
+	sockServer.disconnect();
+
+	if((retorno=sockServer.ouvir(porta))==0)
+		sockSel.add(sockServer.fd);
+	return retorno;
+}
+
+int MBSSlotManager::desconectar(int nslot)
+{
+	if(nslot<0)
+	{
+		for(int x=0;x<numSlots;x++)
+			slots[x].desconectar();
+		sockServer.disconnect();
+		sockSel.clear();
+	}
+	else if(nslot<numSlots)
+	{
+		sockSel.remove(slots[nslot].getFD());
+		slots[nslot].desconectar();
+	}
+	else
+		return -1;
+    return 0;
+}
+
+int MBSSlotManager::select()
+{
+	int rc=sockSel.Select();
+	if(rc<0)
+	{
+		cout << "sel error (not handled)=" << rc << endl;
+		return -1;
+	}
+
+	if(sockSel.isRead(sockServer.fd))
+	{
+		int s=reserve();
+		if(s<0)
+		{
+			cout << "Server is full" << endl;
+			sockServer.refuse();
+		}
+		else
+		{
+			slots[s].conectar(sockServer.aceitar());
+			sockSel.add(slots[s].getFD());
+		}
+	}
+
+	if(sockSel.isException(sockServer.fd))
+	{
+		cout << "Exception socket server" << endl;
+		sockSel.remove(sockServer.fd);
+		sockServer.disconnect();
+	}
+
+	return rc;
+}

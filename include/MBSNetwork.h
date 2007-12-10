@@ -88,12 +88,16 @@ public:
 		}
 	void add(SOCKET fd)
 		{
-			FD_SET(fd,&master_set);
-			if(fd>max_fd) max_fd=fd;
+			if(fd!=INVALID_SOCKET)
+			{
+				FD_SET(fd,&master_set);
+				if(fd>max_fd) max_fd=fd;
+			}
 		}
 	void remove(SOCKET fd)
 		{
-			FD_CLR(fd,&master_set);
+			if(fd!=INVALID_SOCKET)
+				FD_CLR(fd,&master_set);
 		}
 	void clear()
 		{
