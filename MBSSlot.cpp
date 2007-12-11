@@ -244,7 +244,7 @@ int MBSSlotManager::reserve()
 	{
 		if(slots[x].pegaEstado()==MBSSlot::LIVRE)
 		{
-			if(slots[x].setaEstado(MBSSlot::RESERVADO)==0)
+			if(slots[x].setaEstado(MBSSlot::RESERVADO)==MBSSlot::RESERVADO)
 				return x;
 		}
 	}

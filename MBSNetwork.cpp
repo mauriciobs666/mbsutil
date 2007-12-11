@@ -145,14 +145,14 @@ int MBSSocketServer::ouvir(unsigned short port, int backlog)
 
     if(INVALID_SOCKET==createSocket())
     	return -1;
-
+/*
 	BOOL yes=TRUE;
 	if(setsockopt(fd,SOL_SOCKET,SO_REUSEADDR,(char*)&yes,sizeof(BOOL))==SOCKET_ERROR)
 	{
 		closeSocket();
 		return -1;
 	}
-
+*/
 	dest.sin_family=AF_INET;
 	dest.sin_port=htons(port);
 	dest.sin_addr.s_addr=INADDR_ANY;
