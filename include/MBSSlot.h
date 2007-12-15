@@ -94,7 +94,7 @@ class MBSSlotManager
 		MBSSlot* at(int num) const;
 		MBSSlot* operator[](int i) const { return &slots[i]; }
 
-		int select();
+		int select(int timeout=0);
 		bool isRead(int nslot)
 			{ return (at(nslot)==NULL) ? false : sockSel.isRead(slots[nslot].getFD()); }
 		bool isWrite(int nslot)

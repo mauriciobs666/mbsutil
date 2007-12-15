@@ -282,8 +282,9 @@ int MBSSlotManager::desconectar(int nslot)
     return 0;
 }
 
-int MBSSlotManager::select()
+int MBSSlotManager::select(int timeout)
 {
+	sockSel.timeout.tv_sec=timeout;
 	int rc=sockSel.Select();
 	if(rc<0)
 	{
