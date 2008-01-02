@@ -42,11 +42,14 @@ void Tempo::reset()
 	frames=fps=fpstemp=0;
 }
 
-void Tempo::loop()
+unsigned long Tempo::loop()
 {
 	frames++;
 	fpstemp++;
+
+	ultimo=agora;
 	agora=getMilissegundos();
+	return agora-ultimo;
 }
 
 unsigned long Tempo::getFrames()
@@ -65,7 +68,7 @@ unsigned long Tempo::getFPSMedio()
 		return (frames/ttotal);
 	return 0;
 }
-
+/*
 unsigned long Tempo::trataEvento()
 {
 	if(T1ds>=10)
@@ -86,7 +89,7 @@ unsigned long Tempo::trataEvento()
 	}
 	return 0;
 }
-
+*/
 unsigned long Tempo::getTempoTotal()
 {
 	return ttotal;

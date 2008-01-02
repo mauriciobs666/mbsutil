@@ -28,9 +28,9 @@ class Tempo
 public:
 	Tempo();
     Tempo(unsigned long quaisEventos);
-    void loop();
     void reset();
-    unsigned long trataEvento();
+	unsigned long loop();
+//TODO:    unsigned long trataEvento();
     unsigned long getFrames();
     unsigned long getFPS();
     unsigned long getFPSMedio();
