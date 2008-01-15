@@ -259,7 +259,7 @@ int P2PGerenciadorSlots::aloca()
 // busca e aloca (estado 0->1) slot livre
 // retorna num do slot ou -1 caso todos estejam ocupados
 {
-    m.trava();
+    cs.trava();
     {
         for(int x=0;x<numSlots;x++)
         {
@@ -267,13 +267,13 @@ int P2PGerenciadorSlots::aloca()
             {
                 if(slots[x].setaEstado(P2PSlot::RESERVADO)==0)
                 {
-                    m.destrava();
+                    cs.destrava();
                     return x;
                 }
             }
         }
     }
-    m.destrava();
+    cs.destrava();
     return -1;
 }
 

@@ -86,7 +86,7 @@ public:
 	int desconectar(int nslot=-1);	//-1 = todos
 	void ping();					//manda pedido de ping p/ todos slots
 private:
-	Mutex m;
+	SessaoCritica cs;
 	int numSlots;
 	P2PSlot *slots;
 	iPacketHandler *ph;

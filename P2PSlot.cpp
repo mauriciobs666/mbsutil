@@ -55,6 +55,7 @@ int P2PSlot::conectar(Conexao *con)
 
 int P2PSlot::conectar(const char *ip, const unsigned short porta)
 {
+	estado=RESERVADO;
 	if(c==NULL)
 		c=new Conexao();
 	c->pai=this;
@@ -75,32 +76,32 @@ int P2PSlot::conectar(const Noh& n)
 
 int P2PSlot::desconectar()
 {
-	m.trava();
+	cs.trava();
 	_reset();
-	m.destrava();
+	cs.destrava();
     return 0;
 }
 
 P2PSlot::EstadoSlot P2PSlot::pegaEstado()
 {
-    m.trava();
+    cs.trava();
    	_conectado();
-    m.destrava();
+    cs.destrava();
     return estado;
 }
 
 int P2PSlot::setaEstado(EstadoSlot novo)
 {
-    m.trava();
+    cs.trava();
 	estado=novo;
-    m.destrava();
+    cs.destrava();
     return 0;
 }
 
 int P2PSlot::enviar(Buffer *pkt)
 {
 	int retorno=-1;
-	m.trava();
+	cs.trava();
 	_conectado();
     if(estado>RESERVADO)
     {
@@ -109,19 +110,20 @@ int P2PSlot::enviar(Buffer *pkt)
             if(c->enviar((char*)pkt->dados,tam)==tam)       		//envia pacote
                 retorno=0;                                  		//tudo ok
     }
-    delete pkt;
-    m.destrava();
+//    delete pkt;
+    cs.destrava();
     return retorno;
 }
 
 Buffer* P2PSlot::receber()
 {
 	int qtd;
-	m.trava();
+	cs.trava();
 	do
 	{
         temp.reset();
 		qtd=c->receber((char*)temp.pntE, temp.livres());
+//		cout << "qtd=" << qtd << endl;
 		if(qtd>0)
 			temp.pntE+=qtd;
 		while(temp.disponiveis()>0)
@@ -131,20 +133,26 @@ Buffer* P2PSlot::receber()
 				case NOVO:
 					//esperando primeiro byte de tam do novo pacote
 					*((char*)&tamRecebendo)=*temp.pntL;
+//					cout << " tamB1 =" << (int)*temp.pntL;
 					temp.pntL++;
 					estadoRX=ESPERA_TAMANHO;
+//					cout << " NOVO ";
 				break;
 				case ESPERA_TAMANHO:
 					//esperando segundo byte de tamanho
-					*((char*)(&tamRecebendo+1))=*temp.pntL;
+					*(((char*)(&tamRecebendo))+1)=*temp.pntL;
+//					cout << " tamB1 =" << (int)*temp.pntL;
 					temp.pntL++;
 					//tamanho recebido, agora o pacote em si
 					recebendo=new Buffer(tamRecebendo);
 					estadoRX=DADOS;
+//					cout << " ESPERA_TAMANHO tamRecebendo=" << tamRecebendo;
 				break;
 				case DADOS:
 					//receber comando e dados
+//					cout << " DADOS ";
 					recebendo->append(temp,recebendo->livres());
+//					cout << " livres = " << recebendo->livres();
 					if(recebendo->livres()==0)	//aceitacao
 					{
 						#ifdef LOGAR_SOCKET
@@ -168,7 +176,7 @@ Buffer* P2PSlot::receber()
 		retorno=recebidos.front();
 		recebidos.pop();
 	}
-	m.destrava();
+	cs.destrava();
 	return retorno;
 }
 
@@ -236,16 +244,33 @@ int P2PSlot::tratar(Conexao *con, long codeve, long coderro[])
 	}
 	if(codeve & FD_READ)
 	{
-		#ifdef LOGAR_SOCKET
-			logar("FD_READ");
-		#endif
 		if(coderro[FD_READ_BIT]!=0)
+		{
+			#ifdef LOGAR_SOCKET
+				logar("FD_READ ERRO");
+			#endif
 			return 1;
+		}
 		else
 		{
+			#ifdef LOGAR_SOCKET
+				logar("FD_READ");
+			#endif
 			Buffer *f;
-			while((f=s->receber())!=NULL)
-				s->gerenciador->IFH_tratar(f,s);
+			if(s->gerenciador)
+			{
+                while((f=s->receber())!=NULL)
+                {
+                	#ifdef LOGAR_SOCKET
+						logar("IFH_tratar");
+					#endif
+                    s->gerenciador->IFH_tratar(f,s);
+                }
+			}
+			#ifdef LOGAR_SOCKET
+			else
+				logar("Pacote descartado");
+			#endif
 		}
 	}
 	if(codeve & FD_WRITE)
@@ -255,13 +280,19 @@ int P2PSlot::tratar(Conexao *con, long codeve, long coderro[])
 		#endif
 		if(coderro[FD_WRITE_BIT]!=0)
 			return 1;
-		s->gerenciador->IFH_conectado(s);
+        if(s->gerenciador)
+            s->gerenciador->IFH_conectado(s);
+		else
+			if(s->estado<HANDSHAKE)
+				s->estado=HANDSHAKE;
 	}
 	if(codeve & FD_CLOSE)
 	{
 		#ifdef LOGAR_SOCKET
 			logar("FD_CLOSE");
 		#endif
+		if(s->gerenciador)
+            s->gerenciador->IFH_desconectado(s);
 		return 1;	//matar thread...
 	}
 	return 0;
