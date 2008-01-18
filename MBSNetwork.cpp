@@ -178,7 +178,11 @@ int MBSSocketServer::ouvir(unsigned short port, int backlog)
 MBSSocket* MBSSocketServer::aceitar()
 {
 	sockaddr_in adn;
+#ifdef _WIN32
+    SOCKET fdn=accept(fd,(sockaddr*)&adn,&sin_size);
+#else
     SOCKET fdn=accept(fd,(sockaddr*)&adn,(socklen_t*)&sin_size);
+#endif
     if(fdn==INVALID_SOCKET)
         return NULL;
     return new MBSSocket(fdn,&adn);
@@ -188,7 +192,7 @@ void MBSSocketServer::refuse()
 {
     sockaddr adn;
 #ifdef _WIN32
-	closesocket(accept(fd,&adn,(socklen_t*)&sin_size));
+	closesocket(accept(fd,&adn,&sin_size));
 #else
 	close(accept(fd,&adn,(socklen_t*)&sin_size));
 #endif
