@@ -25,6 +25,19 @@
 
 #ifdef _WIN32
 	#include <winsock2.h>
+#else
+	#include <unistd.h>
+	#include <errno.h>
+	#include <sys/types.h>
+	#include <sys/socket.h>
+	#include <netinet/in.h>
+	#include <arpa/inet.h>
+	#include <sys/wait.h>
+	#include <signal.h>
+	#include <netdb.h>
+	#define SOCKET int
+	#define INVALID_SOCKET -1
+	#define SOCKET_ERROR -1
 #endif
 
 class MBSSocket

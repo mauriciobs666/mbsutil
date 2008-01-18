@@ -17,6 +17,8 @@
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#ifdef _WIN32
+
 #include "P2PSlot.h"
 #include "P2Pdefs.h"
 
@@ -297,3 +299,4 @@ int P2PSlot::tratar(Conexao *con, long codeve, long coderro[])
 	}
 	return 0;
 }
+#endif

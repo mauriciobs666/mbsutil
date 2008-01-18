@@ -17,7 +17,9 @@
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#include "glgui.h"
+#ifdef _WIN32
+
+#include "glGUI.h"
 #include <gl/gl.h>
 #include <gl/glu.h>
 
@@ -283,3 +285,4 @@ int glMenu::guiTrataEvento(guiEvento &e)
 	}
 	return 0;
 }
+#endif

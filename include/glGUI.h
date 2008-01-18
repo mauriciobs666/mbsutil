@@ -19,6 +19,9 @@
 
 #ifndef GLGUI_H
 #define GLGUI_H
+
+#ifdef _WIN32
+
 #include <windows.h>
 #include "glfonte.h"
 #include "geometria.h"
@@ -237,3 +240,4 @@ class glMenu : public glWidget
 		void add(glWidget* w);	//!<esteril
 };
 #endif // GLGUI_H
+#endif

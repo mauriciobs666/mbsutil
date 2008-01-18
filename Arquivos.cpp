@@ -18,6 +18,8 @@
 */
 
 #include "Arquivos.h"
+
+#ifdef _WIN32
 #include <windows.h>
 
 using namespace std;
@@ -65,3 +67,4 @@ string Path::relativo(const string &nome)
     return ++barra;
 */
 }
+#endif

@@ -20,6 +20,8 @@
 #ifndef MBSUTIL_PROTOCOLO_H
 #define MBSUTIL_PROTOCOLO_H
 
+#ifdef _WIN32
+
 #include "P2PGerenciadorSlots.h"
 #include <ctime>
 
@@ -87,3 +89,4 @@ public:
 };
 //	virtual void trataEvento(EventoP2PUI* evento);
 */
+#endif

@@ -17,6 +17,8 @@
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#ifdef _WIN32
+
 #include <stdio.h>
 #include <cstdlib>
 #include <iostream>
@@ -308,3 +310,4 @@ DWORD WINAPI Conexao::threadEventos(LPVOID este)
     }
     return 0;
 }
+#endif

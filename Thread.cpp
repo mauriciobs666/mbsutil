@@ -49,10 +49,10 @@ Thread::Thread(bool iniciar)
 		pthread_attr_t attr;
 		pthread_attr_init(&attr);
 		pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);
-		if (pthread_create(&m_thread,&attr,StartThread,this) == -1)
+		if (pthread_create(&hnd,&attr,t,this) == -1)
 		{
-			perror("Thread: create failed");
-			SetRunning(false);
+			//perror("Thread: create failed");
+			//SetRunning(false);
 		}
 	#endif
 }
@@ -62,6 +62,7 @@ Thread::~Thread()
 	stop();
 }
 
+#ifdef _WIN32
 int Thread::resume()
 {
 	if(hnd==NULL)
@@ -95,3 +96,4 @@ int Thread::stop()
 	}
 	return 0;
 }
+#endif

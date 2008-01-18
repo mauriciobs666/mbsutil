@@ -20,6 +20,8 @@
 #ifndef MBSUTIL_REDE_H
 #define MBSUTIL_REDE_H
 
+#ifdef _WIN32
+
 #include <cstdlib>
 #include <string>
 #include <winsock2.h>
@@ -81,4 +83,4 @@ protected:
 	bool sairTE;
 };
 #endif
-
+#endif

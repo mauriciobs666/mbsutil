@@ -17,6 +17,8 @@
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#ifdef _WIN32
+
 #ifndef GLFONTE_H
 #define GLFONTE_H
 
@@ -48,3 +50,4 @@ private:
 };
 
 #endif // GLFONTE_H
+#endif

@@ -84,7 +84,7 @@ private:
 		pthread_mutex_t hnd;
 	#endif
 };
-
+#ifdef _WIN32
 class SessaoCritica
 {
 public:
@@ -103,8 +103,10 @@ public:
         return 0;
     }
 private:
-    CRITICAL_SECTION cs;
+		CRITICAL_SECTION cs;
 };
+#else
+#endif
 
 class Thread
 {

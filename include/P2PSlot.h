@@ -20,6 +20,8 @@
 #ifndef MBSUTIL_P2PSLOT_H
 #define MBSUTIL_P2PSLOT_H
 
+#ifdef _WIN32
+
 #include "Bufer.h"
 #include "Rede.h"
 #include "P2Ped.h"
@@ -107,4 +109,5 @@ protected:
 private:
 	static int tratar(Conexao *con, long codeve, long coderro[]);
 };
+#endif
 #endif

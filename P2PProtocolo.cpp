@@ -17,6 +17,8 @@
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#ifdef _WIN32
+
 #include "P2PProtocolo.h"
 #include <ios>
 #include <fstream>
@@ -310,4 +312,4 @@ int ClienteP2P::IPH_desconectado(const Noh& n)
 {
 	return 0;
 }
-
+#endif

@@ -17,7 +17,9 @@
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#include "glimagem.h"
+#ifdef _WIN32
+
+#include "glImagem.h"
 
 using namespace std;
 
@@ -136,3 +138,4 @@ int glImagem::setaPixel(unsigned short x, unsigned short y, glCor *c)
 		*ptmp=c->a;
 	return 0;
 }
+#endif

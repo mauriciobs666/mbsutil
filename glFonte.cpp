@@ -17,9 +17,11 @@
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#ifdef _WIN32
+
 #include <stdio.h>
 #include <stdarg.h>
-#include "glfonte.h"
+#include "glFonte.h"
 
 int GLFonte::load(HDC hDC, const char* nome, int size)
 {
@@ -66,3 +68,4 @@ void GLFonte::printf(const char *fmt, ...)					// Custom GL "Print" Routine
 	glCallLists(strlen(text), GL_UNSIGNED_BYTE, text);	// Draws The Display List Text
 	glPopAttrib();										// Pops The Display List Bits
 }
+#endif

@@ -20,6 +20,8 @@
 #ifndef MBSUTIL_P2PGERENCIADORSLOTS_H
 #define MBSUTIL_P2PGERENCIADORSLOTS_H
 
+#ifdef _WIN32
+
 #include "P2PSlot.h"
 
 //!Interface do tratador de pacotes
@@ -96,4 +98,5 @@ private:
 	bool idAlta(const Noh &n);
 };
 
+#endif
 #endif

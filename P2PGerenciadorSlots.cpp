@@ -17,6 +17,8 @@
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#ifdef _WIN32
+
 #include "P2PGerenciadorSlots.h"
 #include "Parser.h"
 
@@ -396,3 +398,4 @@ bool P2PGerenciadorSlots::idAlta(const Noh &n)
 		return true;
 	return false;
 }
+#endif
