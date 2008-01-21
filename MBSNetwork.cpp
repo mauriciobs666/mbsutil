@@ -39,7 +39,6 @@
 */
 
 namespace {
-	static int sin_size=sizeof(sockaddr);
 #ifdef _WIN32
 	static bool inicializado;
 	void fimRede()
@@ -55,6 +54,9 @@ namespace {
 			atexit(&fimRede);
 		}
 	}
+	static int sin_size=sizeof(sockaddr);
+#else
+	static socklen_t sin_size=sizeof(sockaddr);
 #endif
 };
 
@@ -97,15 +99,11 @@ int MBSSocket::conectar(string ip, unsigned short port)
     	return -1;
 
 	if(connect(fd,(sockaddr*)&dest,sizeof(sockaddr))==SOCKET_ERROR)
-#ifdef _WIN32
-		if(WSAGetLastError()!=WSAEWOULDBLOCK)
-		{
-			closeSocket();
-			return -1;
-		}
-#else
-		;	//TODO: non-would block error
-#endif
+	{
+		//TODO: trace error
+		closeSocket();
+		return -1;
+	}
 	return 0;
 }
 
@@ -178,11 +176,7 @@ int MBSSocketServer::ouvir(unsigned short port, int backlog)
 MBSSocket* MBSSocketServer::aceitar()
 {
 	sockaddr_in adn;
-#ifdef _WIN32
     SOCKET fdn=accept(fd,(sockaddr*)&adn,&sin_size);
-#else
-    SOCKET fdn=accept(fd,(sockaddr*)&adn,(socklen_t*)&sin_size);
-#endif
     if(fdn==INVALID_SOCKET)
         return NULL;
     return new MBSSocket(fdn,&adn);
@@ -194,6 +188,6 @@ void MBSSocketServer::refuse()
 #ifdef _WIN32
 	closesocket(accept(fd,&adn,&sin_size));
 #else
-	close(accept(fd,&adn,(socklen_t*)&sin_size));
+	close(accept(fd,&adn,&sin_size));
 #endif
 }
