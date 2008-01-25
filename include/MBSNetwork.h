@@ -124,6 +124,7 @@ public:
 			result_set_exception=master_set;
 			return select(max_fd+1,&result_set_read,&result_set_write,&result_set_exception,&timeout);
 		}
+	// Linux warning: the next 3 functions dump core if called with -1 (LOL)
 	bool isRead(SOCKET fd)
 		{
 			return FD_ISSET(fd,&result_set_read);

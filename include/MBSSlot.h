@@ -65,6 +65,9 @@ class MBSSlot
 		SOCKET getFD()
 			{ return (sock==NULL) ? INVALID_SOCKET : sock->fd; }
 
+		bool validFD()
+			{ return (sock==NULL) ? false : sock->valid(); }
+
 	private:
 		MBSSocket *sock;
 		EstadoSlot estado;
