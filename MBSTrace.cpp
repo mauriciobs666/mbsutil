@@ -21,10 +21,40 @@
 
 MBSTrace::MBSTrace()
 {
-	//ctor
+    file=NULL;
 }
 
 MBSTrace::~MBSTrace()
 {
-	//dtor
+	if(file)
+        fclose(file);
+}
+
+void MBSTrace::print(int level, char *filename, int line, char *mesg)
+{
+    if(level==TRACE_LEVEL_INFO)
+        printf("[INF] ");
+    else if(level==TRACE_LEVEL_WARN)
+        printf("[WRN] ");
+    else if(level==TRACE_LEVEL_ERROR)
+        printf("[ERR] ");
+
+    if(filename)
+    {
+        //I dont want the full path, only the file name
+        char *slash=filename;
+        while(*slash!=0)
+        {
+            //find the last slash and ignore everything before it
+            if((*slash=='\\')||(*slash=='/'))
+                filename=slash+1;   //first char after the slash
+            slash++;
+        }
+        printf("%s:%d ",filename,line);
+    }
+
+    if(mesg)
+        printf("%s",mesg);
+
+    printf("\n");
 }

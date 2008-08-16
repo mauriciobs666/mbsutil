@@ -20,16 +20,15 @@
 #ifndef MBSTRACE_H
 #define MBSTRACE_H
 
-#include <iostream>
+#include <stdio.h>
 
-#define TRACE_INFO(x)   printf("[INFO] %s:%d ",__FILE__,__LINE__); \
-                        printf(x);
+#define TRACE_LEVEL_INFO 3
+#define TRACE_LEVEL_WARN 2
+#define TRACE_LEVEL_ERROR 1
 
-#define TRACE_WARN(x)   printf("[WARNING] %s:%d ",__FILE__,__LINE__); \
-                        printf(x);
-
-#define TRACE_ERROR(x)  printf("[ERROR] %s:%d ",__FILE__,__LINE__); \
-                        printf(x);
+#define TRACE_INFO(x)   MBSTrace::getInstance().print(TRACE_LEVEL_INFO,__FILE__,__LINE__,x)
+#define TRACE_WARN(x)   MBSTrace::getInstance().print(TRACE_LEVEL_WARN,__FILE__,__LINE__,x)
+#define TRACE_ERROR(x)  MBSTrace::getInstance().print(TRACE_LEVEL_ERROR,__FILE__,__LINE__,x)
 
 class MBSTrace
 {
@@ -42,7 +41,10 @@ class MBSTrace
                 instance=new MBSTrace();
             return *instance;
 		}
+		void print(int level, char *mesg) { print(level,NULL,0,mesg); }
+		void print(int level, char *filename, int line, char *mesg);
 	protected:
+        FILE *file;
         MBSTrace();
 };
 
