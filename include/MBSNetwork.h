@@ -96,6 +96,8 @@ public:
 	MBSSocketSelector()
 		{
 			clear();
+
+			// timeout = 0 means "no blocking"
 			timeout.tv_sec=0;
 			timeout.tv_usec=0;
 		}
@@ -139,6 +141,40 @@ public:
 		}
 private:
 	SOCKET max_fd;
+};
+
+/*
+	Stripped down and optimized version option MBSSocketSelector
+*/
+//TODO: untested
+class MBSClientSocketSelector
+{
+public:
+	fd_set result_set_read;
+	fd_set result_set_write;
+	fd_set result_set_exception;
+
+	timeval timeout;
+
+	MBSClientSocketSelector()
+		{
+			// timeout = 0 means "no blocking"
+			timeout.tv_sec=0;
+			timeout.tv_usec=0;
+		}
+	int Select()
+		{
+			result_set_read.fd_count=result_set_write.fd_count=result_set_exception.fd_count=1;
+			result_set_read.fd_array[0]=result_set_write.fd_array[0]=result_set_exception.fd_array[0]=fd;
+			return select(1,&result_set_read,&result_set_write,&result_set_exception,&timeout);
+		}
+	void set(SOCKET s)	{ fd=s; }
+	// Linux warning: the next 3 functions dump core if called with -1 (LOL)
+	bool isRead()		{ return FD_ISSET(fd,&result_set_read); }
+	bool isWrite()		{ return FD_ISSET(fd,&result_set_write); }
+	bool isException()	{ return FD_ISSET(fd,&result_set_exception); }
+private:
+	SOCKET fd;
 };
 
 #endif // MBSNETWORK_H_INCLUDED
