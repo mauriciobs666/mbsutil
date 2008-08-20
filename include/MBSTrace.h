@@ -21,14 +21,15 @@
 #define MBSTRACE_H
 
 #include <stdio.h>
+#include <stdarg.h>
 
 #define TRACE_LEVEL_INFO 3
 #define TRACE_LEVEL_WARN 2
 #define TRACE_LEVEL_ERROR 1
 
-#define TRACE_INFO(x)   MBSTrace::getInstance().print(TRACE_LEVEL_INFO,__FILE__,__LINE__,x)
-#define TRACE_WARN(x)   MBSTrace::getInstance().print(TRACE_LEVEL_WARN,__FILE__,__LINE__,x)
-#define TRACE_ERROR(x)  MBSTrace::getInstance().print(TRACE_LEVEL_ERROR,__FILE__,__LINE__,x)
+#define TRACE_INFO(fmt,...)		MBSTrace::getInstance().print(TRACE_LEVEL_INFO,__FILE__,__LINE__,fmt,##__VA_ARGS__)
+#define TRACE_WARN(fmt,...)		MBSTrace::getInstance().print(TRACE_LEVEL_WARN,__FILE__,__LINE__,fmt,##__VA_ARGS__)
+#define TRACE_ERROR(fmt,...)	MBSTrace::getInstance().print(TRACE_LEVEL_ERROR,__FILE__,__LINE__,fmt,##__VA_ARGS__)
 
 class MBSTrace
 {
@@ -42,7 +43,7 @@ class MBSTrace
             return *instance;
 		}
 		void print(int level, char *mesg) { print(level,NULL,0,mesg); }
-		void print(int level, char *filename, int line, char *mesg);
+		void print(int level, char *filename, int line, char *mesg, ...);
 	protected:
         FILE *file;
         MBSTrace();

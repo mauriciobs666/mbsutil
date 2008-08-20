@@ -30,7 +30,7 @@ MBSTrace::~MBSTrace()
         fclose(file);
 }
 
-void MBSTrace::print(int level, char *filename, int line, char *mesg)
+void MBSTrace::print(int level, char *filename, int line, char *mesg, ...)
 {
     if(level==TRACE_LEVEL_INFO)
         printf("[INF] ");
@@ -53,8 +53,32 @@ void MBSTrace::print(int level, char *filename, int line, char *mesg)
         printf("%s:%d ",filename,line);
     }
 
-    if(mesg)
-        printf("%s",mesg);
+	if(mesg)
+	{
+		va_list l;
+		va_start( l, mesg );
+		vprintf( mesg, l );
+		va_end(l);
+	}
 
     printf("\n");
 }
+
+/*
+int     tracePrint( char *format, ... )
+{
+   va_list parameter;
+   va_start( parameter, format );
+
+   if( TrInternal.fd != (FILE *) 0)
+   {
+      if( format != (char *) 0)
+      {
+         ret = vfprintf( TrInternal.fd, format, parameter );
+         fflush( TrInternal.fd );
+      }
+   }
+   va_end(parameter);
+   return( ret );
+}
+*/
