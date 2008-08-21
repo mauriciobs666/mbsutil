@@ -42,10 +42,34 @@ class MBSTrace
                 instance=new MBSTrace();
             return *instance;
 		}
+
 		void print(int level, char *mesg) { print(level,NULL,0,mesg); }
 		void print(int level, char *filename, int line, char *mesg, ...);
+
+		int setFileName(char *basename, char *extension=NULL);
+
+		int setFileOptions(	bool openForAppend=false,	//overwrite/append existing file
+							int timeLimitMinutes=-1,	//start new file after x minutes
+							int sizeLimitMB=-1,			//start new file if grow bigger than x megs
+							bool timestampSuffix=false,	//sprintf(logfile,"%sYYYYMMDDHHMMSS.%s", basename, extension)
+							bool sequenceSuffix=false );//sprintf(logfile,"%sNNNNNNNNNNNNNN.%s", basename, extension)
+
+		int setFileHeader(char *header);	// printed at the beggining of the log file
+
+		int openFile();		// manually start a logfile
+		int closeFile();	// manually stop the logfile
+
 	protected:
         FILE *file;
+        char *basename;
+        char *extension;
+		bool openForAppend;
+		int timeLimitMinutes;
+		int sizeLimitMB;
+		bool timestampSuffix;
+		bool sequenceSuffix;
+		char *header;
+
         MBSTrace();
 };
 

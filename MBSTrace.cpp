@@ -18,14 +18,24 @@
 */
 
 #include "MBSTrace.h"
+#include <string.h>
 
 MBSTrace::MBSTrace()
 {
+	basename=extension=header=NULL;
+	openForAppend=timestampSuffix=sequenceSuffix=false;
+	timeLimitMinutes=sizeLimitMB=-1;
     file=NULL;
 }
 
 MBSTrace::~MBSTrace()
 {
+	if(basename)
+		delete basename;
+	if(extension)
+		delete extension;
+	if(header)
+		delete header;
 	if(file)
         fclose(file);
 }
@@ -64,21 +74,47 @@ void MBSTrace::print(int level, char *filename, int line, char *mesg, ...)
     printf("\n");
 }
 
-/*
-int     tracePrint( char *format, ... )
+int MBSTrace::setFileName(char *basename, char *extension)
 {
-   va_list parameter;
-   va_start( parameter, format );
+	if(basename==NULL)
+		return -1;
 
-   if( TrInternal.fd != (FILE *) 0)
-   {
-      if( format != (char *) 0)
-      {
-         ret = vfprintf( TrInternal.fd, format, parameter );
-         fflush( TrInternal.fd );
-      }
-   }
-   va_end(parameter);
-   return( ret );
+	int sb=strlen(basename);
+	this->basename=new char[sb+1];
+	strncpy(this->basename,basename,sb);
+
+	//extension is optional since its meant to be used with timestamp or sequence number
+	if(extension!=NULL)
+	{
+		int se=strlen(extension);
+		this->extension=new char[se+1];
+		strncpy(this->extension,extension,sb);
+	}
+
+	return 0;
 }
-*/
+
+int MBSTrace::setFileOptions(bool openForAppend, int timeLimitMinutes, int sizeLimitMB, bool timestampSuffix, bool sequenceSuffix)
+{
+	this->openForAppend=openForAppend;
+	this->timeLimitMinutes=timeLimitMinutes;
+	this->sizeLimitMB=sizeLimitMB;
+	this->timestampSuffix=timestampSuffix;
+	this->sequenceSuffix=sequenceSuffix;
+	return 0;
+}
+
+int MBSTrace::setFileHeader(char *header)
+{
+	return 0;
+}
+
+int MBSTrace::openFile()
+{
+	return 0;
+}
+
+int MBSTrace::closeFile()
+{
+	return 0;
+}
