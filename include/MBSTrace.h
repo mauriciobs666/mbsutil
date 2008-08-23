@@ -23,9 +23,10 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#define TRACE_LEVEL_INFO 3
-#define TRACE_LEVEL_WARN 2
-#define TRACE_LEVEL_ERROR 1
+#define NUMBER_TRACE_LEVELS 3
+#define TRACE_LEVEL_INFO 2
+#define TRACE_LEVEL_WARN 1
+#define TRACE_LEVEL_ERROR 0
 
 #define TRACE_INFO(fmt,...)		MBSTrace::getInstance().print(TRACE_LEVEL_INFO,__FILE__,__LINE__,fmt,##__VA_ARGS__)
 #define TRACE_WARN(fmt,...)		MBSTrace::getInstance().print(TRACE_LEVEL_WARN,__FILE__,__LINE__,fmt,##__VA_ARGS__)
@@ -34,7 +35,16 @@
 class MBSTrace
 {
 	public:
+		struct structTraceLevelOpt
+		{
+			bool printFileLine;
+			bool printFilePathLine;
+			char printLevelPreffix[10];
+		} TraceLevelOpt[NUMBER_TRACE_LEVELS];
+
 		virtual ~MBSTrace();
+
+		// singleton
 		static MBSTrace& getInstance()
 		{
 		    static MBSTrace *instance=NULL;
@@ -43,6 +53,7 @@ class MBSTrace
             return *instance;
 		}
 
+		// print functions
 		void print(int level, char *mesg) { print(level,NULL,0,mesg); }
 		void print(int level, char *filename, int line, char *mesg, ...);
 

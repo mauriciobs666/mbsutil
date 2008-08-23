@@ -26,6 +26,16 @@ MBSTrace::MBSTrace()
 	openForAppend=timestampSuffix=sequenceSuffix=false;
 	timeLimitMinutes=sizeLimitMB=-1;
     file=NULL;
+
+    for(int x=0;x<NUMBER_TRACE_LEVELS;x++)
+    {
+		TraceLevelOpt[x].printFileLine=true;
+		TraceLevelOpt[x].printFilePathLine=false;
+		TraceLevelOpt[x].printLevelPreffix[0]=0;
+    }
+    strcpy(TraceLevelOpt[TRACE_LEVEL_INFO].printLevelPreffix,"[NFO]");
+    strcpy(TraceLevelOpt[TRACE_LEVEL_WARN].printLevelPreffix,"[WRN]");
+    strcpy(TraceLevelOpt[TRACE_LEVEL_ERROR].printLevelPreffix,"[ERR]");
 }
 
 MBSTrace::~MBSTrace()
@@ -36,42 +46,58 @@ MBSTrace::~MBSTrace()
 		delete extension;
 	if(header)
 		delete header;
-	if(file)
-        fclose(file);
+	closeFile();
 }
 
 void MBSTrace::print(int level, char *filename, int line, char *mesg, ...)
 {
-    if(level==TRACE_LEVEL_INFO)
-        printf("[INF] ");
-    else if(level==TRACE_LEVEL_WARN)
-        printf("[WRN] ");
-    else if(level==TRACE_LEVEL_ERROR)
-        printf("[ERR] ");
+	if((level<0)||(level>=NUMBER_TRACE_LEVELS))
+		return;
 
-    if(filename)
-    {
-        //I dont want the full path, only the file name
-        char *slash=filename;
-        while(*slash!=0)
-        {
-            //find the last slash and ignore everything before it
-            if((*slash=='\\')||(*slash=='/'))
-                filename=slash+1;   //first char after the slash
-            slash++;
-        }
-        printf("%s:%d ",filename,line);
-    }
+	structTraceLevelOpt *levelOpt = &TraceLevelOpt[level];
+
+	if(strlen(levelOpt->printLevelPreffix) > 0)
+	{
+		printf("%s ", levelOpt->printLevelPreffix);
+		if(file)
+			fprintf(file,"%s ", levelOpt->printLevelPreffix);
+	}
+
+	if(levelOpt->printFileLine)
+	{
+		if(filename)
+		{
+			if(!levelOpt->printFilePathLine)
+			{
+				//remove the full path and print only the file name
+				char *slash=filename;
+				while(*slash!=0)
+				{
+					//find the last slash and ignore everything before it
+					if((*slash=='\\')||(*slash=='/'))
+						filename=slash+1;   //first char after the slash
+					slash++;
+				}
+			}
+			printf("%s:%d ",filename,line);
+			if(file)
+				fprintf(file,"%s:%d ",filename,line);
+		}
+	}
 
 	if(mesg)
 	{
 		va_list l;
 		va_start( l, mesg );
 		vprintf( mesg, l );
+		if(file)
+			vfprintf(file, mesg, l );
 		va_end(l);
 	}
 
     printf("\n");
+    if(file)
+		fprintf(file,"\n");
 }
 
 int MBSTrace::setFileName(char *basename, char *extension)
@@ -106,15 +132,45 @@ int MBSTrace::setFileOptions(bool openForAppend, int timeLimitMinutes, int sizeL
 
 int MBSTrace::setFileHeader(char *header)
 {
+	if(this->header!=NULL)
+		delete this->header;
+	if(header==NULL)
+		this->header=NULL;
+	else
+	{
+		int sh=strlen(header);
+		this->header=new char[sh+1];
+		strncpy(this->header,header,sh);
+	}
 	return 0;
 }
 
 int MBSTrace::openFile()
 {
+	char filename[512];
+
+	if(basename==NULL)
+		return -1;
+
+	if(extension==NULL)
+		snprintf(filename,512,"%s",basename);
+	else
+		snprintf(filename,512,"%s%s",basename,extension);
+
+	if(openForAppend)
+		file=fopen(filename,"a+");
+	else
+		file=fopen(filename,"w+");
+
+	if(file==NULL)
+		return -2;
+
 	return 0;
 }
 
 int MBSTrace::closeFile()
 {
+	if(file)
+        fclose(file);
 	return 0;
 }
