@@ -72,29 +72,15 @@ int MBSSlot::conectar(const char *ip, const unsigned short porta)
 	return sock->conectar(ip,porta);
 }
 
-MBSSlot::EstadoSlot MBSSlot::pegaEstado()
-{
-//	_conectado();
-	return estado;
-}
-
-MBSSlot::EstadoSlot MBSSlot::setaEstado(EstadoSlot novo)
-{
-    return estado=novo;
-}
-
 int MBSSlot::enviar(Buffer *pkt)
 {
-	int retorno=-1;
-//	_conectado();
-    if(estado>RESERVADO)
-    {
-        TAMANHO tam=pkt->pegaTamanho();
-        if(sock->enviar((char*)&tam,sizeof(TAMANHO))==sizeof(TAMANHO)) //envia tamanho
-            if(sock->enviar((char*)pkt->dados,tam)==tam)       		//envia pacote
-                retorno=0;                                  		//tudo ok
-    }
-    return retorno;
+	TAMANHO tam=pkt->pegaTamanho();
+
+	if(sock->enviar((char*)&tam,sizeof(TAMANHO))==sizeof(TAMANHO))	//envia tamanho
+		if(sock->enviar((char*)pkt->dados,tam)==tam)				//envia pacote
+			return 0;
+
+	return -1;
 }
 
 Buffer* MBSSlot::receive()
@@ -163,27 +149,6 @@ int MBSSlot::receiveLoop()
 	}
 	return qtd;
 }
-/*
-bool MBSSlot::_conectado()
-{
-	if(c!=NULL)
-	{
-		if(!c->ativa())
-			_reset();
-		else
-		{
-			time_t agora=time(NULL);
-			if((agora-timestamp)>TIMEOUT_RX)
-				_reset();
-			else
-				return true;
-		}
-	}
-	else
-		_reset();
-	return false;
-}
-*/
 
 //------------------------------------------------------------------------------
 //      MBSSlotManager
@@ -244,8 +209,8 @@ int MBSSlotManager::reserve()
 	{
 		if(slots[x].pegaEstado()==MBSSlot::LIVRE)
 		{
-			if(slots[x].setaEstado(MBSSlot::RESERVADO)==MBSSlot::RESERVADO)
-				return x;
+			slots[x].setaEstado(MBSSlot::RESERVADO);
+			return x;
 		}
 	}
     return -1;

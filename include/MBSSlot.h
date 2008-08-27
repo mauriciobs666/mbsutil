@@ -54,25 +54,25 @@ class MBSSlot
 			LOGIN,			//!<conectado, esperando login
 			CONECTADO		//!<conectado, normal
 		};
-		EstadoSlot pegaEstado();
-		EstadoSlot setaEstado(EstadoSlot estado);
+		inline EstadoSlot pegaEstado()
+			{ return estado; }
+		void setaEstado(EstadoSlot novo)
+			{ estado=novo; }
 
 		int enviar(Buffer *pkt);
 
 		Buffer* receive();
 		int receiveLoop();
 
-		SOCKET getFD()
+		inline SOCKET getFD()
 			{ return (sock==NULL) ? INVALID_SOCKET : sock->fd; }
 
-		bool validFD()
+		inline bool validFD()
 			{ return (sock==NULL) ? false : sock->valid(); }
 
 	private:
 		MBSSocket *sock;
 		EstadoSlot estado;
-
-//		bool _conectado();	//desprotegida
 
 		Buffer temp;					//usado na recepcao de Conexao
 		TAMANHO tamRecebendo;           //tamanho temporario do frame "*recebendo"
