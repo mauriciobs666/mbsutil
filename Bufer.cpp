@@ -30,16 +30,15 @@ Buffer::Buffer(unsigned long tam)
 {
 	if(tam>0)
 	{
-		dados=new unsigned char[tam];
+		pntL=pntE=dados=new unsigned char[tam];
 		if(dados!=NULL)
 			tamanho=tam;
 	}
 	else
 	{
-		dados=NULL;
+		pntL=pntE=dados=NULL;
 		tamanho=0;
 	}
-	reset();
 }
 
 void Buffer::reset()
