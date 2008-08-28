@@ -166,8 +166,9 @@ int Buffer::readString(char *dest, unsigned long max)
 	return 0;
 }
 
-int Buffer::writeString(const char *orig)
+int Buffer::writeString(const char *orig, unsigned long max)
 {
+	//TODO: limit size
 	int tamstr=strlen(orig)+1;
 	unsigned long novotam=ocupados()+tamstr;
 	if(novotam>tamanho)
