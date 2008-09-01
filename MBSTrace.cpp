@@ -105,16 +105,16 @@ int MBSTrace::setFileName(char *basename, char *extension)
 	if(basename==NULL)
 		return -1;
 
-	int sb=strlen(basename);
-	this->basename=new char[sb+1];
+	int sb=strlen(basename)+1;
+	this->basename=new char[sb];
 	strncpy(this->basename,basename,sb);
 
 	//extension is optional since its meant to be used with timestamp or sequence number
 	if(extension!=NULL)
 	{
-		int se=strlen(extension);
-		this->extension=new char[se+1];
-		strncpy(this->extension,extension,sb);
+		int se=strlen(extension)+1;
+		this->extension=new char[se];
+		strncpy(this->extension, extension, se);
 	}
 
 	return 0;
@@ -153,9 +153,9 @@ int MBSTrace::openFile()
 		return -1;
 
 	if(extension==NULL)
-		snprintf(filename,512,"%s",basename);
+		snprintf(filename, 512, "%s", basename);
 	else
-		snprintf(filename,512,"%s%s",basename,extension);
+		snprintf(filename, 512, "%s%s", basename, extension);
 
 	if(openForAppend)
 		file=fopen(filename,"a+");
