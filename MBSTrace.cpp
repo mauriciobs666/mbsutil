@@ -49,7 +49,7 @@ MBSTrace::~MBSTrace()
 	closeFile();
 }
 
-void MBSTrace::print(int level, char *filename, int line, char *mesg, ...)
+void MBSTrace::print(int level, const char *filename, int line, const char *mesg, ...)
 {
 	if((level<0)||(level>=NUMBER_TRACE_LEVELS))
 		return;
@@ -70,7 +70,7 @@ void MBSTrace::print(int level, char *filename, int line, char *mesg, ...)
 			if(!levelOpt->printFilePathLine)
 			{
 				//remove the full path and print only the file name
-				char *slash=filename;
+				const char *slash=filename;
 				while(*slash!=0)
 				{
 					//find the last slash and ignore everything before it
@@ -100,7 +100,7 @@ void MBSTrace::print(int level, char *filename, int line, char *mesg, ...)
 		fprintf(file,"\n");
 }
 
-int MBSTrace::setFileName(char *basename, char *extension)
+int MBSTrace::setFileName(const char *basename, const char *extension)
 {
 	if(basename==NULL)
 		return -1;
@@ -130,7 +130,7 @@ int MBSTrace::setFileOptions(bool openForAppend, int timeLimitMinutes, int sizeL
 	return 0;
 }
 
-int MBSTrace::setFileHeader(char *header)
+int MBSTrace::setFileHeader(const char *header)
 {
 	if(this->header!=NULL)
 		delete this->header;

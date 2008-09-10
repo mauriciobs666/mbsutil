@@ -54,10 +54,10 @@ class MBSTrace
 		}
 
 		// print functions
-		void print(int level, char *mesg) { print(level,NULL,0,mesg); }
-		void print(int level, char *filename, int line, char *mesg, ...);
+		void print(int level, const char *mesg) { print(level,NULL,0,mesg); }
+		void print(int level, const char *filename, int line, const char *mesg, ...);
 
-		int setFileName(char *basename, char *extension=NULL);
+		int setFileName(const char *basename, const char *extension=NULL);
 
 		int setFileOptions(	bool openForAppend=false,	//overwrite/append existing file
 							int timeLimitMinutes=-1,	//start new file after x minutes
@@ -65,7 +65,7 @@ class MBSTrace
 							bool timestampSuffix=false,	//sprintf(logfile,"%sYYYYMMDDHHMMSS.%s", basename, extension)
 							bool sequenceSuffix=false );//sprintf(logfile,"%sNNNNNNNNNNNNNN.%s", basename, extension)
 
-		int setFileHeader(char *header);	// printed at the beggining of the log file
+		int setFileHeader(const char *header);	// printed at the beggining of the log file
 
 		int openFile();		// manually start a logfile
 		int closeFile();	// manually stop the logfile
