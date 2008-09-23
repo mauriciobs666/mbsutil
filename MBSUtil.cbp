@@ -45,10 +45,6 @@
 		<Unit filename="MBSNetwork.cpp" />
 		<Unit filename="MBSSlot.cpp" />
 		<Unit filename="MBSTrace.cpp" />
-		<Unit filename="P2PGerenciadorSlots.cpp" />
-		<Unit filename="P2PProtocolo.cpp" />
-		<Unit filename="P2PSlot.cpp" />
-		<Unit filename="P2Ped.cpp" />
 		<Unit filename="Parser.cpp" />
 		<Unit filename="Rede.cpp" />
 		<Unit filename="Tempo.cpp" />
@@ -64,11 +60,6 @@
 		<Unit filename="include\MBSSlot.h" />
 		<Unit filename="include\MBSTrace.h" />
 		<Unit filename="include\MBSUtil.h" />
-		<Unit filename="include\P2PGerenciadorSlots.h" />
-		<Unit filename="include\P2PProtocolo.h" />
-		<Unit filename="include\P2PSlot.h" />
-		<Unit filename="include\P2Pdefs.h" />
-		<Unit filename="include\P2Ped.h" />
 		<Unit filename="include\Parser.h" />
 		<Unit filename="include\Rede.h" />
 		<Unit filename="include\Tempo.h" />

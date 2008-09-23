@@ -24,7 +24,6 @@
 #include "Bufer.h"
 #include "Geometria.h"
 #include "Hash.h"
-#include "P2PProtocolo.h"
 #include "Parser.h"
 #include "MBSNetwork.h"
 #include "Tempo.h"
