@@ -21,7 +21,7 @@
 #define MBSUTIL_H
 
 #include "Arquivos.h"
-#include "Bufer.h"
+#include "MBSBuffer.h"
 #include "Geometria.h"
 #include "Hash.h"
 #include "Parser.h"

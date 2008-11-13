@@ -20,14 +20,14 @@
 #ifndef MBSUTIL_BUFFER_H
 #define MBSUTIL_BUFFER_H
 
-class Buffer
+class MBSBuffer
 {
 public:
 	unsigned char *dados;
 	unsigned char *pntE,*pntL;
 
-	Buffer(unsigned long tam=0);
-	virtual ~Buffer() { if(dados) delete[] dados; }
+	MBSBuffer(unsigned long tam=0);
+	virtual ~MBSBuffer() { if(dados) delete[] dados; }
 
 	void reset();	//pntL=pntE=dados
 	int mudaTamanho(unsigned long tam);
@@ -35,7 +35,7 @@ public:
 	inline unsigned long disponiveis() const { return (pntE>pntL)?(pntE-pntL):0; }
 	inline unsigned long livres() const { return tamanho-(pntE-dados); }
 	inline unsigned long ocupados() const { return pntE-dados; }
-	unsigned long append(Buffer& b, unsigned long qtd=0);
+	unsigned long append(MBSBuffer& b, unsigned long qtd=0);
 		//anexa qtd bytes de b->pntL em pntE
 		//se qtd==0, anexa disponiveis() bytes de b->pntL em pntE
 

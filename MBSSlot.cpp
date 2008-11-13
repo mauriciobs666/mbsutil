@@ -72,7 +72,7 @@ int MBSSlot::conectar(const char *ip, const unsigned short porta)
 	return sock->conectar(ip,porta);
 }
 
-int MBSSlot::enviar(Buffer *pkt)
+int MBSSlot::enviar(MBSBuffer *pkt)
 {
 	TAMANHO tam=pkt->pegaTamanho();
 
@@ -83,9 +83,9 @@ int MBSSlot::enviar(Buffer *pkt)
 	return -1;
 }
 
-Buffer* MBSSlot::receive()
+MBSBuffer* MBSSlot::receive()
 {
-	Buffer *retorno=NULL;
+	MBSBuffer *retorno=NULL;
 	if(!recebidos.empty())
 	{
 		retorno=recebidos.front();
@@ -122,7 +122,7 @@ int MBSSlot::receiveLoop()
 //				cout << " tamB1 =" << (int)*temp.pntL;
 				temp.pntL++;
 				//tamanho recebido, agora o pacote em si
-				recebendo=new Buffer(tamRecebendo);
+				recebendo=new MBSBuffer(tamRecebendo);
 				estadoRX=DADOS;
 //				cout << " ESPERA_TAMANHO tamRecebendo=" << tamRecebendo;
 			break;

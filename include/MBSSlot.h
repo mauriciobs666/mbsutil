@@ -59,9 +59,9 @@ class MBSSlot
 		void setaEstado(EstadoSlot novo)
 			{ estado=novo; }
 
-		int enviar(Buffer *pkt);
+		int enviar(MBSBuffer *pkt);
 
-		Buffer* receive();
+		MBSBuffer* receive();
 		int receiveLoop();
 
 		inline SOCKET getFD()
@@ -74,10 +74,10 @@ class MBSSlot
 		MBSSocket *sock;
 		EstadoSlot estado;
 
-		Buffer temp;					//usado na recepcao de Conexao
+		MBSBuffer temp;					//usado na recepcao de Conexao
 		TAMANHO tamRecebendo;           //tamanho temporario do frame "*recebendo"
-		Buffer *recebendo;				//frame sendo recebido
-		std::queue<Buffer*> recebidos;	//fila de frames prontos pra serem tratados
+		MBSBuffer *recebendo;				//frame sendo recebido
+		std::queue<MBSBuffer*> recebidos;	//fila de frames prontos pra serem tratados
 
 		//!Estado de RX do pacote
 		enum EstadosRX

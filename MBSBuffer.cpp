@@ -23,10 +23,10 @@
 using namespace std;
 
 //------------------------------------------------------------------------------
-//      Buffer
+//      MBSBuffer
 //------------------------------------------------------------------------------
 
-Buffer::Buffer(unsigned long tam)
+MBSBuffer::MBSBuffer(unsigned long tam)
 {
 	if(tam>0)
 	{
@@ -41,7 +41,7 @@ Buffer::Buffer(unsigned long tam)
 	}
 }
 
-void Buffer::reset()
+void MBSBuffer::reset()
 {
     if((tamanho==0)|(dados==NULL))
     {
@@ -55,7 +55,7 @@ void Buffer::reset()
     pntL=pntE=dados;
 }
 
-int Buffer::mudaTamanho(unsigned long tam)
+int MBSBuffer::mudaTamanho(unsigned long tam)
 {
     unsigned char *novo,*tmp;
     unsigned long leitura=pntL-dados;
@@ -81,7 +81,7 @@ int Buffer::mudaTamanho(unsigned long tam)
     return 0;
 }
 
-unsigned long Buffer::append(Buffer& b, unsigned long qtd)
+unsigned long MBSBuffer::append(MBSBuffer& b, unsigned long qtd)
 {
     if((qtd==0)|(qtd>b.disponiveis()))
         qtd=b.disponiveis();
@@ -95,7 +95,7 @@ unsigned long Buffer::append(Buffer& b, unsigned long qtd)
     return qtd;
 }
 
-int Buffer::readByte(unsigned char *uc)
+int MBSBuffer::readByte(unsigned char *uc)
 {
 	if(disponiveis()<1)
 		return -1;
@@ -103,7 +103,7 @@ int Buffer::readByte(unsigned char *uc)
 	return 0;
 }
 
-int Buffer::writeByte(unsigned char uc)
+int MBSBuffer::writeByte(unsigned char uc)
 {
 	unsigned long novotam=ocupados()+1;
 	if(novotam>tamanho)
@@ -114,7 +114,7 @@ int Buffer::writeByte(unsigned char uc)
 	return 0;
 }
 
-int Buffer::readShort(unsigned short *us)
+int MBSBuffer::readShort(unsigned short *us)
 {
 	if(disponiveis()<sizeof(unsigned short))
 		return -1;
@@ -123,7 +123,7 @@ int Buffer::readShort(unsigned short *us)
 	return 0;
 }
 
-int Buffer::writeShort(unsigned short us)
+int MBSBuffer::writeShort(unsigned short us)
 {
 	unsigned long novotam=ocupados()+sizeof(unsigned short);
 	if(novotam>tamanho)
@@ -134,7 +134,7 @@ int Buffer::writeShort(unsigned short us)
 	return 0;
 }
 
-int Buffer::readLong(unsigned long *ul)
+int MBSBuffer::readLong(unsigned long *ul)
 {
 	if(disponiveis()<sizeof(unsigned long))
 		return -1;
@@ -143,7 +143,7 @@ int Buffer::readLong(unsigned long *ul)
 	return 0;
 }
 
-int Buffer::writeLong(unsigned long ul)
+int MBSBuffer::writeLong(unsigned long ul)
 {
 	unsigned long novotam=ocupados()+sizeof(unsigned long);
 	if(novotam>tamanho)
@@ -154,7 +154,7 @@ int Buffer::writeLong(unsigned long ul)
 	return 0;
 }
 
-int Buffer::readString(char *dest, unsigned long max)
+int MBSBuffer::readString(char *dest, unsigned long max)
 {
 	unsigned long tamstr=strlen((char*)pntL)+1;
 	if(disponiveis()<tamstr)
@@ -166,7 +166,7 @@ int Buffer::readString(char *dest, unsigned long max)
 	return 0;
 }
 
-int Buffer::writeString(const char *orig, unsigned long max)
+int MBSBuffer::writeString(const char *orig, unsigned long max)
 {
 	//TODO: limit size
 	int tamstr=strlen(orig)+1;
