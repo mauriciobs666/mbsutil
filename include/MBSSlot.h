@@ -21,7 +21,7 @@
 #define MBSSLOT_H
 
 #include "MBSNetwork.h"
-#include "Bufer.h"
+#include "MBSBuffer.h"
 #include <queue>
 
 typedef unsigned short TAMANHO;

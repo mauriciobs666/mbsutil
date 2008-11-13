@@ -39,9 +39,9 @@
 			<Add directory="include" />
 		</Compiler>
 		<Unit filename="Arquivos.cpp" />
-		<Unit filename="Bufer.cpp" />
 		<Unit filename="Geometria.cpp" />
 		<Unit filename="Hash.cpp" />
+		<Unit filename="MBSBuffer.cpp" />
 		<Unit filename="MBSNetwork.cpp" />
 		<Unit filename="MBSSlot.cpp" />
 		<Unit filename="MBSTrace.cpp" />
@@ -53,9 +53,9 @@
 		<Unit filename="glGUI.cpp" />
 		<Unit filename="glImagem.cpp" />
 		<Unit filename="include\Arquivos.h" />
-		<Unit filename="include\Bufer.h" />
 		<Unit filename="include\Geometria.h" />
 		<Unit filename="include\Hash.h" />
+		<Unit filename="include\MBSBuffer.h" />
 		<Unit filename="include\MBSNetwork.h" />
 		<Unit filename="include\MBSSlot.h" />
 		<Unit filename="include\MBSTrace.h" />
