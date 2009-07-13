@@ -42,14 +42,14 @@
 			<Add option="-D__GNUWIN32__" />
 			<Add option="-D__WXMSW__" />
 			<Add option="-DHAVE_W32API_H" />
-			<Add directory="$(#WX.include)" />
-			<Add directory="$(#WX.lib)\gcc_lib\msw" />
-			<Add directory="$(#WX.lib)\gcc_lib$(WX_CFG)\msw" />
-			<Add directory="$(#WX)\contrib\include" />
+			<Add directory="$(#WX26.include)" />
+			<Add directory="$(#WX26.lib)\gcc_lib\msw" />
+			<Add directory="$(#WX26.lib)\gcc_lib$(WX_CFG)\msw" />
+			<Add directory="$(#WX26)\contrib\include" />
 			<Add directory="$(#mbsutil.include)" />
 		</Compiler>
 		<ResourceCompiler>
-			<Add directory="$(#WX.include)" />
+			<Add directory="$(#WX26.include)" />
 		</ResourceCompiler>
 		<Linker>
 			<Add library="wxmsw26" />
@@ -62,9 +62,9 @@
 			<Add library="winmm" />
 			<Add library="advapi32" />
 			<Add library="uuid" />
-			<Add directory="$(#WX.lib)\gcc_lib" />
-			<Add directory="$(#WX.lib)\gcc_lib\msw" />
-			<Add directory="$(#WX.lib)\gcc_lib$(WX_CFG)" />
+			<Add directory="$(#WX26.lib)\gcc_lib" />
+			<Add directory="$(#WX26.lib)\gcc_lib\msw" />
+			<Add directory="$(#WX26.lib)\gcc_lib$(WX_CFG)" />
 			<Add directory="$(#mbsutil.lib)" />
 		</Linker>
 		<Unit filename="app.cpp" />
@@ -80,6 +80,8 @@
 					<wxFrame wxs="wxsmith/MainFrame.wxs" src="mainframe.cpp" hdr="mainframe.h" name="MainFrame" language="CPP" />
 				</resources>
 			</wxsmith>
+			<envvars />
+			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
