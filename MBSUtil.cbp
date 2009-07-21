@@ -47,6 +47,7 @@
 		<Unit filename="MBSTrace.cpp" />
 		<Unit filename="Parser.cpp" />
 		<Unit filename="Rede.cpp" />
+		<Unit filename="SerialPort.cpp" />
 		<Unit filename="Tempo.cpp" />
 		<Unit filename="Thread.cpp" />
 		<Unit filename="glFonte.cpp" />
@@ -62,6 +63,7 @@
 		<Unit filename="include\MBSUtil.h" />
 		<Unit filename="include\Parser.h" />
 		<Unit filename="include\Rede.h" />
+		<Unit filename="include\SerialPort.h" />
 		<Unit filename="include\Tempo.h" />
 		<Unit filename="include\Thread.h" />
 		<Unit filename="include\glFonte.h" />
