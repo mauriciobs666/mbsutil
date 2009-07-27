@@ -75,30 +75,59 @@ int SerialPort::init(char *port, int baud, char byteSize, char parity, char stop
 		return -3;
 	}
 
+	// info bellow is from http://www.codeproject.com/KB/system/chaiyasit_t.aspx
 	COMMTIMEOUTS comTimeOut;
 
-	// Specify time-out between charactor for receiving.
+	/*	ReadIntervalTimeout
+		Specifies the maximum time, in milliseconds, allowed to elapse between the arrival of two characters
+		on the communications line. During a ReadFile operation, the time period begins when the first character
+		is received. If the interval between the arrival of any two characters exceeds this amount, the ReadFile
+		operation is completed and any buffered data is returned. A value of zero indicates that interval
+		time-outs are not used.
+		A value of MAXDWORD, combined with zero values for both the ReadTotalTimeoutConstant and
+		ReadTotalTimeoutMultiplier members, specifies that the read operation is to return immediately with the
+		characters that have already been received, even if no characters have been received.
+	*/
 	comTimeOut.ReadIntervalTimeout = 3;
 
-	// Specify value that is multiplied by the requested number of bytes to be read.
+	/*	ReadTotalTimeoutMultiplier
+		Specifies the multiplier, in milliseconds, used to calculate the total time-out period for read operations.
+		For each read operation, this value is multiplied by the requested number of bytes to be read.
+	*/
 	comTimeOut.ReadTotalTimeoutMultiplier = 3;
 
-	// Specify value is added to the product of the ReadTotalTimeoutMultiplier member
+	/*	ReadTotalTimeoutConstant
+		Specifies the constant, in milliseconds, used to calculate the total time-out period for read operations.
+		For each read operation, this value is added to the product of the ReadTotalTimeoutMultiplier member and
+		the requested number of bytes.
+		A value of zero for both the ReadTotalTimeoutMultiplier and ReadTotalTimeoutConstant members indicates
+		that total time-outs are not used for read operations.
+	*/
 	comTimeOut.ReadTotalTimeoutConstant = 2;
 
-	// Specify value that is multiplied by the requested number of bytes to be sent.
+	/*	WriteTotalTimeoutMultiplier
+		Specifies the multiplier, in milliseconds, used to calculate the total time-out period for write operations.
+		For each write operation, this value is multiplied by the number of bytes to be written.
+	*/
 	comTimeOut.WriteTotalTimeoutMultiplier = 3;
 
-	// Specify value is added to the product of the WriteTotalTimeoutMultiplier member
+	/*	WriteTotalTimeoutConstant
+		Specifies the constant, in milliseconds, used to calculate the total time-out period for write operations.
+		For each write operation, this value is added to the product of the WriteTotalTimeoutMultiplier member and
+		the number of bytes to be written.
+		A value of zero for both the WriteTotalTimeoutMultiplier and WriteTotalTimeoutConstant members indicates
+		that total time-outs are not used for write operations.
+		Note: After the user has set the time-out of communication without any error, the serial port has opened
+		already.
+	*/
 	comTimeOut.WriteTotalTimeoutConstant = 2;
 
-	// set the time-out parameter into device control.
 	SetCommTimeouts(portHandle, &comTimeOut);
 
     return 0;
 }
 
-int SerialPort::write(char *data, int size)
+int SerialPort::write(const char *data, int size)
 {
 	DWORD written;
 	if( INVALID_HANDLE_VALUE == portHandle )
@@ -111,8 +140,9 @@ int SerialPort::write(char *data, int size)
 int SerialPort::read(char *data, int maxSize)
 {
 	DWORD read;
-	ReadFile( portHandle, data, maxSize, &read, NULL );
-	return read;
+	if( ReadFile( portHandle, data, maxSize, &read, NULL ) )
+		return read;
+	return -1;
 }
 
 int SerialPort::closePort()

@@ -30,5 +30,6 @@
 #include "Thread.h"
 #include "glFonte.h"
 #include "glImagem.h"
+#include "SerialPort.h"
 
 #endif

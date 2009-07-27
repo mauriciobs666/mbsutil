@@ -27,8 +27,8 @@ class SerialPort
 	public:
 		SerialPort();
 		virtual ~SerialPort();
-		int init(char *port, int baud, char byteSize, char parity, char stopBits);
-		int write(char *data, int size);
+		int init(char *port, int baud=9600, char byteSize=8, char parity=0, char stopBits=0);
+		int write(const char *data, int size);
 		int read(char *data, int maxSize);
 		int closePort();
 	protected:
