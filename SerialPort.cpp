@@ -1,3 +1,22 @@
+/*
+	MBS-Util - General purpose C++ library
+	Copyright (C) 2009 - Mauricio Bieze Stefani
+
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License as published by the Free Software Foundation; either
+	version 2.1 of the License, or (at your option) any later version.
+
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	Lesser General Public License for more details.
+
+	You should have received a copy of the GNU Lesser General Public
+	License along with this library; if not, write to the Free Software
+	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+*/
+
 #include "SerialPort.h"
 #include <iostream>
 
@@ -22,7 +41,7 @@ int SerialPort::init(char *port, int baud, char byteSize, char parity, char stop
 								0,    //(share) 0:cannot share the COM port
 								0,    //security  (None)
 								OPEN_EXISTING,// creation : open_existing
-								FILE_FLAG_OVERLAPPED,// we want overlapped operation
+								0, //FILE_FLAG_OVERLAPPED,// we want overlapped operation
 								0// no templates file for COM port...
 							);
 
@@ -56,17 +75,44 @@ int SerialPort::init(char *port, int baud, char byteSize, char parity, char stop
 		return -3;
 	}
 
+	COMMTIMEOUTS comTimeOut;
+
+	// Specify time-out between charactor for receiving.
+	comTimeOut.ReadIntervalTimeout = 3;
+
+	// Specify value that is multiplied by the requested number of bytes to be read.
+	comTimeOut.ReadTotalTimeoutMultiplier = 3;
+
+	// Specify value is added to the product of the ReadTotalTimeoutMultiplier member
+	comTimeOut.ReadTotalTimeoutConstant = 2;
+
+	// Specify value that is multiplied by the requested number of bytes to be sent.
+	comTimeOut.WriteTotalTimeoutMultiplier = 3;
+
+	// Specify value is added to the product of the WriteTotalTimeoutMultiplier member
+	comTimeOut.WriteTotalTimeoutConstant = 2;
+
+	// set the time-out parameter into device control.
+	SetCommTimeouts(portHandle, &comTimeOut);
+
     return 0;
 }
 
-int SerialPort::write()
+int SerialPort::write(char *data, int size)
 {
-	//WriteFile (portHandle,data,dwSize,&dwBytesWritten ,&ov);
+	DWORD written;
+	if( INVALID_HANDLE_VALUE == portHandle )
+		return -1;
+	if( WriteFile (portHandle, data, size, &written, NULL) )
+		return 0;
+	return -2;
 }
 
-int SerialPort::read()
+int SerialPort::read(char *data, int maxSize)
 {
-	//abRet = ::ReadFile(m_hCommPort,szTmp ,sizeof(szTmp ), &dwBytesRead,&ovRead) ;
+	DWORD read;
+	ReadFile( portHandle, data, maxSize, &read, NULL );
+	return read;
 }
 
 int SerialPort::closePort()

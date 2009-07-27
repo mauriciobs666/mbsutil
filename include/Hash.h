@@ -20,7 +20,7 @@
 #ifndef MBSUTIL_HASH_H
 #define MBSUTIL_HASH_H
 
-#include <string>
+#include <cstring>
 #include <iostream>
 
 class Hash128
