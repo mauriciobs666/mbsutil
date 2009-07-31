@@ -18,7 +18,7 @@
 */
 
 #include "MBSBuffer.h"
-#include <string>
+#include <cstring>
 
 using namespace std;
 

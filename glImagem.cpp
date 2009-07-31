@@ -20,6 +20,7 @@
 #ifdef _WIN32
 
 #include "glImagem.h"
+#include <cstring>
 
 using namespace std;
 

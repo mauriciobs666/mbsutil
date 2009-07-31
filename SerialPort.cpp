@@ -34,6 +34,8 @@ SerialPort::~SerialPort()
 
 int SerialPort::init(char *port, int baud, char byteSize, char parity, char stopBits)
 {
+	char lastError[1024];
+
 	closePort();
 
 	portHandle = CreateFile(	port,
@@ -49,7 +51,17 @@ int SerialPort::init(char *port, int baud, char byteSize, char parity, char stop
 	{
 		// ERROR_ACCESS_DENIED = already opened by other application
 		// ERROR_FILE_NOT_FOUND = port that doesn't exist
-		cout << "Failed to open COM port Reason: " << GetLastError() << endl;
+
+		FormatMessage( 	FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+						NULL,
+						GetLastError(),
+						MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+						lastError,
+						1024,
+						NULL
+					 );
+
+		cout << "Failed to open " << port << ": " << lastError << endl;
 		return -1;
 	}
 
@@ -58,7 +70,16 @@ int SerialPort::init(char *port, int baud, char byteSize, char parity, char stop
 
 	if ( ! GetCommState(portHandle, &dcb) )
 	{
-		cout << "Failed to Get Comm State Reason: " << GetLastError() << endl;
+		FormatMessage( 	FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+						NULL,
+						GetLastError(),
+						MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+						lastError,
+						1024,
+						NULL
+					 );
+
+		cout << "Failed to Get Comm State Reason: " << lastError << endl;
 		closePort();
 		return -2;
 	}
@@ -70,7 +91,16 @@ int SerialPort::init(char *port, int baud, char byteSize, char parity, char stop
 
 	if ( ! SetCommState(portHandle,&dcb) )
 	{
-		cout << "Failed to Set Comm State Reason: " << GetLastError() << endl;
+		FormatMessage( 	FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+						NULL,
+						GetLastError(),
+						MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+						lastError,
+						1024,
+						NULL
+					 );
+
+		cout << "Failed to Set Comm State Reason: " << lastError << endl;
 		closePort();
 		return -3;
 	}
@@ -152,4 +182,5 @@ int SerialPort::closePort()
 		CloseHandle(portHandle);
 		portHandle = INVALID_HANDLE_VALUE;
 	}
+	return 0;
 }

@@ -53,7 +53,7 @@ class MBSSlot
 			HANDSHAKE,		//!<conectado, descobrindo ip, id etc
 			LOGIN,			//!<conectado, esperando login
 			CONECTADO		//!<conectado, normal
-		};
+		} EstadoSlot;
 		inline EstadoSlot pegaEstado()
 			{ return estado; }
 		void setaEstado(EstadoSlot novo)

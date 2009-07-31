@@ -22,6 +22,7 @@
 #include <cctype>
 #include <sstream>
 #include <cmath>
+#include <stdio.h>
 
 using namespace std;
 
