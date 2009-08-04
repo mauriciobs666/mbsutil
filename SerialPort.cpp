@@ -157,7 +157,7 @@ int SerialPort::init(char *port, int baud, char byteSize, char parity, char stop
     return 0;
 }
 
-int SerialPort::write(const char *data, int size)
+int SerialPort::write(const char *data, size_t size)
 {
 	DWORD written;
 	if( INVALID_HANDLE_VALUE == portHandle )
@@ -167,7 +167,7 @@ int SerialPort::write(const char *data, int size)
 	return -2;
 }
 
-int SerialPort::read(char *data, int maxSize)
+int SerialPort::read(char *data, size_t maxSize)
 {
 	DWORD read;
 	if( ReadFile( portHandle, data, maxSize, &read, NULL ) )

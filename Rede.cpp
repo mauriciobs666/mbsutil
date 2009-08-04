@@ -175,12 +175,12 @@ void Conexao::recusar()
     closesocket(accept(fd,(sockaddr*)&adn,&sin_size));
 }
 
-int Conexao::enviar(char *dados, int len)
+int Conexao::enviar(char *dados, size_t len)
 {
     return send(fd,dados,len,0);
 }
 
-int Conexao::receber(char *dest, int max)
+int Conexao::receber(char *dest, size_t max)
 {
     int rec=recv(fd,dest,max,0);
     if((rec<0)&(WSAGetLastError()==WSAEWOULDBLOCK))

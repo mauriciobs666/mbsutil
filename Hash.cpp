@@ -144,9 +144,9 @@ int MD4::arquivo(const char *arq)
 	return -1;
 }
 
-int MD4::calc(const unsigned char *pnt, unsigned long tam)
+int MD4::calc(const unsigned char *pnt, size_t tam)
 {
-	unsigned long x;
+	size_t x;
 	reset();
 	for(x=0;(x+64)<=tam;x+=64)
 		update(pnt+x,64*8);
@@ -156,7 +156,7 @@ int MD4::calc(const unsigned char *pnt, unsigned long tam)
 	return 0;
 }
 
-int MD4::calc(istream& is, unsigned long tam)
+int MD4::calc(istream& is, size_t tam)
 {
 	//TODO: soh calcula de arquivos inteiros por enquanto...
 	char X[64];
@@ -183,7 +183,7 @@ void MD4::reset()
     done=false;
 }
 
-int MD4::update(const unsigned char *X, unsigned long qtdbits)
+int MD4::update(const unsigned char *X, size_t qtdbits)
 {
     unsigned long i, tmp, bit, byte, mask;
     unsigned char XX[64];

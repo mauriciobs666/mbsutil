@@ -26,7 +26,7 @@ using namespace std;
 //      MBSBuffer
 //------------------------------------------------------------------------------
 
-MBSBuffer::MBSBuffer(unsigned long tam)
+MBSBuffer::MBSBuffer(size_t tam)
 {
 	if(tam>0)
 	{
@@ -55,11 +55,11 @@ void MBSBuffer::reset()
     pntL=pntE=dados;
 }
 
-int MBSBuffer::mudaTamanho(unsigned long tam)
+int MBSBuffer::mudaTamanho(size_t tam)
 {
     unsigned char *novo,*tmp;
-    unsigned long leitura=pntL-dados;
-    unsigned long escrita=pntE-dados;
+    size_t leitura=pntL-dados;
+    size_t escrita=pntE-dados;
 
     if((novo=new unsigned char[tam])==NULL)
         return -1;
@@ -81,11 +81,11 @@ int MBSBuffer::mudaTamanho(unsigned long tam)
     return 0;
 }
 
-unsigned long MBSBuffer::append(MBSBuffer& b, unsigned long qtd)
+unsigned long MBSBuffer::append(MBSBuffer& b, size_t qtd)
 {
     if((qtd==0)|(qtd>b.disponiveis()))
         qtd=b.disponiveis();
-    unsigned long novotam=ocupados()+qtd;
+    size_t novotam=ocupados()+qtd;
     if(novotam>tamanho)
         if(mudaTamanho(novotam))
 			return 0;
@@ -154,9 +154,9 @@ int MBSBuffer::writeLong(unsigned long ul)
 	return 0;
 }
 
-int MBSBuffer::readString(char *dest, unsigned long max)
+int MBSBuffer::readString(char *dest, size_t max)
 {
-	unsigned long tamstr=strlen((char*)pntL)+1;
+	size_t tamstr=strlen((char*)pntL)+1;
 	if(disponiveis()<tamstr)
 		return -1;
 	if(max<tamstr)
@@ -166,11 +166,11 @@ int MBSBuffer::readString(char *dest, unsigned long max)
 	return 0;
 }
 
-int MBSBuffer::writeString(const char *orig, unsigned long max)
+int MBSBuffer::writeString(const char *orig, size_t max)
 {
 	//TODO: limit size
-	int tamstr=strlen(orig)+1;
-	unsigned long novotam=ocupados()+tamstr;
+	size_t tamstr=strlen(orig)+1;
+	size_t novotam=ocupados()+tamstr;
 	if(novotam>tamanho)
 		if(mudaTamanho(novotam))
 			return -1;

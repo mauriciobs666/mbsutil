@@ -41,7 +41,7 @@ public:
 		\param nome Nome do arquivo de fonte a ser carregado
 		\param size Tamanho fixo da fonte
 	*/
-	int load(HDC hDC, const char* nome, int size);
+	int load(HDC hDC, const char* nome, size_t size);
 
 	//!similar ao printf da libc
 	void printf(const char *fmt, ...);

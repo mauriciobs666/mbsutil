@@ -23,7 +23,7 @@
 #include <stdarg.h>
 #include "glFonte.h"
 
-int GLFonte::load(HDC hDC, const char* nome, int size)
+int GLFonte::load(HDC hDC, const char* nome, size_t size)
 {
 	HFONT	font;										// Windows Font ID
 	HFONT	oldfont;									// Used For Good House Keeping

@@ -50,8 +50,8 @@ public:
 	//exclusivo p/ conexoes cliente
 	int conectar(const char *ip, const unsigned short porta);
 	int conectar(unsigned long end, unsigned short porta);
-	int enviar(char *dados, int len);
-	int receber(char *dest, int max);
+	int enviar(char *dados, size_t len);
+	int receber(char *dest, size_t max);
 
 	//exclusivo p/ conexoes servidor
 	Conexao(int soquete);

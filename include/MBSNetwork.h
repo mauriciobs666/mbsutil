@@ -53,9 +53,9 @@ public:
     int conectar(std::string ip, unsigned short port);
     void disconnect()
 		{ closeSocket(); }
-    int enviar(char *data, int len)
+    int enviar(char *data, size_t len)
 		{ return send(fd,data,len,0); }
-    int receive(char *data, int max)
+    int receive(char *data, size_t max)
 		{ return recv(fd,data,max,0); }
 
 	std::string remoteIP()
