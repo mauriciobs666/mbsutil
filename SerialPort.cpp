@@ -22,6 +22,7 @@
 
 using namespace std;
 
+#ifdef _WIN32
 SerialPort::SerialPort()
 {
 	portHandle = INVALID_HANDLE_VALUE;
@@ -184,3 +185,4 @@ int SerialPort::closePort()
 	}
 	return 0;
 }
+#endif

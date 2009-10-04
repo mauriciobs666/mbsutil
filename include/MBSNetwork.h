@@ -150,6 +150,8 @@ private:
 class MBSClientSocketSelector
 {
 public:
+	fd_set master_set;
+
 	fd_set result_set_read;
 	fd_set result_set_write;
 	fd_set result_set_exception;
@@ -164,11 +166,17 @@ public:
 		}
 	int Select()
 		{
-			result_set_read.fd_count=result_set_write.fd_count=result_set_exception.fd_count=1;
-			result_set_read.fd_array[0]=result_set_write.fd_array[0]=result_set_exception.fd_array[0]=fd;
+			result_set_read=master_set;
+			result_set_write=master_set;
+			result_set_exception=master_set;
 			return select(1,&result_set_read,&result_set_write,&result_set_exception,&timeout);
 		}
-	void set(SOCKET s)	{ fd=s; }
+	void set(SOCKET s)
+	{
+	    fd=s;
+        FD_ZERO(&master_set);
+        FD_SET(fd,&master_set);
+    }
 	// Linux warning: the next 3 functions dump core if called with -1 (LOL)
 	bool isRead()		{ return FD_ISSET(fd,&result_set_read); }
 	bool isWrite()		{ return FD_ISSET(fd,&result_set_write); }

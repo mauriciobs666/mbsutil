@@ -20,7 +20,11 @@
 #ifndef SERIALPORT_H
 #define SERIALPORT_H
 
-#include <windows.h>
+#ifdef _WIN32
+    #include <windows.h>
+#endif
+
+#include <stdio.h>
 
 class SerialPort
 {
@@ -32,7 +36,9 @@ class SerialPort
 		int read(char *data, size_t maxSize);
 		int closePort();
 	protected:
-		HANDLE portHandle;
+        #ifdef _WIN32
+            HANDLE portHandle;
+        #endif
 	private:
 };
 

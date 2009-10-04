@@ -18,7 +18,7 @@
 */
 
 #include "MBSNetwork.h"
-
+#include <string.h>
 /*
     -------------------------------
     winsock2.h structures reference
