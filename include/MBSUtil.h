@@ -28,8 +28,8 @@
 #include "MBSNetwork.h"
 #include "Tempo.h"
 #include "Thread.h"
-#include "glFonte.h"
-#include "glImagem.h"
+//#include "glFonte.h"
+//#include "glImagem.h"
 #include "SerialPort.h"
 
 #endif

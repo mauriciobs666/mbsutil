@@ -19,8 +19,8 @@
 
 #ifndef GLIMAGEM_H
 #define GLIMAGEM_H
-#include <gl\gl.h>
-#include "geometria.h"
+#include <GL\gl.h>
+#include "Geometria.h"
 
 class glCor
 {

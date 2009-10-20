@@ -24,7 +24,7 @@
 
 using namespace std;
 
-list<string> Path::find(const string &nome, int restricoes)
+list<string> Path::find(const std::string &nome, int restricoes)
 {
 	WIN32_FIND_DATA wfd;
 	list<string> temp;

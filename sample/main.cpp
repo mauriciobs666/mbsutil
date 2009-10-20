@@ -1,8 +1,12 @@
-#include <windows.h>
-#include <conio.h>
+#ifdef _WIN32
+    #include <windows.h>
+    #define sleep Sleep
+    #include <conio.h>
+#endif
+
 #include <cstdlib>
 #include <iostream>
-#include "mbsutil.h"
+#include "MBSUtil.h"
 
 using namespace std;
 
@@ -10,7 +14,7 @@ void* thread(void*)
 {
 	for(int x=0;x<20;x++)
 	{
-		Sleep(500);
+		sleep(500);
 		cout << ".";
 	}
 	return NULL;
@@ -109,9 +113,11 @@ int testeHash()
 int testePath()
 {
 	Path tmp;
-	list<string> lst=tmp.find("../*");
-	for(list<string>::iterator i=lst.begin();i!=lst.end();i++)
-		cout << *i << endl;
+	std::string pattern="../*";
+//WTF!!!	list<string> lst=tmp.find(pattern);
+// /home/mbs/prg/mbsutil/sample/main.cpp:117: undefined reference to `Path::find(std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, int)'
+//	for(list<string>::iterator i=lst.begin();i!=lst.end();i++)
+//		cout << *i << endl;
 }
 
 int testeSocket()
@@ -197,7 +203,11 @@ int testeSocketServer()
 	{
 		rc=sel.Select();
 		if(rc<0)
+#ifdef _WIN32
 			cout << "sel error=" << rc << " wsa=" << WSAGetLastError() << endl;
+#else
+            ;
+#endif
 		if(sel.isRead(ss.fd))
 		{
 			if(cli==NULL)
@@ -298,7 +308,9 @@ int main(int argc, char *argv[])
 			testeSocketServer();
 		break;
 	}
+#ifdef _WIN32
 	cout << "Finished! Press any key to exit...";
 	getch();
+#endif
     return EXIT_SUCCESS;
 }

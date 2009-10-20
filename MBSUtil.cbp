@@ -6,7 +6,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Release">
-				<Option output="lib\libMBSUtil.a" prefix_auto="0" extension_auto="0" />
+				<Option output="lib/libMBSUtil.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option object_output="." />
 				<Option type="2" />
@@ -21,7 +21,7 @@
 				</Linker>
 			</Target>
 			<Target title="Debug">
-				<Option output="lib\libMBSUtil.a" prefix_auto="0" extension_auto="0" />
+				<Option output="lib/libMBSUtil.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option object_output="." />
 				<Option type="2" />
@@ -36,7 +36,8 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add directory="include" />
+			<Add directory="../include" />
+			<Add directory="/usr/include" />
 		</Compiler>
 		<Unit filename="Arquivos.cpp" />
 		<Unit filename="Geometria.cpp" />
@@ -53,22 +54,22 @@
 		<Unit filename="glFonte.cpp" />
 		<Unit filename="glGUI.cpp" />
 		<Unit filename="glImagem.cpp" />
-		<Unit filename="include\Arquivos.h" />
-		<Unit filename="include\Geometria.h" />
-		<Unit filename="include\Hash.h" />
-		<Unit filename="include\MBSBuffer.h" />
-		<Unit filename="include\MBSNetwork.h" />
-		<Unit filename="include\MBSSlot.h" />
-		<Unit filename="include\MBSTrace.h" />
-		<Unit filename="include\MBSUtil.h" />
-		<Unit filename="include\Parser.h" />
-		<Unit filename="include\Rede.h" />
-		<Unit filename="include\SerialPort.h" />
-		<Unit filename="include\Tempo.h" />
-		<Unit filename="include\Thread.h" />
-		<Unit filename="include\glFonte.h" />
-		<Unit filename="include\glGUI.h" />
-		<Unit filename="include\glImagem.h" />
+		<Unit filename="include/Arquivos.h" />
+		<Unit filename="include/Geometria.h" />
+		<Unit filename="include/Hash.h" />
+		<Unit filename="include/MBSBuffer.h" />
+		<Unit filename="include/MBSNetwork.h" />
+		<Unit filename="include/MBSSlot.h" />
+		<Unit filename="include/MBSTrace.h" />
+		<Unit filename="include/MBSUtil.h" />
+		<Unit filename="include/Parser.h" />
+		<Unit filename="include/Rede.h" />
+		<Unit filename="include/SerialPort.h" />
+		<Unit filename="include/Tempo.h" />
+		<Unit filename="include/Thread.h" />
+		<Unit filename="include/glFonte.h" />
+		<Unit filename="include/glGUI.h" />
+		<Unit filename="include/glImagem.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
