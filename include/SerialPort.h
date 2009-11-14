@@ -32,12 +32,14 @@ class SerialPort
 		SerialPort();
 		virtual ~SerialPort();
 		int init(char *port, int baud=9600, char byteSize=8, char parity=0, char stopBits=0);
-		int write(const char *data, size_t size);
-		int read(char *data, size_t maxSize);
+		int Write(const char *data, size_t size);
+		int Read(char *data, size_t maxSize);
 		int closePort();
 	protected:
         #ifdef _WIN32
             HANDLE portHandle;
+        #else
+            int fd;
         #endif
 	private:
 };
