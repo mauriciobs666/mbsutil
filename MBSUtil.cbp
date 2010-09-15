@@ -55,6 +55,7 @@
 		<Unit filename="glGUI.cpp" />
 		<Unit filename="glImagem.cpp" />
 		<Unit filename="include/Arquivos.h" />
+		<Unit filename="include/Average.hpp" />
 		<Unit filename="include/Geometria.h" />
 		<Unit filename="include/Hash.h" />
 		<Unit filename="include/MBSBuffer.h" />

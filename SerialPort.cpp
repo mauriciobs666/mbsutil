@@ -50,6 +50,8 @@ SerialPort::~SerialPort()
 	closePort();
 }
 
+// Returns 0 on success
+
 int SerialPort::init(const char *port, int baud, char byteSize, char parity, char stopBits)
 {
 	char lastError[1024];
