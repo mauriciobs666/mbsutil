@@ -37,7 +37,7 @@ class SerialPort
 		int closePort();
 	protected:
         #ifdef _WIN32
-            HANDLE portHandle;
+            HANDLE fd;
         #else
             int fd;
         #endif

@@ -18,6 +18,8 @@
 */
 
 #include "SerialPort.h"
+#include "MBSTrace.h"
+
 #include <iostream>
 
 #ifndef _WIN32
@@ -34,14 +36,13 @@
 
 using namespace std;
 
+#ifndef INVALID_HANDLE_VALUE
+#define INVALID_HANDLE_VALUE -1
+#endif
 
 SerialPort::SerialPort()
 {
-#ifdef _WIN32
-    portHandle = INVALID_HANDLE_VALUE;
-#else
-    fd = -1;
-#endif
+    fd = INVALID_HANDLE_VALUE;
 }
 
 
@@ -58,16 +59,16 @@ int SerialPort::init(const char *port, int baud, char byteSize, char parity, cha
 
 #ifdef _WIN32
     char lastError[1024];
-    portHandle = CreateFile(	port,
-                                GENERIC_READ|GENERIC_WRITE,//access ( read and write)
-                                0,    //(share) 0:cannot share the COM port
-                                0,    //security  (None)
-                                OPEN_EXISTING,// creation : open_existing
-                                0, //FILE_FLAG_OVERLAPPED,// we want overlapped operation
-                                0// no templates file for COM port...
-                           );
+    fd = CreateFile(	port,
+                        GENERIC_READ|GENERIC_WRITE,//access ( read and write)
+                        0,    //(share) 0:cannot share the COM port
+                        0,    //security  (None)
+                        OPEN_EXISTING,// creation : open_existing
+                        0, //FILE_FLAG_OVERLAPPED,// we want overlapped operation
+                        0// no templates file for COM port...
+                   );
 
-    if ( INVALID_HANDLE_VALUE == portHandle )
+    if ( INVALID_HANDLE_VALUE == fd )
     {
         // ERROR_ACCESS_DENIED = already opened by other application
         // ERROR_FILE_NOT_FOUND = port that doesn't exist
@@ -88,7 +89,7 @@ int SerialPort::init(const char *port, int baud, char byteSize, char parity, cha
     DCB dcb = {0};
     dcb.DCBlength = sizeof(DCB);
 
-    if ( ! GetCommState(portHandle, &dcb) )
+    if ( ! GetCommState(fd, &dcb) )
     {
         FormatMessage( 	FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
                         NULL,
@@ -109,7 +110,7 @@ int SerialPort::init(const char *port, int baud, char byteSize, char parity, cha
     dcb.Parity      = parity;
     dcb.StopBits    = stopBits;
 
-    if ( ! SetCommState(portHandle,&dcb) )
+    if ( ! SetCommState(fd,&dcb) )
     {
         FormatMessage( 	FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
                         NULL,
@@ -172,7 +173,7 @@ int SerialPort::init(const char *port, int baud, char byteSize, char parity, cha
     */
     comTimeOut.WriteTotalTimeoutConstant = 2;
 
-    SetCommTimeouts(portHandle, &comTimeOut);
+    SetCommTimeouts(fd, &comTimeOut);
 
 #else
 
@@ -181,13 +182,13 @@ int SerialPort::init(const char *port, int baud, char byteSize, char parity, cha
     fd = open(port, O_RDWR | O_NOCTTY | O_NDELAY);
     if (fd == -1)
     {
-        perror("init_serialport: Unable to open port ");
+        TRACE_ERROR("init_serialport: Unable to open port ");
         return -1;
     }
 
     if (tcgetattr(fd, &toptions) < 0)
     {
-        perror("init_serialport: Couldn't get term attributes");
+        TRACE_ERROR("init_serialport: Couldn't get term attributes");
         return -1;
     }
     speed_t brate = baud; // let you override switch below if needed
@@ -199,19 +200,9 @@ int SerialPort::init(const char *port, int baud, char byteSize, char parity, cha
     case 9600:
         brate=B9600;
         break;
-#ifdef B14400
-    case 14400:
-        brate=B14400;
-        break;
-#endif
     case 19200:
         brate=B19200;
         break;
-#ifdef B28800
-    case 28800:
-        brate=B28800;
-        break;
-#endif
     case 38400:
         brate=B38400;
         break;
@@ -230,6 +221,7 @@ int SerialPort::init(const char *port, int baud, char byteSize, char parity, cha
     toptions.c_cflag &= ~CSTOPB;
     toptions.c_cflag &= ~CSIZE;
     toptions.c_cflag |= CS8;
+
     // no flow control
     toptions.c_cflag &= ~CRTSCTS;
 
@@ -245,7 +237,7 @@ int SerialPort::init(const char *port, int baud, char byteSize, char parity, cha
 
     if( tcsetattr(fd, TCSANOW, &toptions) < 0)
     {
-        perror("init_serialport: Couldn't set term attributes");
+        TRACE_ERROR("init_serialport: Couldn't set term attributes");
         return -1;
     }
 #endif
@@ -254,15 +246,13 @@ int SerialPort::init(const char *port, int baud, char byteSize, char parity, cha
 
 int SerialPort::Write(const char *data, size_t size)
 {
+    if( INVALID_HANDLE_VALUE == fd )
+        return -1;
 #ifdef _WIN32
     DWORD written;
-    if( INVALID_HANDLE_VALUE == portHandle )
-        return -1;
-    if( WriteFile (portHandle, data, size, &written, NULL) )
+    if( WriteFile (fd, data, size, &written, NULL) )
         return 0;
 #else
-    if( -1 == fd )
-        return -1;
     if( (size_t)write(fd, data, size) == size)
         return 0;
 #endif
@@ -273,7 +263,7 @@ int SerialPort::Read(char *data, size_t maxSize)
 {
 #ifdef _WIN32
     DWORD read;
-    if( ReadFile( portHandle, data, maxSize, &read, NULL ) )
+    if( ReadFile( fd, data, maxSize, &read, NULL ) )
         return read;
 #else
     int n = read(fd, data, maxSize);  // read a char at a time
@@ -285,19 +275,15 @@ int SerialPort::Read(char *data, size_t maxSize)
 
 int SerialPort::closePort()
 {
-#ifdef _WIN32
-    if (INVALID_HANDLE_VALUE != portHandle)
+    if (INVALID_HANDLE_VALUE != fd)
     {
-        CloseHandle(portHandle);
-        portHandle = INVALID_HANDLE_VALUE;
+        #ifdef _WIN32
+            CloseHandle(fd);
+        #else
+            close(fd);
+        #endif
+        fd = INVALID_HANDLE_VALUE;
     }
-#else
-    if ( -1 != fd )
-    {
-        close(fd);
-        fd=-1;
-    }
-#endif
     return 0;
 }
 
