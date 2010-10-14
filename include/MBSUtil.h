@@ -31,5 +31,6 @@
 //#include "glFonte.h"
 //#include "glImagem.h"
 #include "SerialPort.h"
+#include "MBSTrace.h"
 
 #endif

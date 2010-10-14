@@ -63,6 +63,16 @@ void MBSTrace::print(int level, const char *filename, int line, const char *mesg
 			fprintf(file,"%s ", levelOpt->printLevelPreffix);
 	}
 
+	if(mesg)
+	{
+		va_list l;
+		va_start( l, mesg );
+		vprintf( mesg, l );
+		if(file)
+			vfprintf(file, mesg, l );
+		va_end(l);
+	}
+
 	if(levelOpt->printFileLine)
 	{
 		if(filename)
@@ -79,20 +89,10 @@ void MBSTrace::print(int level, const char *filename, int line, const char *mesg
 					slash++;
 				}
 			}
-			printf("%s:%d ",filename,line);
+			printf(" (%s:%d)",filename,line);
 			if(file)
-				fprintf(file,"%s:%d ",filename,line);
+				fprintf(file," (%s:%d)",filename,line);
 		}
-	}
-
-	if(mesg)
-	{
-		va_list l;
-		va_start( l, mesg );
-		vprintf( mesg, l );
-		if(file)
-			vfprintf(file, mesg, l );
-		va_end(l);
 	}
 
     printf("\n");

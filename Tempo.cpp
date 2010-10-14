@@ -25,6 +25,18 @@
 
 using namespace std;
 
+char *fukctime(char *ctimeoutput)
+{
+    char *pnt=ctimeoutput;
+    if(pnt)
+        while(*pnt)
+            if(*pnt=='\n')
+                *pnt=0;
+            else
+                pnt++;
+    return ctimeoutput;
+}
+
 Tempo::Tempo()
 {
 	reset();

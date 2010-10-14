@@ -23,6 +23,8 @@
 #define EVE_TEMPO_1S	0x0001
 #define EVE_TEMPO_100MS	0x0002
 
+char *fukctime(char *ctimeoutput);
+
 class Tempo
 {
 public:
