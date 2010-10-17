@@ -1,6 +1,6 @@
 /*
 	MBS-Util - General purpose C++ library
-	Copyright (C) 2007 - Mauricio Bieze Stefani
+	Copyright (C) 2007-2010 - Mauricio Bieze Stefani
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -20,10 +20,14 @@
 #ifndef tempoH
 #define tempoH
 
+#include <time.h>
+
 #define EVE_TEMPO_1S	0x0001
 #define EVE_TEMPO_100MS	0x0002
 
+// remove the damn fucking '\n' from ctime output
 char *fukctime(char *ctimeoutput);
+char *fukctime(time_t *time);
 
 class Tempo
 {
@@ -37,6 +41,7 @@ public:
     unsigned long getFPS();
     unsigned long getFPSMedio();
     unsigned long getTempoTotal();
+    unsigned long getMilissegundos();
 protected:
 	unsigned long logarEventos;
 	unsigned long ttotal;
@@ -44,7 +49,5 @@ protected:
     unsigned long T1ds;
 	unsigned long frames;
 	unsigned long fpstemp,fps;
-private:
-	unsigned long getMilissegundos();
 };
 #endif

@@ -1,6 +1,6 @@
 /*
 	MBS-Util - General purpose C++ library
-	Copyright (C) 2007 - Mauricio Bieze Stefani
+	Copyright (C) 2007-2010 - Mauricio Bieze Stefani
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -18,10 +18,6 @@
 */
 
 #include "Tempo.h"
-#include <ctime>
-#ifdef _WIN32
-//	#include <windows.h>
-#endif
 
 using namespace std;
 
@@ -35,6 +31,11 @@ char *fukctime(char *ctimeoutput)
             else
                 pnt++;
     return ctimeoutput;
+}
+
+char *fukctime(time_t *time)
+{
+    return fukctime(ctime(time));
 }
 
 Tempo::Tempo()
@@ -109,7 +110,7 @@ unsigned long Tempo::getTempoTotal()
 	return ttotal;
 }
 
-inline unsigned long Tempo::getMilissegundos()
+unsigned long Tempo::getMilissegundos()
 {
 	return (clock()/(CLOCKS_PER_SEC/1000));
 }
