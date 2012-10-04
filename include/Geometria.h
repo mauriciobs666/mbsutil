@@ -1,6 +1,6 @@
 /*
 	MBS-Util - General purpose C++ library
-	Copyright (C) 2007 - Mauricio Bieze Stefani
+	Copyright (C) 2007-2012 - Mauricio Bieze Stefani
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -19,10 +19,6 @@
 
 #ifndef geometriaH
 #define geometriaH
-#include <ostream>
-
-typedef float Real;
-const Real PI=3.14159265;
 
 class Vetor2i
 {
@@ -43,6 +39,13 @@ public:
 	bool operator==(const Vetor2i& v) const { return ((x==v.x)&(y==v.y)); }
 	bool operator!=(const Vetor2i& v) const { return ((x!=v.x)|(y!=v.y)); }
 };
+
+#ifndef ARDUINO
+
+#include <ostream>
+
+typedef float Real;
+const Real PI=3.14159265;
 
 class Vetor2D
 {
@@ -115,5 +118,5 @@ public:
     Vetor3D normal;
 	Real d; //distancia da origem -> Ax + By + Cz + D = 0
 };
-
+#endif
 #endif
