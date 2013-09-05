@@ -65,7 +65,7 @@ public:
     sockaddr_in* getInfo()
 		{ return &dest; }
     unsigned long dns(std::string end);
-	std::string toString(in_addr_t ip)
+	std::string toString(uint32_t ip)
 //		{ return std::string(inet_ntoa(*((in_addr*)&ip))); }
 		{
 		    in_addr a;
