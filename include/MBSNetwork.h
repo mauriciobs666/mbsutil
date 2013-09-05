@@ -65,8 +65,13 @@ public:
     sockaddr_in* getInfo()
 		{ return &dest; }
     unsigned long dns(std::string end);
-	std::string toString(unsigned long ip)
-		{ return std::string(inet_ntoa(*((in_addr*)&ip))); }
+	std::string toString(in_addr_t ip)
+//		{ return std::string(inet_ntoa(*((in_addr*)&ip))); }
+		{
+		    in_addr a;
+		    a.s_addr = ip;
+		    return std::string(inet_ntoa(a));
+        }
 protected:
 	sockaddr_in dest;
     SOCKET createSocket()
