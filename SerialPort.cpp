@@ -1,6 +1,6 @@
 /*
 	MBS-Util - General purpose C++ library
-	Copyright (C) 2009 - Mauricio Bieze Stefani
+	Copyright (C) 2009-2015 - Mauricio Bieze Stefani
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -58,8 +58,12 @@ int SerialPort::init(const char *port, int baud, char byteSize, char parity, cha
     closePort();
 
 #ifdef _WIN32
+    char windowsTosco[10];
+    snprintf( windowsTosco, 10, "\\\\.\\%s", port );
+    windowsTosco[9] = 0;
+
     char lastError[1024];
-    fd = CreateFile(	port,
+    fd = CreateFile(	windowsTosco,
                         GENERIC_READ|GENERIC_WRITE,//access ( read and write)
                         0,    //(share) 0:cannot share the COM port
                         0,    //security  (None)
@@ -82,7 +86,7 @@ int SerialPort::init(const char *port, int baud, char byteSize, char parity, cha
                         NULL
                      );
 
-        cout << "Failed to open " << port << ": " << lastError << endl;
+        cout << "Failed to open " << windowsTosco << ": " << lastError << endl;
         return -1;
     }
 
